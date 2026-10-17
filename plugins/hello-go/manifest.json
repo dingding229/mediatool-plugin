@@ -2,13 +2,14 @@
   "contractVersion": 2,
   "id": "hello-go",
   "name": "Hello Go",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Example Author",
   "description": "实例隔离与持久计数示例",
   "level": 1,
   "icon": "icon.svg",
   "history": {
-    "1.0.0": "Initial example"
+    "1.0.0": "Initial example",
+    "1.1.0": "Typed bindings, authenticated APIs, durable service and transfer event example"
   },
   "permissions": [
     {
@@ -25,12 +26,84 @@
     },
     {
       "scope": "ui.json"
+    },
+    {
+      "scope": "api.register"
+    },
+    {
+      "scope": "api.public"
+    },
+    {
+      "scope": "services.register"
+    },
+    {
+      "scope": "commands.register"
+    },
+    {
+      "scope": "actions.register"
+    },
+    {
+      "scope": "events.subscribe.library.organized"
     }
   ],
   "extensions": {
     "forms": true,
     "pages": [
       "overview"
+    ],
+    "api": [
+      {
+        "id": "admin",
+        "path": "/admin",
+        "methods": [
+          "GET"
+        ],
+        "auth": "admin",
+        "executionScopes": [],
+        "summary": "Hello counter"
+      },
+      {
+        "id": "apikey",
+        "path": "/apikey",
+        "methods": [
+          "GET"
+        ],
+        "auth": "apikey",
+        "executionScopes": [],
+        "summary": "Hello counter"
+      },
+      {
+        "id": "bearer",
+        "path": "/bearer",
+        "methods": [
+          "GET"
+        ],
+        "auth": "bearer",
+        "executionScopes": [],
+        "summary": "Hello counter"
+      },
+      {
+        "id": "public",
+        "path": "/public",
+        "methods": [
+          "GET"
+        ],
+        "auth": "public",
+        "executionScopes": [],
+        "summary": "Hello counter"
+      }
+    ],
+    "services": [
+      "tick"
+    ],
+    "commands": [
+      "hello"
+    ],
+    "actions": [
+      "hello"
+    ],
+    "events": [
+      "library.organized"
     ]
   },
   "ui": {

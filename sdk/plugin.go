@@ -17,11 +17,9 @@ type PageRequest = contracts.PageRequest
 type Dashboard = contracts.Dashboard
 type DashboardRequest = contracts.DashboardRequest
 type DashboardMeta = contracts.DashboardMeta
-type API = contracts.Descriptor
-type Service = contracts.Descriptor
-type Command = contracts.Descriptor
-type Module = contracts.Descriptor
-type Action = contracts.Descriptor
+type APIRequest = contracts.APIRequest
+type APIResponse = contracts.APIResponse
+type ActionContext = contracts.ActionContext
 
 type Plugin interface {
 	InitPlugin(context.Context, Config) error

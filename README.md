@@ -62,3 +62,19 @@ best effort. Same-UID readable files remain a review-controlled risk; this SDK
 implements **none** of those OS controls. No setuid/UID pool/seccomp or production
 security changes are required. API/service/command/module/event Host integration
 is F2/F4, typed business clients F3. No relay, transcoding or HLS is added.
+
+## F2 typed extensions
+
+Optional GetAPI/GetService/GetCommand/GetActions/GetModule now return Go handler
+bindings. Runtime freezes them after InitPlugin and publishes descriptorVersion=2;
+`plugin.describe` is an immutable snapshot, `plugin.invoke` uses deterministic
+kind+ID handler identifiers (never function addresses or author-managed strings).
+API paths are exact, no wildcards; HTTP credentials are checked by the host and
+never forwarded. Services use cron/interval/date/once and optional scheduleSetting;
+`hello-go` uses `scheduled:true` to enable its one-second demo timer. It also
+shows API auth metadata, an internal command/action and typed TransferComplete
+subscription. Module execution remains unsupported until F2-beta.
+
+A timeout/crash can mean an unknown side effect. Do not blindly retry it. Event
+identity is stable; hello uses it as its own idempotency key. Host validates the
+same pinned manifest plus live grants independently of SDK checks.

@@ -86,8 +86,10 @@ func TestHelloLifecycleGolden(t *testing.T) {
 	}{init, state, form, page, m.Calls()})
 	rpcCode(t, h.Init(ctx, contracts.Config{Value: json.RawMessage(`{}`), Revision: 1}), contracts.Conflict)
 	rpcCode(t, h.Call(ctx, "plugin.get_page", sdk.PageRequest{Key: "private"}, nil), contracts.NotFound)
-	rpcCode(t, h.Call(ctx, "plugin.get_api", nil, nil), contracts.UnsupportedVersion)
-	rpcCode(t, h.Call(ctx, "plugin.invoke", nil, nil), contracts.MethodNotFound)
+	if e = h.Call(ctx, "plugin.get_api", nil, nil); e != nil {
+		t.Fatal(e)
+	}
+	rpcCode(t, h.Call(ctx, "plugin.invoke", nil, nil), contracts.InvalidParams)
 	for range 2 {
 		if e = h.Call(ctx, "plugin.stop_service", nil, nil); e != nil {
 			t.Fatal(e)

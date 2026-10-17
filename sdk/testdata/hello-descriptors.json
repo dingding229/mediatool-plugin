@@ -1,0 +1,109 @@
+{
+  "version": 2,
+  "descriptors": [
+    {
+      "kind": "action",
+      "id": "hello",
+      "handler": "action.c1ae3a8379fb219135ff0227",
+      "requiredScopes": [
+        "actions.register"
+      ],
+      "name": "示例动作",
+      "kwargs": {}
+    },
+    {
+      "kind": "api",
+      "id": "apikey",
+      "handler": "api.03eeb296fd63f732d069ecb0",
+      "requiredScopes": [
+        "api.register"
+      ],
+      "path": "/apikey",
+      "methods": [
+        "GET"
+      ],
+      "auth": "apikey",
+      "summary": "Hello counter",
+      "description": "Only this instance's synthetic counter"
+    },
+    {
+      "kind": "api",
+      "id": "admin",
+      "handler": "api.710b29b1456d87b4169fe3b1",
+      "requiredScopes": [
+        "api.register"
+      ],
+      "path": "/admin",
+      "methods": [
+        "GET"
+      ],
+      "auth": "admin",
+      "summary": "Hello counter",
+      "description": "Only this instance's synthetic counter"
+    },
+    {
+      "kind": "api",
+      "id": "public",
+      "handler": "api.ac9fd045160561b1677fcb2e",
+      "requiredScopes": [
+        "api.register",
+        "api.public"
+      ],
+      "path": "/public",
+      "methods": [
+        "GET"
+      ],
+      "auth": "public",
+      "summary": "Hello counter",
+      "description": "Only this instance's synthetic counter"
+    },
+    {
+      "kind": "api",
+      "id": "bearer",
+      "handler": "api.e662540f29a7a1f14faa0030",
+      "requiredScopes": [
+        "api.register"
+      ],
+      "path": "/bearer",
+      "methods": [
+        "GET"
+      ],
+      "auth": "bearer",
+      "summary": "Hello counter",
+      "description": "Only this instance's synthetic counter"
+    },
+    {
+      "kind": "command",
+      "id": "hello",
+      "handler": "command.3aa7d8cc09f44f83ca72b466",
+      "requiredScopes": [
+        "commands.register"
+      ],
+      "description": "增加实例计数",
+      "cmd": "hello",
+      "category": "示例",
+      "data": {}
+    },
+    {
+      "kind": "event",
+      "id": "library.organized",
+      "handler": "event.ea6f503ec4211bb31fb3a5c7",
+      "requiredScopes": [
+        "events.subscribe.library.organized"
+      ]
+    },
+    {
+      "kind": "service",
+      "id": "tick",
+      "handler": "service.827aed705a01beabc1b90ff8",
+      "requiredScopes": [
+        "services.register"
+      ],
+      "name": "计数示例",
+      "trigger": "interval",
+      "intervalMs": 1000,
+      "scheduleSetting": "scheduled",
+      "kwargs": {}
+    }
+  ]
+}

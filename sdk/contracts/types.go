@@ -62,11 +62,3 @@ type DashboardMeta struct {
 	Border  bool   `json:"border"`
 	Cols    int    `json:"cols"`
 }
-
-// Descriptor is a bounded wire description. Go functions never cross the transport.
-// Specialized API/service/module descriptors and dispatch are added with F2.
-type Descriptor struct {
-	ID             string   `json:"id"`
-	Handler        string   `json:"handler"`
-	RequiredScopes []string `json:"requiredScopes"`
-}

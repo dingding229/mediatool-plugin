@@ -29,6 +29,7 @@ type Runtime struct {
 	plugin      Plugin
 	host        *host.Client
 	events      *events.Registry
+	bindings    map[string]bound
 }
 
 func NewRuntime(peer *transport.Peer, m contracts.Manifest, f Factory, id Identity) (*Runtime, error) {
@@ -53,7 +54,7 @@ func NewRuntime(peer *transport.Peer, m contracts.Manifest, f Factory, id Identi
 	return r, nil
 }
 func (r *Runtime) methods() []string {
-	return []string{"plugin.initialize", "plugin.init", "plugin.get_state", "plugin.get_name", "plugin.get_form", "plugin.get_page", "plugin.get_render_mode", "plugin.get_event_handlers", "plugin.get_api", "plugin.get_service", "plugin.get_command", "plugin.get_dashboard", "plugin.get_dashboard_meta", "plugin.get_module", "plugin.get_actions", "plugin.stop_service", "plugin.close"}
+	return []string{"plugin.describe", "plugin.invoke", "plugin.initialize", "plugin.init", "plugin.get_state", "plugin.get_name", "plugin.get_form", "plugin.get_page", "plugin.get_render_mode", "plugin.get_event_handlers", "plugin.get_api", "plugin.get_service", "plugin.get_command", "plugin.get_dashboard", "plugin.get_dashboard_meta", "plugin.get_module", "plugin.get_actions", "plugin.stop_service", "plugin.close"}
 }
 func (r *Runtime) On(t events.EventType, h events.Handler) error { return r.events.On(t, h) }
 func (r *Runtime) OnChain(t events.ChainEventType, h events.ChainHandler) error {
@@ -63,6 +64,9 @@ func (r *Runtime) handle(ctx context.Context, method string, b json.RawMessage) 
 	budget := 2 * time.Second
 	if method == "plugin.initialize" {
 		budget = 5 * time.Second
+	}
+	if method == "plugin.invoke" {
+		budget = 30 * time.Second
 	}
 	if method == "plugin.init" {
 		budget = 15 * time.Second
@@ -131,6 +135,9 @@ func (r *Runtime) handle(ctx context.Context, method string, b json.RawMessage) 
 				return nil, contracts.NewError(contracts.PermissionDenied)
 			}
 		}
+		if e := r.bind(ctx); e != nil {
+			return nil, contracts.SafeError(contracts.NewError(contracts.InvalidExtensionResult))
+		}
 		r.failed = false
 		r.started = true
 		return struct{}{}, nil
@@ -138,7 +145,17 @@ func (r *Runtime) handle(ctx context.Context, method string, b json.RawMessage) 
 	if !r.started {
 		return nil, contracts.NewError(contracts.Unavailable)
 	}
-	// Extensions beyond the hello's read-only form/page are discovered here, but dispatch is F2.
+	if method == "plugin.invoke" {
+		return r.invoke(ctx, b)
+	}
+	if method == "plugin.describe" {
+		return r.descriptors(""), nil
+	}
+	for methodName, kind := range map[string]string{"plugin.get_api": "api", "plugin.get_service": "service", "plugin.get_command": "command", "plugin.get_module": "module", "plugin.get_actions": "action"} {
+		if method == methodName {
+			return r.descriptors(kind).Descriptors, nil
+		}
+	}
 	var result any
 	var err error
 	switch method {
@@ -171,24 +188,6 @@ func (r *Runtime) handle(ctx context.Context, method string, b json.RawMessage) 
 		}
 	case "plugin.get_event_handlers":
 		result = r.events.Descriptors()
-	case "plugin.get_api":
-		if p, ok := r.plugin.(APIProvider); ok {
-			result, err = p.GetAPI(ctx)
-		} else {
-			return nil, contracts.NewError(contracts.UnsupportedVersion)
-		}
-	case "plugin.get_service":
-		if p, ok := r.plugin.(ServiceProvider); ok {
-			result, err = p.GetService(ctx)
-		} else {
-			return nil, contracts.NewError(contracts.UnsupportedVersion)
-		}
-	case "plugin.get_command":
-		if p, ok := r.plugin.(CommandProvider); ok {
-			result, err = p.GetCommand(ctx)
-		} else {
-			return nil, contracts.NewError(contracts.UnsupportedVersion)
-		}
 	case "plugin.get_dashboard":
 		var q DashboardRequest
 		if contracts.Decode(b, &q) != nil || !slices.Contains(r.manifest.Extensions.Dashboards, q.Key) {
@@ -217,56 +216,13 @@ func (r *Runtime) handle(ctx context.Context, method string, b json.RawMessage) 
 		} else {
 			return nil, contracts.NewError(contracts.UnsupportedVersion)
 		}
-	case "plugin.get_module":
-		if p, ok := r.plugin.(ModuleProvider); ok {
-			result, err = p.GetModule(ctx)
-		} else {
-			return nil, contracts.NewError(contracts.UnsupportedVersion)
-		}
-	case "plugin.get_actions":
-		if p, ok := r.plugin.(ActionProvider); ok {
-			result, err = p.GetActions(ctx)
-		} else {
-			return nil, contracts.NewError(contracts.UnsupportedVersion)
-		}
 	default:
 		return nil, contracts.NewError(contracts.MethodNotFound)
 	}
 	if err != nil {
 		return nil, contracts.NewError(contracts.NeedsAction)
 	}
-	if descriptors, ok := result.([]contracts.Descriptor); ok {
-		var allowed []string
-		switch method {
-		case "plugin.get_api":
-			for _, route := range r.manifest.Extensions.API {
-				allowed = append(allowed, route.ID)
-			}
-		case "plugin.get_service":
-			allowed = r.manifest.Extensions.Services
-		case "plugin.get_command":
-			allowed = r.manifest.Extensions.Commands
-		case "plugin.get_module":
-			allowed = r.manifest.Extensions.Modules
-		case "plugin.get_actions":
-			allowed = r.manifest.Extensions.Actions
-		}
-		if len(descriptors) > 64 {
-			return nil, contracts.NewError(contracts.InvalidExtensionResult)
-		}
-		seen := map[string]bool{}
-		for _, d := range descriptors {
-			if !slices.Contains(allowed, d.ID) || seen[d.ID] || d.Handler == "" || len(d.Handler) > 128 {
-				return nil, contracts.NewError(contracts.InvalidExtensionResult)
-			}
-			seen[d.ID] = true
-			for _, cap := range d.RequiredScopes {
-				if !slices.Contains(r.init.Capabilities, cap) {
-					return nil, contracts.NewError(contracts.InvalidExtensionResult)
-				}
-			}
-		}
-	}
+
 	return result, nil
 }
 func (r *Runtime) initialize(b json.RawMessage) (any, *contracts.Error) {
