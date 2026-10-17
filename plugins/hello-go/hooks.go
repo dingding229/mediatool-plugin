@@ -26,6 +26,7 @@ func (p *Plugin) recognize(ctx context.Context, e events.ChainEnvelope) (json.Ra
 		}
 	}
 	var title string
+	// Optional example setting: missing/non-string values deliberately mean no override.
 	_ = json.Unmarshal(p.config["recognizeTitle"], &title)
 	if title != "" {
 		v.Hint.Title = title
@@ -42,6 +43,7 @@ func (p *Plugin) GetModule(context.Context) ([]sdk.Module, error) {
 			return nil, contracts.NewError(contracts.InvalidParams)
 		}
 		var t string
+		// Optional example setting: missing/non-string values deliberately mean no override.
 		_ = json.Unmarshal(p.config["moduleTitle"], &t)
 		if t != "" {
 			v.Hint.Title = t
