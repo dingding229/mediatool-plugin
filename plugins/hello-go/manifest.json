@@ -2,7 +2,7 @@
   "contractVersion": 2,
   "id": "hello-go",
   "name": "Hello Go",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "author": "Example Author",
   "description": "实例隔离与持久计数示例",
   "level": 1,
@@ -11,7 +11,8 @@
     "1.0.0": "Initial example",
     "1.1.0": "Typed bindings, authenticated APIs, durable service and transfer event example",
     "1.1.1": "Demonstrate POST admin API for CSRF contract",
-    "1.1.2": "Declare minimal per-route Host execution scopes"
+    "1.1.2": "Declare minimal per-route Host execution scopes",
+    "1.2.0": "Chain/module hooks, DownloadAdded, JSON forms, multi dashboards and bundled ESM"
   },
   "permissions": [
     {
@@ -46,6 +47,24 @@
     },
     {
       "scope": "events.subscribe.library.organized"
+    },
+    {
+      "scope": "plugin.config.write"
+    },
+    {
+      "scope": "events.chain.name.recognize"
+    },
+    {
+      "scope": "module.metadata.name_recognize"
+    },
+    {
+      "scope": "events.subscribe.download.added"
+    },
+    {
+      "scope": "ui.trusted"
+    },
+    {
+      "scope": "ui.sidebar"
     }
   ],
   "extensions": {
@@ -115,11 +134,30 @@
       "hello"
     ],
     "events": [
-      "library.organized"
+      "library.organized",
+      "download.added"
+    ],
+    "chains": [
+      "name.recognize"
+    ],
+    "modules": [
+      "metadata.name_recognize"
+    ],
+    "dashboards": [
+      "starts",
+      "events"
     ]
   },
   "ui": {
-    "mode": "json"
+    "mode": "vue",
+    "entry": "ui/dist/index.js",
+    "sidebar": [
+      {
+        "page": "overview",
+        "title": "Hello 插件",
+        "icon": "Box"
+      }
+    ]
   },
   "resources": {
     "addressSpaceMiB": 8192,

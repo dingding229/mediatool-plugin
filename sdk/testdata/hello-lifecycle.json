@@ -33,9 +33,26 @@
         "props": {
           "text": "Hello from the built-in Go library"
         }
+      },
+      {
+        "component": "VTextField",
+        "props": {
+          "label": "问候语"
+        },
+        "model": "greeting"
+      },
+      {
+        "component": "VSwitch",
+        "props": {
+          "label": "启用定时服务"
+        },
+        "model": "scheduled"
       }
     ],
-    "defaults": {}
+    "defaults": {
+      "greeting": "Hello",
+      "scheduled": true
+    }
   },
   "page": {
     "content": [

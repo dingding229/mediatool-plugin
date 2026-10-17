@@ -2,6 +2,24 @@
   "version": 2,
   "descriptors": [
     {
+      "kind": "chain",
+      "id": "name.recognize",
+      "handler": "chain.77bffc20aebe71b2662717a7",
+      "requiredScopes": [
+        "events.chain.name.recognize"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "module",
+      "id": "metadata.name_recognize",
+      "handler": "module.4674db29aceec54b3bb3f00c",
+      "requiredScopes": [
+        "module.metadata.name_recognize"
+      ],
+      "priority": 10
+    },
+    {
       "kind": "action",
       "id": "hello",
       "handler": "action.c1ae3a8379fb219135ff0227",
@@ -92,6 +110,14 @@
     },
     {
       "kind": "event",
+      "id": "download.added",
+      "handler": "event.a80f1b4a886ff1499eb8380f",
+      "requiredScopes": [
+        "events.subscribe.download.added"
+      ]
+    },
+    {
+      "kind": "event",
       "id": "library.organized",
       "handler": "event.ea6f503ec4211bb31fb3a5c7",
       "requiredScopes": [
@@ -110,6 +136,46 @@
       "intervalMs": 1000,
       "scheduleSetting": "scheduled",
       "kwargs": {}
+    },
+    {
+      "kind": "ui",
+      "id": "dashboard.starts",
+      "handler": "ui.424ca9e177715e439e772b4f",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "form",
+      "handler": "ui.437f72de2c4c718727be8489",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "page.overview",
+      "handler": "ui.931b5dcc28179c493d6e9e0c",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "meta",
+      "handler": "ui.d19ca4aa72516e157d58565c",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "dashboard.events",
+      "handler": "ui.e651233237aa567937325490",
+      "requiredScopes": [
+        "ui.json"
+      ]
     }
   ]
 }

@@ -78,3 +78,12 @@ subscription. Module execution remains unsupported until F2-beta.
 A timeout/crash can mean an unknown side effect. Do not blindly retry it. Event
 identity is stable; hello uses it as its own idempotency key. Host validates the
 same pinned manifest plus live grants independently of SDK checks.
+
+F2 extensions bind Go functions directly. `OnChainPriority` publishes deterministic
+priority metadata; `NameRecognition` is a strictly bounded hint contract, never a
+file or media identity. The hello plugin demonstrates opt-in recognition rewrites
+(`recognizeTitle`/`moduleTitle`), interception, `DownloadAdded`, JSON model binding,
+two dashboard keys and an ESM entry importing `@mediatool/plugin-ui`. The host
+bundles this facade and plugin sources in **one** Vite graph; no runtime download,
+string rewriting, eval or duplicate Vue runtime is permitted. Same-page ESM is
+trusted administrator-approved code, not a security sandbox.

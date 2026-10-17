@@ -90,6 +90,18 @@ func ValidateSnapshot(m Manifest, granted []string, s Snapshot) error {
 		case "module":
 			required = "module." + d.ID
 			allowed = m.Extensions.Modules
+		case "chain":
+			required = "events.chain." + d.ID
+			allowed = m.Extensions.Chains
+		case "ui":
+			required = "ui.json"
+			allowed = []string{"form", "meta"}
+			for _, k := range m.Extensions.Pages {
+				allowed = append(allowed, "page."+k)
+			}
+			for _, k := range m.Extensions.Dashboards {
+				allowed = append(allowed, "dashboard."+k)
+			}
 		case "event":
 			required = "events.subscribe." + d.ID
 			allowed = m.Extensions.Events

@@ -136,6 +136,7 @@ func TestFactoryDeferredAndDisconnectStops(t *testing.T) {
 	d, m, id, q := fixture(t)
 	var created, stopped atomic.Int32
 	d.Manifest.Extensions = contracts.Extensions{}
+	d.Manifest.UI = contracts.UI{Mode: "json"}
 	d.Factory = func(s sdk.Services) sdk.Plugin { created.Add(1); return &minimal{stopped: &stopped} }
 	h := start(t, d, m, id)
 	if created.Load() != 0 {

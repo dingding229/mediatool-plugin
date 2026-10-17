@@ -36,7 +36,12 @@ type HostCall struct {
 	ExpectedRevision *int64          `json:"expectedRevision,omitempty"`
 	OperationKey     string          `json:"operationKey,omitempty"`
 }
+type Condition struct {
+	Model  string          `json:"model"`
+	Equals json.RawMessage `json:"equals"`
+}
 type Component struct {
+	When      *Condition                 `json:"when,omitempty"`
 	Component string                     `json:"component"`
 	Key       string                     `json:"key,omitempty"`
 	Props     map[string]json.RawMessage `json:"props,omitempty"`

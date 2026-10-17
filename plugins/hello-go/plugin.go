@@ -21,6 +21,7 @@ type Plugin struct {
 	host    *host.Client
 	events  *events.Registry
 	running bool
+	config  map[string]json.RawMessage
 	count   int
 }
 
@@ -30,6 +31,9 @@ var _ sdk.PageProvider = (*Plugin)(nil)
 
 func New(s sdk.Services) sdk.Plugin { return &Plugin{host: s.Host, events: s.Events} }
 func (p *Plugin) InitPlugin(ctx context.Context, c sdk.Config) error {
+	if err := json.Unmarshal(c.Value, &p.config); err != nil {
+		return err
+	}
 	revision, e := p.host.GetData(ctx, "starts", &p.count)
 	var rpc *contracts.Error
 	if e != nil && (!errors.As(e, &rpc) || rpc.Code != contracts.NotFound) {
@@ -42,13 +46,19 @@ func (p *Plugin) InitPlugin(ctx context.Context, c sdk.Config) error {
 	if e = p.events.On(events.EventType("library.organized"), p.onTransfer); e != nil {
 		return e
 	}
+	if e = p.events.On(events.EventType("download.added"), p.onDownload); e != nil {
+		return e
+	}
+	if e = p.events.OnChainPriority(events.ChainEventType("name.recognize"), 20, p.recognize); e != nil {
+		return e
+	}
 	p.running = true
 	return nil
 }
 func (p *Plugin) GetState(context.Context) (bool, error) { return p.running, nil }
 func (p *Plugin) StopService(context.Context) error      { p.running = false; return nil }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	return sdk.Form{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": json.RawMessage(`"Hello from the built-in Go library"`)}}}, Defaults: json.RawMessage(`{}`)}, nil
+	return sdk.Form{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": json.RawMessage(`"Hello from the built-in Go library"`)}}, {Component: "VTextField", Model: "greeting", Props: map[string]json.RawMessage{"label": json.RawMessage(`"问候语"`)}}, {Component: "VSwitch", Model: "scheduled", Props: map[string]json.RawMessage{"label": json.RawMessage(`"启用定时服务"`)}}}, Defaults: json.RawMessage(`{"greeting":"Hello","scheduled":true}`)}, nil
 }
 func (p *Plugin) GetPage(context.Context, sdk.PageRequest) (sdk.Page, error) {
 	b, _ := json.Marshal(p.count)

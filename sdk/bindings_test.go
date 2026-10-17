@@ -33,8 +33,12 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 			args = contracts.APIRequest{Method: "GET", Path: v.Path}
 		case "action":
 			args = contracts.ActionContext{Data: map[string]json.RawMessage{}}
+		case "chain":
+			args = events.ChainEnvelope{Type: contracts.ChainNameRecognize, SchemaVersion: 1, Payload: json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)}
+		case "module":
+			args = json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)
 		case "event":
-			args = events.Envelope{ID: "stable-event", Type: contracts.EventTransferComplete, SchemaVersion: 1, Payload: json.RawMessage(`{"operationId":"synthetic"}`)}
+			args = events.Envelope{ID: "stable-event", Type: contracts.EventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"operationId":"synthetic"}`)}
 		}
 		b, e := json.Marshal(args)
 		if e != nil {
@@ -48,7 +52,7 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 	// Event duplicate uses the same idempotency key; it neither increments nor fails.
 	for _, v := range snapshot.Descriptors {
 		if v.Kind == "event" {
-			b, _ := json.Marshal(events.Envelope{ID: "stable-event", Type: contracts.EventTransferComplete, SchemaVersion: 1, Payload: json.RawMessage(`{}`)})
+			b, _ := json.Marshal(events.Envelope{ID: "stable-event", Type: contracts.EventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{}`)})
 			if e := h.Call(ctx, "plugin.invoke", contracts.Invocation{Handler: v.Handler, Args: b}, nil); e != nil {
 				t.Fatal(e)
 			}

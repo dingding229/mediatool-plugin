@@ -8,7 +8,6 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk/events"
 	"slices"
 	"sort"
-	"strings"
 	"time"
 )
 
@@ -175,7 +174,17 @@ func (r *Runtime) bind(ctx context.Context) error {
 		}
 	}
 	for _, v := range r.events.Descriptors() {
-		if v.Kind != "event" {
+		if v.Kind == "chain" {
+			typ := events.ChainEventType(v.Type)
+			if e := add(contracts.Descriptor{Kind: "chain", ID: v.Type, Priority: v.Priority, RequiredScopes: []string{"events.chain." + v.Type}}, func(ctx context.Context, b json.RawMessage) (any, error) {
+				var q events.ChainEnvelope
+				if contracts.Decode(b, &q) != nil || q.Type != typ {
+					return nil, contracts.NewError(contracts.InvalidParams)
+				}
+				return r.events.DispatchChain(ctx, q)
+			}); e != nil {
+				return e
+			}
 			continue
 		}
 		typ := events.EventType(v.Type)
@@ -188,6 +197,9 @@ func (r *Runtime) bind(ctx context.Context) error {
 		}); e != nil {
 			return e
 		}
+	}
+	if e := r.bindUI(ctx, add); e != nil {
+		return e
 	}
 	return contracts.ValidateSnapshot(r.manifest, r.init.Capabilities, r.descriptors(""))
 }
@@ -216,9 +228,6 @@ func (r *Runtime) invoke(ctx context.Context, b json.RawMessage) (any, *contract
 	if !ok {
 		return nil, contracts.NewError(contracts.NotFound)
 	}
-	if strings.HasPrefix(q.Handler, "module.") {
-		return nil, contracts.NewError(contracts.UnsupportedVersion)
-	} // F2-beta enables chain/module execution.
 	out, e := h.call(ctx, q.Args)
 	if e != nil {
 		var code *contracts.Error
