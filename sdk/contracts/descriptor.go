@@ -95,7 +95,12 @@ func ValidateSnapshot(m Manifest, granted []string, s Snapshot) error {
 			allowed = m.Extensions.Chains
 		case "ui":
 			required = "ui.json"
-			allowed = []string{"form", "meta"}
+			if m.Extensions.Forms {
+				allowed = append(allowed, "form")
+			}
+			if len(m.Extensions.Dashboards) > 0 {
+				allowed = append(allowed, "meta")
+			}
 			for _, k := range m.Extensions.Pages {
 				allowed = append(allowed, "page."+k)
 			}
