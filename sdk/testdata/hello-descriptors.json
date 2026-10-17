@@ -16,7 +16,8 @@
       "id": "apikey",
       "handler": "api.03eeb296fd63f732d069ecb0",
       "requiredScopes": [
-        "api.register"
+        "api.register",
+        "plugin.data.read"
       ],
       "path": "/apikey",
       "methods": [
@@ -31,7 +32,9 @@
       "id": "admin",
       "handler": "api.710b29b1456d87b4169fe3b1",
       "requiredScopes": [
-        "api.register"
+        "api.register",
+        "plugin.data.read",
+        "plugin.data.write"
       ],
       "path": "/admin",
       "methods": [
@@ -48,6 +51,7 @@
       "handler": "api.ac9fd045160561b1677fcb2e",
       "requiredScopes": [
         "api.register",
+        "plugin.data.read",
         "api.public"
       ],
       "path": "/public",
@@ -63,7 +67,8 @@
       "id": "bearer",
       "handler": "api.e662540f29a7a1f14faa0030",
       "requiredScopes": [
-        "api.register"
+        "api.register",
+        "plugin.data.read"
       ],
       "path": "/bearer",
       "methods": [

@@ -2,7 +2,7 @@
   "contractVersion": 2,
   "id": "hello-go",
   "name": "Hello Go",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Example Author",
   "description": "实例隔离与持久计数示例",
   "level": 1,
@@ -10,7 +10,8 @@
   "history": {
     "1.0.0": "Initial example",
     "1.1.0": "Typed bindings, authenticated APIs, durable service and transfer event example",
-    "1.1.1": "Demonstrate POST admin API for CSRF contract"
+    "1.1.1": "Demonstrate POST admin API for CSRF contract",
+    "1.1.2": "Declare minimal per-route Host execution scopes"
   },
   "permissions": [
     {
@@ -61,7 +62,10 @@
           "POST"
         ],
         "auth": "admin",
-        "executionScopes": [],
+        "executionScopes": [
+          "plugin.data.read",
+          "plugin.data.write"
+        ],
         "summary": "Hello counter"
       },
       {
@@ -71,7 +75,9 @@
           "GET"
         ],
         "auth": "apikey",
-        "executionScopes": [],
+        "executionScopes": [
+          "plugin.data.read"
+        ],
         "summary": "Hello counter"
       },
       {
@@ -81,7 +87,9 @@
           "GET"
         ],
         "auth": "bearer",
-        "executionScopes": [],
+        "executionScopes": [
+          "plugin.data.read"
+        ],
         "summary": "Hello counter"
       },
       {
@@ -91,7 +99,9 @@
           "GET"
         ],
         "auth": "public",
-        "executionScopes": [],
+        "executionScopes": [
+          "plugin.data.read"
+        ],
         "summary": "Hello counter"
       }
     ],

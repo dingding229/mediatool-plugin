@@ -23,11 +23,13 @@ func (p *Plugin) increment(ctx context.Context, key string) error {
 func (p *Plugin) GetAPI(context.Context) ([]sdk.API, error) {
 	routes := []sdk.API{}
 	for _, auth := range []string{"admin", "apikey", "bearer", "public"} {
+		required := []string{"plugin.data.read"}
 		methods := []string{"GET"}
 		if auth == "admin" {
 			methods = append(methods, "POST")
+			required = append(required, "plugin.data.write")
 		}
-		routes = append(routes, sdk.API{Path: "/" + auth, Methods: methods, Auth: auth, Summary: "Hello counter", Description: "Only this instance's synthetic counter", RequiredScopes: []string{}, Handler: func(ctx context.Context, q sdk.APIRequest) (sdk.APIResponse, error) {
+		routes = append(routes, sdk.API{Path: "/" + auth, Methods: methods, Auth: auth, Summary: "Hello counter", Description: "Only this instance's synthetic counter", RequiredScopes: required, Handler: func(ctx context.Context, q sdk.APIRequest) (sdk.APIResponse, error) {
 			if q.Method == "POST" {
 				if e := p.increment(ctx, "api_writes"); e != nil {
 					return sdk.APIResponse{}, e
