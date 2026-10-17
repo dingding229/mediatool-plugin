@@ -1,0 +1,452 @@
+[
+  {
+    "kind": "event",
+    "name": "PluginReload",
+    "wire": "plugin.reload",
+    "type": "plugin.reloaded",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/runtime.Supervisor.Reload`，新generation成功发布后",
+    "phase": "F2；崩溃本身不是成功reload"
+  },
+  {
+    "kind": "event",
+    "name": "PluginAction",
+    "wire": "plugin.action",
+    "type": "plugin.action.invoked",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/extensions.ActionDispatcher.Invoke`",
+    "phase": "F2单动作/F4-0工作流；目标实例限定"
+  },
+  {
+    "kind": "event",
+    "name": "PluginTriggered",
+    "wire": "plugin.triggered",
+    "type": "plugin.custom.triggered",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/events.PublishCustom`",
+    "phase": "F2；只插件自定义命名空间"
+  },
+  {
+    "kind": "event",
+    "name": "CommandExcute",
+    "wire": "command.excute",
+    "type": "command.executed",
+    "state": "deferred",
+    "producer": "拟新增 `messaging/commands.go:CommandIngress.Dispatch`",
+    "phase": "F2；保留上游拼写对照，host事件采用规范命名"
+  },
+  {
+    "kind": "event",
+    "name": "SiteDeleted",
+    "wire": "site.deleted",
+    "type": "site.account.deleted",
+    "state": "deferred",
+    "producer": "`integrations/repository.go:Repository.Delete`，kind=ptsite提交后",
+    "phase": "F4-A；模板定义删除不冒充账号删除"
+  },
+  {
+    "kind": "event",
+    "name": "SiteUpdated",
+    "wire": "site.updated",
+    "type": "site.account.updated",
+    "state": "deferred",
+    "producer": "`integrations/repository.go:Repository.Save`，ptsite安全字段diff",
+    "phase": "F4-A；无Cookie/passkey"
+  },
+  {
+    "kind": "event",
+    "name": "SiteRefreshed",
+    "wire": "site.refreshed",
+    "type": "site.metrics.refreshed",
+    "state": "deferred",
+    "producer": "`sitemetrics/collector.go:Engine.Collect` + `storage.go:Engine.Save`",
+    "phase": "F4-A；指标成功持久后"
+  },
+  {
+    "kind": "event",
+    "name": "TransferComplete",
+    "wire": "transfer.complete",
+    "type": "library.organized",
+    "state": "deferred",
+    "producer": "`acquisition/transfers.go:Engine.ImportFile`，`library/journal.go:Engine.FinalizeRecovered`",
+    "phase": "F2；现有media.imported桥；只STRM/托管输出发布，不宣称复制整个影片"
+  },
+  {
+    "kind": "event",
+    "name": "TransferFailed",
+    "wire": "transfer.failed",
+    "type": "library.organize.failed",
+    "state": "deferred",
+    "producer": "`acquisition/transfers.go:Engine.Transfer`、`library/journal.go:Journal.Apply`终态",
+    "phase": "F4-B；不把可恢复中间态误当永久失败"
+  },
+  {
+    "kind": "event",
+    "name": "SubtitleTransferComplete",
+    "wire": "transfer.subtitle.complete",
+    "type": "library.subtitles.copied",
+    "state": "deferred",
+    "producer": "`library/artifacts.go:CopySubtitlesOutputsVerified`成功结果由上层commit发出",
+    "phase": "F4-B；仅实际发生字幕复制时，不宣称cloud_files已索引外挂字幕"
+  },
+  {
+    "kind": "event",
+    "name": "SubtitleTransferFailed",
+    "wire": "transfer.subtitle.failed",
+    "type": "library.subtitles.failed",
+    "state": "deferred",
+    "producer": "`library/artifacts.go:CopySubtitlesOutputsVerified`错误经上层操作终态提交",
+    "phase": "F4-B；不在纯helper内发RPC"
+  },
+  {
+    "kind": "event",
+    "name": "AudioTransferComplete",
+    "wire": "transfer.audio.complete",
+    "type": "transfer.audio.complete",
+    "state": "not_applicable",
+    "producer": "`metadata/episodes.go:IsVideo`：现有整理对象是视频",
+    "phase": "N/A；没有音频整理宿主；插件自有音频任务只能发自定义事件"
+  },
+  {
+    "kind": "event",
+    "name": "AudioTransferFailed",
+    "wire": "transfer.audio.failed",
+    "type": "transfer.audio.failed",
+    "state": "not_applicable",
+    "producer": "同上，无对应音频任务",
+    "phase": "N/A；不得由视频失败伪造"
+  },
+  {
+    "kind": "event",
+    "name": "DownloadAdded",
+    "wire": "download.added",
+    "type": "download.added",
+    "state": "deferred",
+    "producer": "`acquisition/downloads.go:Engine.transition` 的download.started确认点",
+    "phase": "F2；qb添加成功，不是仅创建pending记录"
+  },
+  {
+    "kind": "event",
+    "name": "HistoryDeleted",
+    "wire": "history.deleted",
+    "type": "library.history.hidden",
+    "state": "deferred",
+    "producer": "`library/history_manage.go:Engine.HideHistory`",
+    "phase": "F4-B；本程序隐藏历史，不宣称物理删除媒体"
+  },
+  {
+    "kind": "event",
+    "name": "DownloadFileDeleted",
+    "wire": "downloadfile.deleted",
+    "type": "download.files.deleted",
+    "state": "deferred",
+    "producer": "`acquisition/cleanup.go:Engine.Cleanup`经读回确认",
+    "phase": "F4-B；deleteFiles=false不发此事件"
+  },
+  {
+    "kind": "event",
+    "name": "DownloadDeleted",
+    "wire": "download.deleted",
+    "type": "download.task.deleted",
+    "state": "deferred",
+    "producer": "`acquisition/control.go:Engine.Control`、`cleanup.go:Engine.Cleanup`成功确认",
+    "phase": "F4-B；已请求/结果未知不是已删除"
+  },
+  {
+    "kind": "event",
+    "name": "UserMessage",
+    "wire": "user.message",
+    "type": "messaging.inbound",
+    "state": "deferred",
+    "producer": "拟新增 `messaging/commands.go:CommandIngress.Receive`",
+    "phase": "F2仅注册/已有入站接线；若新增bot轮询则F4，鉴权后默认只选定渠道/发送者"
+  },
+  {
+    "kind": "event",
+    "name": "WebhookMessage",
+    "wire": "webhook.message",
+    "type": "plugin.webhook.received",
+    "state": "deferred",
+    "producer": "拟新增 `httpapi/plugin_v2_routes.go:pluginRoute`，已注册webhook route通过鉴权后",
+    "phase": "F2；不是任意共享无认证入口"
+  },
+  {
+    "kind": "event",
+    "name": "NoticeMessage",
+    "wire": "notice.message",
+    "type": "notification.queued",
+    "state": "deferred",
+    "producer": "`messaging/dispatcher.go:Dispatcher.Prepare`；拟新增NotificationService.Send的提交点",
+    "phase": "F4-D；queued不等于已送达，可另有delivered事件"
+  },
+  {
+    "kind": "event",
+    "name": "SubscribeAdded",
+    "wire": "subscribe.added",
+    "type": "subscription.created",
+    "state": "deferred",
+    "producer": "`subscriptions/repository.go:Engine.Save`，新建成功提交",
+    "phase": "F4-A"
+  },
+  {
+    "kind": "event",
+    "name": "SubscribeModified",
+    "wire": "subscribe.modified",
+    "type": "subscription.updated",
+    "state": "deferred",
+    "producer": "`subscriptions/repository.go:Engine.Save`，已有revision变化提交",
+    "phase": "F4-A"
+  },
+  {
+    "kind": "event",
+    "name": "SubscribeDeleted",
+    "wire": "subscribe.deleted",
+    "type": "subscription.deleted",
+    "state": "deferred",
+    "producer": "`subscriptions/repository.go:Engine.Delete`提交",
+    "phase": "F4-A"
+  },
+  {
+    "kind": "event",
+    "name": "SubscribeComplete",
+    "wire": "subscribe.complete",
+    "type": "subscription.coverage.completed",
+    "state": "deferred",
+    "producer": "拟新增 `subscriptions/completion.go:CoverageObserver.Observe`；读TMDB清单+可暴露资产",
+    "phase": "F4-C；不是completeCollection，unknown不发完成，观测存插件专属表"
+  },
+  {
+    "kind": "event",
+    "name": "SystemError",
+    "wire": "system.error",
+    "type": "system.operation.failed",
+    "state": "deferred",
+    "producer": "`jobs/worker.go:Worker.Run`终态错误与拟新增安全错误总线",
+    "phase": "F4-D；聚合/节流，排除plugin日志递归，原始异常不扩散"
+  },
+  {
+    "kind": "event",
+    "name": "MetadataScrape",
+    "wire": "metadata.scrape",
+    "type": "metadata.scraped",
+    "state": "deferred",
+    "producer": "`library/scraping.go:Engine.EnrichScraping` + `PersistScrapeReport`提交；`nativetmdb/engine.go:Engine.Process`成功",
+    "phase": "F4-C；不在浏览热路径现场刮削"
+  },
+  {
+    "kind": "event",
+    "name": "ModuleReload",
+    "wire": "module.reload",
+    "type": "module.registry.changed",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/extensions.ModuleRegistry.Publish`",
+    "phase": "F2；generation原子更新"
+  },
+  {
+    "kind": "event",
+    "name": "ConfigChanged",
+    "wire": "config.updated",
+    "type": "settings.changed",
+    "state": "deferred",
+    "producer": "`settings/settings.go:Repository.Save`、`settings/native_management.go:SaveNativeManagement`；插件config单独事件",
+    "phase": "F4-D；只非秘密diff+revision"
+  },
+  {
+    "kind": "event",
+    "name": "MessageAction",
+    "wire": "message.action",
+    "type": "messaging.action.received",
+    "state": "deferred",
+    "producer": "拟新增 `messaging/commands.go:CommandIngress.HandleAction`",
+    "phase": "F2仅已有入站；新增bot轮询F4，回调签名/过期/一次性nonce"
+  },
+  {
+    "kind": "event",
+    "name": "WorkflowExecute",
+    "wire": "workflow.execute",
+    "type": "workflow.started",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/workflows.go:WorkflowRunner.Start`",
+    "phase": "F4-0；当前无工作流执行宿主"
+  },
+  {
+    "kind": "event",
+    "name": "AgentTokensUsage",
+    "wire": "agent.tokens.usage",
+    "type": "agent.tokens.usage",
+    "state": "not_applicable",
+    "producer": "当前无LLM调用/计费宿主",
+    "phase": "N/A；人工工具调用不能产生虚构token统计"
+  },
+  {
+    "kind": "chain",
+    "name": "PluginDataReset",
+    "wire": "plugin.data.reset",
+    "type": "plugin.data.reset",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/repository.DataService.Reset`清理前",
+    "phase": "F2；管理员强制清理仍需明确确认，不影响其他实例"
+  },
+  {
+    "kind": "chain",
+    "name": "NameRecognize",
+    "wire": "name.recognize",
+    "type": "name.recognize",
+    "state": "deferred",
+    "producer": "`httpapi/workbench.go:parseReleaseName`、`library/recognition.go:Engine.Recognize`事务前",
+    "phase": "F2；内置Parse回落、ID/路径不可改"
+  },
+  {
+    "kind": "chain",
+    "name": "AuthVerification",
+    "wire": "auth.verification",
+    "type": "auth.verification",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/authbroker.go:Broker.Verify`",
+    "phase": "F4-0；当前无provider broker；只能已授权provider/绑定subject"
+  },
+  {
+    "kind": "chain",
+    "name": "AuthIntercept",
+    "wire": "auth.intercept",
+    "type": "auth.intercept",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/authbroker.go:Broker.PostVerifyPolicy`",
+    "phase": "F4-0；不能将401变成成功，媒体令牌与CSRF不受此hook控制"
+  },
+  {
+    "kind": "chain",
+    "name": "CommandRegister",
+    "wire": "command.register",
+    "type": "command.register",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/extensions.CommandRegistry.Build`",
+    "phase": "F2；reserved命令不可覆盖"
+  },
+  {
+    "kind": "chain",
+    "name": "TransferRename",
+    "wire": "transfer.rename",
+    "type": "transfer.rename",
+    "state": "deferred",
+    "producer": "`library/confirm.go:Engine.Confirm`、`acquisition/transfers.go:Engine.ImportFile`的prepare阶段",
+    "phase": "F4-B；逐段root/冲突/owner验证，不能在事务中等RPC"
+  },
+  {
+    "kind": "chain",
+    "name": "TransferRenameBuild",
+    "wire": "transfer.rename.build",
+    "type": "transfer.rename.build",
+    "state": "deferred",
+    "producer": "`library/template_outputs.go:ApplyOutputTemplates`上层的拟新增prepare service",
+    "phase": "F4-B；现helper接tx，不在其内部调用worker"
+  },
+  {
+    "kind": "chain",
+    "name": "TransferIntercept",
+    "wire": "transfer.intercept",
+    "type": "transfer.intercept",
+    "state": "deferred",
+    "producer": "`library/confirm.go:Engine.Confirm`、`filemanager/batch.go:Engine.ApproveBatch`进入写事务前",
+    "phase": "F4-B；不能放行核心不允许的操作"
+  },
+  {
+    "kind": "chain",
+    "name": "TransferOverwriteCheck",
+    "wire": "transfer.overwrite.check",
+    "type": "transfer.overwrite.check",
+    "state": "deferred",
+    "producer": "`library/output_layout_guard.go:CheckOutputLayout`上层prepare",
+    "phase": "F4-B；宿主最后保护检查永远保留"
+  },
+  {
+    "kind": "chain",
+    "name": "ResourceSelection",
+    "wire": "resource.selection",
+    "type": "resource.selection",
+    "state": "deferred",
+    "producer": "`subscriptions/evaluate.go:Engine.Run`、`search/filters.go:Engine.GetFiltered`上层",
+    "phase": "F4-A；只可选原始合法候选，不能构造未知下载源"
+  },
+  {
+    "kind": "chain",
+    "name": "ResourceDownload",
+    "wire": "resource.download",
+    "type": "resource.download",
+    "state": "deferred",
+    "producer": "`acquisition/downloads.go:Engine.StartExpectedFromRun`、`manualdownloads/tasks.go:Engine.Create`准备阶段",
+    "phase": "F4-A；HR/来源快照/所有权仍由内置服务强制"
+  },
+  {
+    "kind": "chain",
+    "name": "DiscoverSource",
+    "wire": "discover.source",
+    "type": "discover.source",
+    "state": "deferred",
+    "producer": "`catalog/home.go:Engine.Home`上层拟新增SourceRegistry、`metadata`搜索门面",
+    "phase": "F4-C；后台缓存/分页，不在客户端首页同步等待所有worker"
+  },
+  {
+    "kind": "chain",
+    "name": "MediaRecognizeConvert",
+    "wire": "media.recognize.convert",
+    "type": "media.recognize.convert",
+    "state": "deferred",
+    "producer": "`library/recognition.go:Engine.Recognize`、`confirm.go:Engine.Suggest`",
+    "phase": "F4-C；TMDB类型/id组合校验"
+  },
+  {
+    "kind": "chain",
+    "name": "RecommendSource",
+    "wire": "recommend.source",
+    "type": "recommend.source",
+    "state": "deferred",
+    "producer": "`catalog/home.go:Engine.Home`上层SourceRegistry",
+    "phase": "F4-C；当前只有媒体库首页，需新adapter，不假装已有推荐引擎"
+  },
+  {
+    "kind": "chain",
+    "name": "WorkflowExecution",
+    "wire": "workflow.execution",
+    "type": "workflow.execution",
+    "state": "deferred",
+    "producer": "拟新增 `plugins/workflows.go:WorkflowRunner.BeforeStep`",
+    "phase": "F4-0；在run事务外等待，之后fence核对"
+  },
+  {
+    "kind": "chain",
+    "name": "StorageOperSelection",
+    "wire": "storage.operation",
+    "type": "storage.operation",
+    "state": "deferred",
+    "producer": "`filemanager/engine.go:Engine.Preview`、`library/scan.go:Engine.Start`上层prepare",
+    "phase": "F4-B；不能返回凭据或任意根路径"
+  },
+  {
+    "kind": "chain",
+    "name": "AgentLLMProvider",
+    "wire": "agent.llm.provider",
+    "type": "agent.llm.provider",
+    "state": "not_applicable",
+    "producer": "本程序无Agent/LLM provider宿主",
+    "phase": "N/A；F5只tool registry，不顺带承诺LLM运行时"
+  },
+  {
+    "kind": "chain",
+    "name": "SubscribeEpisodesRefresh",
+    "wire": "subscribe.episodes.refresh",
+    "type": "subscribe.episodes.refresh",
+    "state": "deferred",
+    "producer": "拟新增 `subscriptions/completion.go:CoverageObserver.ExpectedEpisodes`，复用TMDB Episodes",
+    "phase": "F4-C；不能标记不存在文件为已拥有"
+  },
+  {
+    "kind": "chain",
+    "name": "SubscribeCompletionCheck",
+    "wire": "subscribe.completion.check",
+    "type": "subscribe.completion.check",
+    "state": "deferred",
+    "producer": "拟新增 `subscriptions/completion.go:CoverageObserver.Check`",
+    "phase": "F4-C；必须再有宿主文件证据，不能凭插件布尔值禁用订阅"
+  }
+]

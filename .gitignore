@@ -1,0 +1,10 @@
+.coverage*
+*.test
+*.out
+.DS_Store
+.env
+.env.*
+*.key
+*.pem
+data/
+.cache/
