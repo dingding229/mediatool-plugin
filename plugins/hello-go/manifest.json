@@ -2,14 +2,15 @@
   "contractVersion": 2,
   "id": "hello-go",
   "name": "Hello Go",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Example Author",
   "description": "实例隔离与持久计数示例",
   "level": 1,
   "icon": "icon.svg",
   "history": {
     "1.0.0": "Initial example",
-    "1.1.0": "Typed bindings, authenticated APIs, durable service and transfer event example"
+    "1.1.0": "Typed bindings, authenticated APIs, durable service and transfer event example",
+    "1.1.1": "Demonstrate POST admin API for CSRF contract"
   },
   "permissions": [
     {
@@ -56,7 +57,8 @@
         "id": "admin",
         "path": "/admin",
         "methods": [
-          "GET"
+          "GET",
+          "POST"
         ],
         "auth": "admin",
         "executionScopes": [],
