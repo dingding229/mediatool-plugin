@@ -63,10 +63,11 @@
       2
     ],
     "owned": [
-      1
+      1,
+      2
     ],
-    "complete": false,
-    "state": "partial",
+    "complete": true,
+    "state": "complete",
     "evidence": "exposable_assets",
     "observedAt": "2026-10-18T00:00:00Z"
   }

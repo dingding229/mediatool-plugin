@@ -33,5 +33,8 @@ func TestDiscoveryGoldenAndNarrowing(t *testing.T) {
 			t.Fatal("unsafe source")
 		}
 	}
-	plugintest.Golden(t, "testdata/discovery.json", map[string]any{"metadata.scraped": contracts.MetadataScraped{ObjectID: aid, Kind: "asset", MediaIdentity: c, Revision: "v1"}, "subscription.coverage.completed": contracts.CoverageObservation{CompletionCheck: check, State: "partial", Evidence: "exposable_assets", ObservedAt: "2026-10-18T00:00:00Z"}, "media.recognize.convert": q, "subscribe.episodes.refresh": e, "subscribe.completion.check": check, "discover.source": contracts.SourceResult{Items: []contracts.SourceCandidate{{MediaIdentity: c, Title: "Demo", Year: 2026}}}})
+	completed := check
+	completed.Owned = []int{1, 2}
+	completed.Complete = true
+	plugintest.Golden(t, "testdata/discovery.json", map[string]any{"metadata.scraped": contracts.MetadataScraped{ObjectID: aid, Kind: "asset", MediaIdentity: c, Revision: "v1"}, "subscription.coverage.completed": contracts.CoverageObservation{CompletionCheck: completed, State: "complete", Evidence: "exposable_assets", ObservedAt: "2026-10-18T00:00:00Z"}, "media.recognize.convert": q, "subscribe.episodes.refresh": e, "subscribe.completion.check": check, "discover.source": contracts.SourceResult{Items: []contracts.SourceCandidate{{MediaIdentity: c, Title: "Demo", Year: 2026}}}})
 }
