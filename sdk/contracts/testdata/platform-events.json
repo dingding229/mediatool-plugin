@@ -8,6 +8,7 @@
     "state": "not_started"
   },
   "effect.request": {
+    "phase": "offer",
     "requestId": "00000000-0000-0000-0000-000000000001",
     "kind": "notification",
     "objectId": "00000000-0000-0000-0000-000000000002"

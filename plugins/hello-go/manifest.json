@@ -2,7 +2,7 @@
   "contractVersion": 2,
   "id": "hello-go",
   "name": "Hello Go",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "author": "Example Author",
   "description": "实例隔离与持久计数示例",
   "level": 1,
@@ -17,7 +17,8 @@
     "1.4.0": "Typed acquisition facts and no-op resource policy chains (F4-A)",
     "1.5.0": "Typed organizing facts and no-op safe transfer/storage policies (F4-B)",
     "1.6.0": "Typed metadata/coverage and cached source no-op policies (F4-C)",
-    "1.7.0": "F4-D typed system/notification/settings/Telegram facts; pre-effect module declines and /hello ingress example"
+    "1.7.0": "F4-D typed system/notification/settings/Telegram facts; pre-effect module declines and /hello ingress example",
+    "1.7.1": "Two-phase pure offer/execute module protocol; only pre-execute declines can fall back"
   },
   "permissions": [
     {

@@ -7,16 +7,24 @@ import (
 )
 
 func TestPlatformEventsAndEffectGolden(t *testing.T) {
-	q := contracts.EffectRequest{RequestID: aid, ObjectID: bid, Kind: "notification"}
-	for _, state := range []string{"not_started", "sent", "unknown"} {
+	q := contracts.EffectRequest{Phase: "offer", RequestID: aid, ObjectID: bid, Kind: "notification"}
+	for _, state := range []string{"not_started", "ready"} {
 		if contracts.ValidateEffect(q, contracts.EffectReceipt{State: state}) != nil {
 			t.Fatal(state)
 		}
 	}
-	for _, state := range []string{"requested", "delivered_maybe", "success"} {
+	for _, state := range []string{"sent", "unknown", "requested", "delivered_maybe", "success"} {
 		if contracts.ValidateEffect(q, contracts.EffectReceipt{State: state}) == nil {
 			t.Fatal("ambiguous effect", state)
 		}
+	}
+	execute := q
+	execute.Phase = "execute"
+	if contracts.ValidateEffect(execute, contracts.EffectReceipt{State: "not_started"}) == nil {
+		t.Fatal("post-dispatch decline must never permit another sender")
+	}
+	if contracts.ValidateEffect(execute, contracts.EffectReceipt{State: "sent"}) != nil {
+		t.Fatal("send receipt")
 	}
 	if !contracts.KnownEventType(contracts.EventPluginConfigChanged) || !contracts.KnownScope("events.subscribe.plugin.config.changed") {
 		t.Fatal("missing separate config contract")

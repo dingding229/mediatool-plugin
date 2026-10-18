@@ -23,7 +23,11 @@ func (p *Plugin) platformModules() []sdk.Module {
 			if contracts.Decode(b, &q) != nil || !contracts.ValidEffectRequest(q) {
 				return nil, contracts.NewError(contracts.InvalidParams)
 			}
-			return json.Marshal(contracts.EffectReceipt{State: "not_started"})
+			state := "unknown"
+			if q.Phase == "offer" {
+				state = "not_started"
+			}
+			return json.Marshal(contracts.EffectReceipt{State: state})
 		}})
 	}
 	return out

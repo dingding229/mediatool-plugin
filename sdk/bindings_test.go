@@ -68,7 +68,7 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 				if v.ID == "mediaserver.refresh" {
 					kind = "asset"
 				}
-				args = contracts.EffectRequest{RequestID: "00000000-0000-0000-0000-000000000001", ObjectID: "00000000-0000-0000-0000-000000000002", Kind: kind}
+				args = contracts.EffectRequest{Phase: "offer", RequestID: "00000000-0000-0000-0000-000000000001", ObjectID: "00000000-0000-0000-0000-000000000002", Kind: kind}
 			}
 		case "event":
 			args = events.Envelope{ID: "stable-event", Type: contracts.EventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"operationId":"synthetic"}`)}
