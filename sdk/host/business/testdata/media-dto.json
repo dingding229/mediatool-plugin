@@ -1,0 +1,26 @@
+{
+  "file": {
+    "id": "opaque-file",
+    "name": "Owned.mkv",
+    "path": "Movies/Owned.mkv",
+    "size": 42,
+    "directory": false,
+    "unsupported": false
+  },
+  "identity": {
+    "id": "opaque-asset",
+    "planDigest": "digest",
+    "revision": 3,
+    "operations": [
+      {
+        "path": "Movies/Owned.strm",
+        "kind": "strm",
+        "operation": "create"
+      }
+    ]
+  },
+  "approval": {
+    "id": "opaque-plan",
+    "digest": "digest"
+  }
+}

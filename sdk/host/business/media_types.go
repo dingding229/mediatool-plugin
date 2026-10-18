@@ -75,10 +75,10 @@ type ConfirmIdentity struct {
 	PlanDigest     string `json:"planDigest"`
 }
 type IdentityPlan struct {
-	ID         string `json:"id"`
-	PlanDigest string `json:"planDigest"`
-	Revision   int64  `json:"revision"`
-	Conflicts  int    `json:"conflicts"`
+	ID         string              `json:"id"`
+	PlanDigest string              `json:"planDigest"`
+	Revision   int64               `json:"revision"`
+	Operations []IdentityOperation `json:"operations"`
 }
 type HistorySelection struct {
 	ID        string    `json:"id"`
@@ -265,4 +265,10 @@ type Category struct {
 	Name      string `json:"name"`
 	Directory string `json:"directory"`
 	Reason    string `json:"reason"`
+}
+
+type IdentityOperation struct {
+	Path      string `json:"path"`
+	Kind      string `json:"kind"`
+	Operation string `json:"operation"`
 }

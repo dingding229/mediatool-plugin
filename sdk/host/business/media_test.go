@@ -1122,3 +1122,11 @@ func TestTypedMediaClients(t *testing.T) {
 		}
 	})
 }
+
+func TestMediaDTOGolden(t *testing.T) {
+	plugintest.Golden(t, "testdata/media-dto.json", struct {
+		File     b.MediaFile    `json:"file"`
+		Identity b.IdentityPlan `json:"identity"`
+		Approval b.Approval     `json:"approval"`
+	}{File: b.MediaFile{ID: "opaque-file", Name: "Owned.mkv", Path: "Movies/Owned.mkv", Size: 42}, Identity: b.IdentityPlan{ID: "opaque-asset", Revision: 3, PlanDigest: "digest", Operations: []b.IdentityOperation{{Path: "Movies/Owned.strm", Kind: "strm", Operation: "create"}}}, Approval: b.Approval{ID: "opaque-plan", Digest: "digest"}})
+}
