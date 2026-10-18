@@ -1,0 +1,30 @@
+{
+  "auth": {
+    "providerId": "fake",
+    "challenge": "bound"
+  },
+  "beforeStep": {
+    "workflowId": "demo",
+    "stepId": "one",
+    "allow": true
+  },
+  "started": {
+    "runId": "fact-v1",
+    "workflowId": "demo",
+    "revision": 1
+  },
+  "workflow": {
+    "id": "demo",
+    "steps": [
+      {
+        "id": "one",
+        "instanceId": "00000000-0000-0000-0000-000000000001",
+        "action": "hello",
+        "dependsOn": [],
+        "input": {
+          "data": {}
+        }
+      }
+    ]
+  }
+}

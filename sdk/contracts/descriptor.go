@@ -93,6 +93,9 @@ func ValidateSnapshot(m Manifest, granted []string, s Snapshot) error {
 		case "chain":
 			required = "events.chain." + d.ID
 			allowed = m.Extensions.Chains
+			if d.ID == "auth.verification" && (!slices.Contains(m.Extensions.AuthProviders, d.ProviderID) || !slices.Contains(d.RequiredScopes, "auth.provider") || d.Issuer == "" || len(d.Issuer) > 200 || d.Audience == "" || len(d.Audience) > 200 || d.Origin == "" || len(d.Origin) > 200) {
+				return NewError(InvalidExtensionResult)
+			}
 		case "ui":
 			required = "ui.json"
 			if m.Extensions.Forms {

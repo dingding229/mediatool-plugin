@@ -1,5 +1,23 @@
 [
   {
+    "name": "workflows.run",
+    "scope": "workflows.run",
+    "level": "D",
+    "supported": true
+  },
+  {
+    "name": "workflows.status",
+    "scope": "workflows.run",
+    "level": "D",
+    "supported": true
+  },
+  {
+    "name": "workflows.cancel",
+    "scope": "workflows.run",
+    "level": "D",
+    "supported": true
+  },
+  {
     "name": "downloads.list",
     "scope": "downloads.read",
     "level": "R",

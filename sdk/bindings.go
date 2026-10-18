@@ -45,6 +45,13 @@ type Module struct {
 	RequiredScopes []string
 	Handler        func(context.Context, json.RawMessage) (json.RawMessage, error)
 }
+type AuthProvider struct {
+	ID, Name, Issuer, Audience, Origin string
+	Handler                            func(context.Context, contracts.AuthRequest) (contracts.AuthAssertion, error)
+}
+type AuthProviderRegistry interface {
+	GetAuthProviders(context.Context) ([]AuthProvider, error)
+}
 type bound struct {
 	descriptor contracts.Descriptor
 	call       func(context.Context, json.RawMessage) (any, error)
@@ -154,6 +161,31 @@ func (r *Runtime) bind(ctx context.Context) error {
 				}
 				out, next, e := v.Handler(ctx, q)
 				return contracts.ActionResult{Context: out, Continue: next}, e
+			}); e != nil {
+				return e
+			}
+		}
+	}
+	if p, ok := r.plugin.(AuthProviderRegistry); ok {
+		list, e := p.GetAuthProviders(ctx)
+		if e != nil || len(list) != 1 {
+			return contracts.NewError(contracts.InvalidExtensionResult)
+		}
+		for _, v := range list {
+			if v.Handler == nil || !slices.Contains(r.manifest.Extensions.AuthProviders, v.ID) {
+				return contracts.NewError(contracts.InvalidExtensionResult)
+			}
+			d := contracts.Descriptor{Kind: "chain", ID: "auth.verification", Name: v.Name, ProviderID: v.ID, Issuer: v.Issuer, Audience: v.Audience, Origin: v.Origin, RequiredScopes: []string{"auth.provider", "events.chain.auth.verification"}}
+			if e = add(d, func(ctx context.Context, b json.RawMessage) (any, error) {
+				var envelope events.ChainEnvelope
+				if contracts.Decode(b, &envelope) != nil || envelope.Type != contracts.ChainAuthVerification {
+					return nil, contracts.NewError(contracts.InvalidParams)
+				}
+				var q contracts.AuthRequest
+				if contracts.Decode(envelope.Payload, &q) != nil || q.ProviderID != v.ID || len(q.Challenge) > 200 {
+					return nil, contracts.NewError(contracts.InvalidParams)
+				}
+				return v.Handler(ctx, q)
 			}); e != nil {
 				return e
 			}

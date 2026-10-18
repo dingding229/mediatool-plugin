@@ -119,6 +119,24 @@
       "priority": 20
     },
     {
+      "kind": "chain",
+      "id": "workflow.execution",
+      "handler": "chain.2a5e737dd1e5062efcc0469a",
+      "requiredScopes": [
+        "events.chain.workflow.execution"
+      ],
+      "priority": 10
+    },
+    {
+      "kind": "chain",
+      "id": "auth.intercept",
+      "handler": "chain.8e6cf4a960f641e68867c19b",
+      "requiredScopes": [
+        "events.chain.auth.intercept"
+      ],
+      "priority": 10
+    },
+    {
       "kind": "module",
       "id": "mediaserver.refresh",
       "handler": "module.0c0dadf5c461bcf29e4fba9d",
@@ -144,6 +162,18 @@
         "module.notifications.channel"
       ],
       "priority": 10
+    },
+    {
+      "kind": "action",
+      "id": "f4-check",
+      "handler": "action.9d60e0b222804b9b091ecc7a",
+      "requiredScopes": [
+        "actions.register",
+        "plugin.data.read",
+        "plugin.data.write"
+      ],
+      "name": "F4 框架验收",
+      "kwargs": {}
     },
     {
       "kind": "action",
@@ -243,6 +273,20 @@
       "auth": "bearer",
       "summary": "Hello counter",
       "description": "Only this instance's synthetic counter"
+    },
+    {
+      "providerId": "fake",
+      "issuer": "hello-test",
+      "audience": "mediatool-test",
+      "origin": "https://hello.invalid",
+      "kind": "chain",
+      "id": "auth.verification",
+      "handler": "chain.c15413c8d7ae174d97576df7",
+      "requiredScopes": [
+        "auth.provider",
+        "events.chain.auth.verification"
+      ],
+      "name": "验收假身份（非登录入口）"
     },
     {
       "kind": "command",
@@ -390,6 +434,14 @@
       "handler": "event.bb9c12c01bd4d7c6eafb264e",
       "requiredScopes": [
         "events.subscribe.library.subtitles.copied"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "workflow.started",
+      "handler": "event.c9a2b19b981abb117906ef3e",
+      "requiredScopes": [
+        "events.subscribe.workflow.started"
       ]
     },
     {

@@ -10,6 +10,9 @@ type Method struct {
 
 func Methods() []Method {
 	return []Method{
+		{"workflows.run", "workflows.run", "D", true},
+		{"workflows.status", "workflows.run", "D", true},
+		{"workflows.cancel", "workflows.run", "D", true},
 		{"downloads.list", "downloads.read", "R", true},
 		{"downloads.get", "downloads.read", "R", true},
 		{"downloads.progress", "downloads.read", "R", true},

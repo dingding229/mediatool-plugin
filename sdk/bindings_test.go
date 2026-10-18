@@ -61,6 +61,12 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 			if v.ID == "discover.source" || v.ID == "recommend.source" {
 				args = events.ChainEnvelope{Type: contracts.ChainEventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"page":1,"size":200}`)}
 			}
+			if v.ID == "workflow.execution" || v.ID == "auth.intercept" {
+				args = events.ChainEnvelope{Type: contracts.ChainEventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"allow":true}`)}
+			}
+			if v.ID == "auth.verification" {
+				args = events.ChainEnvelope{Type: contracts.ChainAuthVerification, SchemaVersion: 1, Payload: json.RawMessage(`{"providerId":"fake","challenge":"bound"}`)}
+			}
 		case "module":
 			args = json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)
 			if v.ID == "notifications.channel" || v.ID == "mediaserver.refresh" {

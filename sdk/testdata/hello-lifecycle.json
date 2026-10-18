@@ -20,6 +20,7 @@
       "plugin.get_dashboard",
       "plugin.get_dashboard_meta",
       "plugin.get_module",
+      "plugin.get_auth_providers",
       "plugin.get_actions",
       "plugin.stop_service",
       "plugin.close"

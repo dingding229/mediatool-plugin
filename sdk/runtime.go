@@ -54,7 +54,7 @@ func NewRuntime(peer *transport.Peer, m contracts.Manifest, f Factory, id Identi
 	return r, nil
 }
 func (r *Runtime) methods() []string {
-	return []string{"plugin.describe", "plugin.invoke", "plugin.initialize", "plugin.init", "plugin.get_state", "plugin.get_name", "plugin.get_form", "plugin.get_page", "plugin.get_render_mode", "plugin.get_event_handlers", "plugin.get_api", "plugin.get_service", "plugin.get_command", "plugin.get_dashboard", "plugin.get_dashboard_meta", "plugin.get_module", "plugin.get_actions", "plugin.stop_service", "plugin.close"}
+	return []string{"plugin.describe", "plugin.invoke", "plugin.initialize", "plugin.init", "plugin.get_state", "plugin.get_name", "plugin.get_form", "plugin.get_page", "plugin.get_render_mode", "plugin.get_event_handlers", "plugin.get_api", "plugin.get_service", "plugin.get_command", "plugin.get_dashboard", "plugin.get_dashboard_meta", "plugin.get_module", "plugin.get_auth_providers", "plugin.get_actions", "plugin.stop_service", "plugin.close"}
 }
 func (r *Runtime) On(t events.EventType, h events.Handler) error { return r.events.On(t, h) }
 func (r *Runtime) OnChain(t events.ChainEventType, h events.ChainHandler) error {
@@ -151,7 +151,7 @@ func (r *Runtime) handle(ctx context.Context, method string, b json.RawMessage) 
 	if method == "plugin.describe" {
 		return r.descriptors(""), nil
 	}
-	for methodName, kind := range map[string]string{"plugin.get_api": "api", "plugin.get_service": "service", "plugin.get_command": "command", "plugin.get_module": "module", "plugin.get_actions": "action"} {
+	for methodName, kind := range map[string]string{"plugin.get_api": "api", "plugin.get_service": "service", "plugin.get_command": "command", "plugin.get_module": "module", "plugin.get_actions": "action", "plugin.get_auth_providers": "chain"} {
 		if method == methodName {
 			return r.descriptors(kind).Descriptors, nil
 		}

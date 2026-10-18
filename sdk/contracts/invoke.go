@@ -6,6 +6,10 @@ import "encoding/json"
 const DescriptorVersion = 2
 
 type Descriptor struct {
+	ProviderID      string          `json:"providerId,omitempty"`
+	Issuer          string          `json:"issuer,omitempty"`
+	Audience        string          `json:"audience,omitempty"`
+	Origin          string          `json:"origin,omitempty"`
 	Kind            string          `json:"kind"`
 	ID              string          `json:"id"`
 	Handler         string          `json:"handler"`
