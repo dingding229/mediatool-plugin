@@ -67,6 +67,14 @@ func TestEveryBusinessRPCScopeSuccessAndRevocation(t *testing.T) {
 			} else if !errors.As(e, &rpc) || rpc.Code != contracts.Unsupported || calls != 0 {
 				t.Fatal("unsupported", e)
 			}
+			if m.Supported {
+				_ = mock.OnBusiness(m.Name, func(context.Context, json.RawMessage) (any, *contracts.Error) {
+					return nil, contracts.NewError(contracts.Unsupported)
+				})
+				if _, e = b.Call[b.Receipt](ctx, client, m.Name, struct{}{}, op); !errors.As(e, &rpc) || rpc.Code != contracts.Unsupported {
+					t.Fatal("unsupported backend", e)
+				}
+			}
 			mock.Revoke(m.Scope)
 			if _, e = b.Call[b.Receipt](ctx, client, m.Name, struct{}{}, op); !errors.As(e, &rpc) || rpc.Code != contracts.PermissionDenied {
 				t.Fatal("revocation", e)

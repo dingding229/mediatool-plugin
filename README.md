@@ -113,3 +113,19 @@ Use `Downloads.UploadControl` with a transfer ID returned by `Downloads.Progress
 Site summaries expose only the normalized origin and compiled template ID needed for controlled requests; never username/password, credential-bearing query/path, Cookie, headers, or arbitrary integration settings.
 
 Deletion takes `business.DeleteRequest`: `DeleteFiles:false` never removes payload files; `true` explicitly requests the native cleanup approval path. Both require original program ownership, imported state and original known-false HR evidence. There is no HR waiver.
+
+### Media and file Host clients (F3-B)
+
+`sdk/host/library`, `classification`, `metadata`, `files`, `storage`, `strm`
+share the exact scope/level table in `sdk/host/business`. ContractVersion stays 2.
+All mutations (including persisted previews) require a confirmed operation key;
+revision-bearing native operations additionally require the matching revision.
+File paths are root-relative, never storage/CDN URLs. `Storage.Mkdir/Relocate`
+create previews only: inspect the returned digest, then explicitly `Apply` it.
+Copy/upload/Resolve/STRM-content APIs are deliberately absent. `Files.ReadText`
+returns unsupported (no audited safe text reader yet). Batch operations retain
+native limits (20 file plans, 100 STRM files) even though the protocol ceiling is
+200. Native-library ID selectors are not guessed: hosts reject unsupported
+selector combinations rather than broadening access. Runtime capabilities are
+the authority for availability; a typed method is not a guarantee of a configured
+provider. See method golden and mock-host tests for live scope/revocation behavior.
