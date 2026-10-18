@@ -136,10 +136,12 @@ type SearchRun struct {
 	HasMore   bool       `json:"hasMore"`
 }
 type Site struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Enabled  bool   `json:"enabled"`
-	Revision int64  `json:"revision"`
+	Origin     string `json:"origin"`
+	TemplateID string `json:"templateId"`
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Enabled    bool   `json:"enabled"`
+	Revision   int64  `json:"revision"`
 }
 type Metrics struct {
 	AccountID    string   `json:"accountId"`
