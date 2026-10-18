@@ -45,8 +45,8 @@ type RestrictResult struct {
 // inputs are explicit safe values, never arbitrary host resource capabilities.
 func WorkflowOrder(w Workflow) ([]WorkflowStep, error) {
 	valid := regexp.MustCompile(`^[a-zA-Z0-9_-]{1,64}$`)
-	raw, _ := json.Marshal(w)
-	if !valid.MatchString(w.ID) || len(w.Steps) == 0 || len(w.Steps) > 32 || len(raw) > 16<<10 {
+	raw, marshalErr := json.Marshal(w)
+	if marshalErr != nil || !valid.MatchString(w.ID) || len(w.Steps) == 0 || len(w.Steps) > 32 || len(raw) > 16<<10 {
 		return nil, NewError(InvalidParams)
 	}
 	nodes := map[string]WorkflowStep{}

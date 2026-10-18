@@ -46,3 +46,10 @@ func TestWorkflowDepthUnknownDependencyAndInputBounds(t *testing.T) {
 		t.Fatal("input limit")
 	}
 }
+
+func TestWorkflowRejectsMalformedRawInput(t *testing.T) {
+	w := contracts.Workflow{ID: "bad", Steps: []contracts.WorkflowStep{{ID: "one", InstanceID: aid, Action: "hello", Input: contracts.ActionContext{Data: map[string]json.RawMessage{"bad": json.RawMessage(`not-json`)}}}}}
+	if _, e := contracts.WorkflowOrder(w); e == nil {
+		t.Fatal("invalid raw JSON")
+	}
+}
