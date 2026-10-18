@@ -37,7 +37,7 @@ func (p *Plugin) recognize(ctx context.Context, e events.ChainEnvelope) (json.Ra
 	return json.Marshal(v)
 }
 func (p *Plugin) GetModule(context.Context) ([]sdk.Module, error) {
-	return []sdk.Module{{ID: "metadata.name_recognize", Priority: 10, Handler: func(_ context.Context, b json.RawMessage) (json.RawMessage, error) {
+	return append(p.platformModules(), sdk.Module{ID: "metadata.name_recognize", Priority: 10, Handler: func(_ context.Context, b json.RawMessage) (json.RawMessage, error) {
 		var v contracts.NameRecognition
 		if contracts.Decode(b, &v) != nil {
 			return nil, contracts.NewError(contracts.InvalidParams)
@@ -49,7 +49,7 @@ func (p *Plugin) GetModule(context.Context) ([]sdk.Module, error) {
 			v.Hint.Title = t
 		}
 		return json.Marshal(v)
-	}}}, nil
+	}}), nil
 }
 func (p *Plugin) onDownload(ctx context.Context, e events.Envelope) error {
 	var old any

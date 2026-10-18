@@ -63,6 +63,13 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 			}
 		case "module":
 			args = json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)
+			if v.ID == "notifications.channel" || v.ID == "mediaserver.refresh" {
+				kind := "notification"
+				if v.ID == "mediaserver.refresh" {
+					kind = "asset"
+				}
+				args = contracts.EffectRequest{RequestID: "00000000-0000-0000-0000-000000000001", ObjectID: "00000000-0000-0000-0000-000000000002", Kind: kind}
+			}
 		case "event":
 			args = events.Envelope{ID: "stable-event", Type: contracts.EventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"operationId":"synthetic"}`)}
 		}

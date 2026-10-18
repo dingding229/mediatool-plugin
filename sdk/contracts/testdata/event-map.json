@@ -160,7 +160,7 @@
     "name": "UserMessage",
     "wire": "user.message",
     "type": "messaging.inbound",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "拟新增 `messaging/commands.go:CommandIngress.Receive`",
     "phase": "F2仅注册/已有入站接线；若新增bot轮询则F4，鉴权后默认只选定渠道/发送者"
   },
@@ -178,7 +178,7 @@
     "name": "NoticeMessage",
     "wire": "notice.message",
     "type": "notification.queued",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`messaging/dispatcher.go:Dispatcher.Prepare`；拟新增NotificationService.Send的提交点",
     "phase": "F4-D；queued不等于已送达，可另有delivered事件"
   },
@@ -226,7 +226,7 @@
     "name": "SystemError",
     "wire": "system.error",
     "type": "system.operation.failed",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`jobs/worker.go:Worker.Run`终态错误与拟新增安全错误总线",
     "phase": "F4-D；聚合/节流，排除plugin日志递归，原始异常不扩散"
   },
@@ -253,7 +253,7 @@
     "name": "ConfigChanged",
     "wire": "config.updated",
     "type": "settings.changed",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`settings/settings.go:Repository.Save`、`settings/native_management.go:SaveNativeManagement`；插件config单独事件",
     "phase": "F4-D；只非秘密diff+revision"
   },
@@ -262,7 +262,7 @@
     "name": "MessageAction",
     "wire": "message.action",
     "type": "messaging.action.received",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "拟新增 `messaging/commands.go:CommandIngress.HandleAction`",
     "phase": "F2仅已有入站；新增bot轮询F4，回调签名/过期/一次性nonce"
   },

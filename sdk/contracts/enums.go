@@ -58,7 +58,7 @@ const (
 
 func KnownEventType(t EventType) bool {
 	switch t {
-	case EventPluginReload, EventPluginAction, EventPluginTriggered, EventCommandExcute, EventSiteDeleted, EventSiteUpdated, EventSiteRefreshed, EventTransferComplete, EventTransferFailed, EventSubtitleTransferComplete, EventSubtitleTransferFailed, EventDownloadAdded, EventHistoryDeleted, EventDownloadFileDeleted, EventDownloadDeleted, EventUserMessage, EventWebhookMessage, EventNoticeMessage, EventSubscribeAdded, EventSubscribeModified, EventSubscribeDeleted, EventSubscribeComplete, EventSystemError, EventMetadataScrape, EventModuleReload, EventConfigChanged, EventMessageAction, EventWorkflowExecute:
+	case EventPluginConfigChanged, EventPluginReload, EventPluginAction, EventPluginTriggered, EventCommandExcute, EventSiteDeleted, EventSiteUpdated, EventSiteRefreshed, EventTransferComplete, EventTransferFailed, EventSubtitleTransferComplete, EventSubtitleTransferFailed, EventDownloadAdded, EventHistoryDeleted, EventDownloadFileDeleted, EventDownloadDeleted, EventUserMessage, EventWebhookMessage, EventNoticeMessage, EventSubscribeAdded, EventSubscribeModified, EventSubscribeDeleted, EventSubscribeComplete, EventSystemError, EventMetadataScrape, EventModuleReload, EventConfigChanged, EventMessageAction, EventWorkflowExecute:
 		return true
 	default:
 		return false
@@ -209,6 +209,8 @@ func KnownScope(s string) bool {
 	case "events.subscribe.metadata.scraped":
 		return true
 	case "events.subscribe.module.registry.changed":
+		return true
+	case "events.subscribe.plugin.config.changed":
 		return true
 	case "events.subscribe.settings.changed":
 		return true

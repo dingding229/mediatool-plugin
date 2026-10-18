@@ -61,6 +61,9 @@ func (p *Plugin) InitPlugin(ctx context.Context, c sdk.Config) error {
 	if e = p.discoveryEvents(); e != nil {
 		return e
 	}
+	if e = p.platformEvents(); e != nil {
+		return e
+	}
 	p.running = true
 	return nil
 }

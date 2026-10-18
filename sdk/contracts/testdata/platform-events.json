@@ -1,0 +1,48 @@
+{
+  "command.input": {
+    "channel": "telegram",
+    "actor": "opaque-actor",
+    "arguments": "demo"
+  },
+  "effect.receipt": {
+    "state": "not_started"
+  },
+  "effect.request": {
+    "requestId": "00000000-0000-0000-0000-000000000001",
+    "kind": "notification",
+    "objectId": "00000000-0000-0000-0000-000000000002"
+  },
+  "messaging.action.received": {
+    "instanceId": "00000000-0000-0000-0000-000000000001",
+    "command": "hello",
+    "actor": "opaque-actor",
+    "kind": "action"
+  },
+  "messaging.inbound": {
+    "instanceId": "00000000-0000-0000-0000-000000000001",
+    "command": "hello",
+    "actor": "opaque-actor",
+    "kind": "command"
+  },
+  "notification.queued": {
+    "notificationId": "00000000-0000-0000-0000-000000000001",
+    "origin": "builtin"
+  },
+  "plugin.config.changed": {
+    "instanceId": "00000000-0000-0000-0000-000000000001",
+    "revision": 2
+  },
+  "settings.changed": {
+    "area": "native",
+    "revision": 2,
+    "changed": [
+      "enabled"
+    ]
+  },
+  "system.operation.failed": {
+    "source": "jobs",
+    "code": "terminal_failure",
+    "count": 3,
+    "window": "2026-10-18T00:00:00Z"
+  }
+}

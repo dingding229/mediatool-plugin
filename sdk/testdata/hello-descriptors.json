@@ -120,10 +120,28 @@
     },
     {
       "kind": "module",
+      "id": "mediaserver.refresh",
+      "handler": "module.0c0dadf5c461bcf29e4fba9d",
+      "requiredScopes": [
+        "module.mediaserver.refresh"
+      ],
+      "priority": 10
+    },
+    {
+      "kind": "module",
       "id": "metadata.name_recognize",
       "handler": "module.4674db29aceec54b3bb3f00c",
       "requiredScopes": [
         "module.metadata.name_recognize"
+      ],
+      "priority": 10
+    },
+    {
+      "kind": "module",
+      "id": "notifications.channel",
+      "handler": "module.84a0ebdeeb877a7d24244ab1",
+      "requiredScopes": [
+        "module.notifications.channel"
       ],
       "priority": 10
     },
@@ -280,10 +298,34 @@
     },
     {
       "kind": "event",
+      "id": "messaging.action.received",
+      "handler": "event.3a8bf6b8170e2cbe72922eb1",
+      "requiredScopes": [
+        "events.subscribe.messaging.action.received"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "plugin.config.changed",
+      "handler": "event.4ef6d211775dbb9cc8b6918e",
+      "requiredScopes": [
+        "events.subscribe.plugin.config.changed"
+      ]
+    },
+    {
+      "kind": "event",
       "id": "metadata.scraped",
       "handler": "event.51318e252b604df575837607",
       "requiredScopes": [
         "events.subscribe.metadata.scraped"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "system.operation.failed",
+      "handler": "event.5450356d766ac99a9501ed2b",
+      "requiredScopes": [
+        "events.subscribe.system.operation.failed"
       ]
     },
     {
@@ -296,10 +338,26 @@
     },
     {
       "kind": "event",
+      "id": "notification.queued",
+      "handler": "event.8f9594746d6c453f8c3b8265",
+      "requiredScopes": [
+        "events.subscribe.notification.queued"
+      ]
+    },
+    {
+      "kind": "event",
       "id": "subscription.updated",
       "handler": "event.91191d74febe20897d4099b2",
       "requiredScopes": [
         "events.subscribe.subscription.updated"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "messaging.inbound",
+      "handler": "event.97ffd90de8402e9b1a4d3a7a",
+      "requiredScopes": [
+        "events.subscribe.messaging.inbound"
       ]
     },
     {
@@ -316,6 +374,14 @@
       "handler": "event.a80f1b4a886ff1499eb8380f",
       "requiredScopes": [
         "events.subscribe.download.added"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "settings.changed",
+      "handler": "event.b26638ffaae6a6ec76597b22",
+      "requiredScopes": [
+        "events.subscribe.settings.changed"
       ]
     },
     {
