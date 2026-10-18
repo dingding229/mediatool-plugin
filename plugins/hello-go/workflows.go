@@ -3,6 +3,7 @@ package hello
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"github.com/dingding229/mediatool-plugin/sdk/events"
@@ -30,6 +31,15 @@ func (p *Plugin) GetAuthProviders(context.Context) ([]sdk.AuthProvider, error) {
 	}}}, nil
 }
 func (p *Plugin) f4Check(ctx context.Context, q sdk.ActionContext) (sdk.ActionContext, bool, error) {
+	if string(q.Data["scopeProbe"]) == "true" {
+		var config any
+		_, e := p.host.GetConfig(ctx, &config)
+		var rpc *contracts.Error
+		denied := errors.As(e, &rpc) && rpc.Code == contracts.PermissionDenied
+		raw, _ := json.Marshal(denied)
+		q.Data["configReadDenied"] = raw
+	}
+
 	_, e := p.host.SaveData(ctx, "f4-check", map[string]bool{"passed": true, "noOpAction": true, "authSessionIssued": false}, 0)
 	if e != nil {
 		var old map[string]bool

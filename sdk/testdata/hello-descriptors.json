@@ -180,7 +180,9 @@
       "id": "hello",
       "handler": "action.c1ae3a8379fb219135ff0227",
       "requiredScopes": [
-        "actions.register"
+        "actions.register",
+        "plugin.data.read",
+        "plugin.data.write"
       ],
       "name": "示例动作",
       "kwargs": {}
