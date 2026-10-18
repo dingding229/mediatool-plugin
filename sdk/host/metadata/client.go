@@ -40,3 +40,9 @@ func (c *Client) StoredDetails(ctx context.Context, in b.MetadataQuery) (b.Store
 func (c *Client) Refresh(ctx context.Context, in b.ID, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "metadata.refresh", in, op)
 }
+func (c *Client) NativeDetails(ctx context.Context, in b.NativeTarget) (b.NativeMetadata, error) {
+	return b.Call[b.NativeMetadata](ctx, c.Host, "metadata.nativeDetails", in, b.Operation{})
+}
+func (c *Client) RefreshDetails(ctx context.Context, in b.NativeTarget, op b.Operation) (b.Receipt, error) {
+	return b.Call[b.Receipt](ctx, c.Host, "metadata.refreshDetails", in, op)
+}

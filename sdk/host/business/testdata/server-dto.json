@@ -1,0 +1,20 @@
+{
+  "item": {
+    "id": "opaque-asset",
+    "title": "Owned",
+    "year": "2026",
+    "mediaType": "movie",
+    "overview": ""
+  },
+  "query": {
+    "page": 1,
+    "size": 200,
+    "provider": "builtin",
+    "libraryId": "g:movie"
+  },
+  "patch": {
+    "id": "opaque-user",
+    "revision": 3,
+    "clearExpiry": true
+  }
+}

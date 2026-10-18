@@ -129,3 +129,19 @@ native limits (20 file plans, 100 STRM files) even though the protocol ceiling i
 selector combinations rather than broadening access. Runtime capabilities are
 the authority for availability; a typed method is not a guarantee of a configured
 provider. See method golden and mock-host tests for live scope/revocation behavior.
+
+### Media servers and playback boundary (F3-C)
+
+The `mediaserver`, `catalog`, `mediausers`, `playback`, `mediaprobe` clients and
+metadata native-details methods expose safe DTOs only. No playback/CDN URL,
+stream resolver, HTTP image client, session activation or media credential
+method exists. Catalog inputs deliberately have no userId/visibleLibraries.
+Host-issued PluginPrincipal grants administrative catalog access only; it is
+not a media user. Member Home/Discover/NextUp/UserData return unsupported until a
+real authorized member actor is available. Emby catalog uses its mediaserver
+adapter only; scoped item lookup or libraries without safe evidence fail closed.
+User patches preserve omitted fields; ClearExpiry/ClearParentalRating explicitly
+clear nullable values. They never accept passwords or create users. All writes
+require a confirmed operation and native revisions when applicable. Playback and
+player-access methods are read-only summaries. Probe retries only enqueue native
+work; the SDK has no ffx/linksource dependency or execution interface.
