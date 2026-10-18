@@ -52,7 +52,7 @@ func (c *Client) Recheck(ctx context.Context, in b.ID, op b.Operation) (b.Receip
 func (c *Client) PreviewCleanup(ctx context.Context, in b.ID) (b.Cleanup, error) {
 	return b.Call[b.Cleanup](ctx, c.Host, "downloads.cleanup.preview", in, b.Operation{})
 }
-func (c *Client) ApproveCleanup(ctx context.Context, in b.ID, op b.Operation) (b.Receipt, error) {
+func (c *Client) ApproveCleanup(ctx context.Context, in b.DeleteRequest, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "downloads.cleanup.approve", in, op)
 }
 func (c *Client) AllHashes(ctx context.Context, in b.PageRequest) (b.Page[string], error) {
@@ -64,7 +64,7 @@ func (c *Client) Inspect(ctx context.Context, in b.ID) (b.Task, error) {
 func (c *Client) SetPaused(ctx context.Context, in b.Paused, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "downloads.downloader.setPaused", in, op)
 }
-func (c *Client) DeleteOwned(ctx context.Context, in b.ID, op b.Operation) (b.Receipt, error) {
+func (c *Client) DeleteOwned(ctx context.Context, in b.DeleteRequest, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "downloads.downloader.deleteOwned", in, op)
 }
 func (c *Client) ParseTorrent(ctx context.Context, in b.TorrentInput) (b.Torrent, error) {

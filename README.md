@@ -111,3 +111,5 @@ pretending to be a real downloader/site.
 Use `Downloads.UploadControl` with a transfer ID returned by `Downloads.Progress`; it preserves native upload-session/endpoint fencing. Manual unknown-submission duplicate-risk overrides remain administrator-only.
 
 Site summaries expose only the normalized origin and compiled template ID needed for controlled requests; never username/password, credential-bearing query/path, Cookie, headers, or arbitrary integration settings.
+
+Deletion takes `business.DeleteRequest`: `DeleteFiles:false` never removes payload files; `true` explicitly requests the native cleanup approval path. Both require original program ownership, imported state and original known-false HR evidence. There is no HR waiver.

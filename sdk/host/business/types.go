@@ -270,3 +270,10 @@ type Transfer struct {
 	State    string `json:"state"`
 	Progress int    `json:"progress"`
 }
+
+// DeleteFiles is always explicit. False retires only the owned, imported,
+// HR-cleared torrent; true requests native cleanup and all its file/cloud proofs.
+type DeleteRequest struct {
+	ID          string `json:"id"`
+	DeleteFiles bool   `json:"deleteFiles"`
+}
