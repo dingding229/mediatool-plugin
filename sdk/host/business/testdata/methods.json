@@ -81,6 +81,12 @@
     "name": "downloads.retry",
     "scope": "downloads.control",
     "level": "W",
+    "supported": false
+  },
+  {
+    "name": "downloads.uploadControl",
+    "scope": "downloads.control",
+    "level": "W",
     "supported": true
   },
   {

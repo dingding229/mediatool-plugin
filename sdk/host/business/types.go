@@ -59,17 +59,18 @@ type Resource struct {
 	DownloadFactor *float64 `json:"downloadFactor,omitempty"`
 }
 type Task struct {
-	ID            string   `json:"id"`
-	Title         string   `json:"title"`
-	State         string   `json:"state"`
-	Hash          string   `json:"hash"`
-	Owned         bool     `json:"owned"`
-	Progress      *float64 `json:"progress,omitempty"`
-	DownloadSpeed int64    `json:"downloadSpeed"`
-	UploadSpeed   int64    `json:"uploadSpeed"`
-	Size          int64    `json:"size"`
-	Revision      int64    `json:"revision,omitempty"`
-	CleanupState  string   `json:"cleanupState,omitempty"`
+	Transfers     []Transfer `json:"transfers,omitempty"`
+	ID            string     `json:"id"`
+	Title         string     `json:"title"`
+	State         string     `json:"state"`
+	Hash          string     `json:"hash"`
+	Owned         bool       `json:"owned"`
+	Progress      *float64   `json:"progress,omitempty"`
+	DownloadSpeed int64      `json:"downloadSpeed"`
+	UploadSpeed   int64      `json:"uploadSpeed"`
+	Size          int64      `json:"size"`
+	Revision      int64      `json:"revision,omitempty"`
+	CleanupState  string     `json:"cleanupState,omitempty"`
 }
 type File struct {
 	Index    int     `json:"index"`
@@ -255,4 +256,15 @@ func ValidateArgs(raw json.RawMessage) error {
 		return contracts.NewError(contracts.PayloadTooLarge)
 	}
 	return contracts.ValidateJSON(raw)
+}
+
+// Upload controls address a program-owned transfer ID, not a qB download ID.
+type UploadControl struct {
+	ID     string `json:"id"`
+	Action string `json:"action"`
+}
+type Transfer struct {
+	ID       string `json:"id"`
+	State    string `json:"state"`
+	Progress int    `json:"progress"`
 }

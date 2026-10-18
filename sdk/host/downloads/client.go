@@ -70,3 +70,7 @@ func (c *Client) DeleteOwned(ctx context.Context, in b.ID, op b.Operation) (b.Re
 func (c *Client) ParseTorrent(ctx context.Context, in b.TorrentInput) (b.Torrent, error) {
 	return b.Call[b.Torrent](ctx, c.Host, "metadata.torrent.parse", in, b.Operation{})
 }
+
+func (c *Client) UploadControl(ctx context.Context, in b.UploadControl, op b.Operation) (b.Receipt, error) {
+	return b.Call[b.Receipt](ctx, c.Host, "downloads.uploadControl", in, op)
+}

@@ -102,8 +102,10 @@ claims. `siteIds`, `hosts` and `downloaderIds` may narrow approved resources.
 
 No credentials, tracker passkeys, download hints or arbitrary settings are DTOs.
 `SiteRequest` yields status/matched/needs_action, not authentication headers or
-raw HTML (Raw is explicitly unsupported). `downloads.recheck` and
+raw HTML (Raw is explicitly unsupported). `downloads.retry` (a download is not an upload-transfer retry), `downloads.recheck` and
 `subscriptions.completion` return `unsupported`; coverage only parses filenames,
 not evidence that a TV subscription completed. `plugintest.Host.OnBusiness`
 installs deterministic test behaviors and remains deny-by-default, rather than
 pretending to be a real downloader/site.
+
+Use `Downloads.UploadControl` with a transfer ID returned by `Downloads.Progress`; it preserves native upload-session/endpoint fencing. Manual unknown-submission duplicate-risk overrides remain administrator-only.
