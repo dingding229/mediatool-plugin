@@ -107,6 +107,11 @@ func (h *Host) Handle(ctx context.Context, b json.RawMessage) (any, *contracts.E
 		return nil, contracts.NewError(contracts.PermissionDenied)
 	}
 	if isBusiness {
+		for _, required := range business.RequiredScopes(call.Method) {
+			if !h.scopes[required] {
+				return nil, contracts.NewError(contracts.PermissionDenied)
+			}
+		}
 		if !spec.Supported {
 			return nil, contracts.NewError(contracts.Unsupported)
 		}

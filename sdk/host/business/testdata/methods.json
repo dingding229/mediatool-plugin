@@ -778,5 +778,131 @@
     "scope": "metadata.refresh",
     "level": "W",
     "supported": true
+  },
+  {
+    "name": "integrations.list",
+    "scope": "integrations.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "integrations.status",
+    "scope": "integrations.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "integrations.test",
+    "scope": "integrations.read",
+    "level": "W",
+    "supported": true
+  },
+  {
+    "name": "settings.get",
+    "scope": "settings.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "settings.patch",
+    "scope": "settings.write",
+    "level": "D",
+    "supported": true
+  },
+  {
+    "name": "cache.status",
+    "scope": "cache.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "cache.list",
+    "scope": "cache.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "cache.invalidate",
+    "scope": "cache.invalidate",
+    "level": "W",
+    "supported": true
+  },
+  {
+    "name": "jobs.list",
+    "scope": "jobs.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "jobs.get",
+    "scope": "jobs.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "jobs.cancel",
+    "scope": "jobs.cancel",
+    "level": "D",
+    "supported": true
+  },
+  {
+    "name": "system.info",
+    "scope": "system.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "system.health",
+    "scope": "system.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "system.modules",
+    "scope": "system.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "maintenance.health",
+    "scope": "maintenance.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "maintenance.alerts",
+    "scope": "maintenance.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "notifications.publish",
+    "scope": "notifications.send",
+    "level": "W",
+    "supported": true
+  },
+  {
+    "name": "notifications.deliveries",
+    "scope": "notifications.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "notifications.retry",
+    "scope": "notifications.retry",
+    "level": "D",
+    "supported": true
+  },
+  {
+    "name": "networkproxy.status",
+    "scope": "integrations.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "network.http",
+    "scope": "network.proxy.use",
+    "level": "D",
+    "supported": true
   }
 ]

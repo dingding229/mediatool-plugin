@@ -145,3 +145,23 @@ clear nullable values. They never accept passwords or create users. All writes
 require a confirmed operation and native revisions when applicable. Playback and
 player-access methods are read-only summaries. Probe retries only enqueue native
 work; the SDK has no ffx/linksource dependency or execution interface.
+
+### Platform Host APIs and release acceptance (F3-D)
+
+Typed cache/integrations/jobs/maintenance/network/notifications/settings/system
+clients share the method/scope table. Settings accepts only movieTemplate,
+seriesTemplate, searchCacheSeconds, tmdbCacheSeconds (and approved settingKeys).
+Jobs are instance-owned manual service wakes only; active work is not forcibly
+cancelled. Cache invalidation needs explicit IDs in tmdb/search namespaces.
+Deliveries/retry belong only to this instance's plugin.notice outbox events;
+unknown send outcomes require duplicate-risk acknowledgement.
+HTTP is exact-origin public GET/HEAD, profile=host, no caller auth/headers/body,
+no redirects and no returned response body/headers. network + network.proxy.use
+are both live-required. Proxy settings remain host-only. Mutable operations need
+confirmed operation keys and native revisions; there is no SQL/Redis/backup/
+115-auth/secret-settings/worker-control escape hatch.
+
+Hello Go 1.3 adds a manually invoked `f3-read-check` action. It performs safe reads
+across F3-A/B/C/D and records only booleans in its own `f3-read-check` KV. It also
+asserts that an ungranted settings write is denied. It never runs automatically
+or modifies business data. Expanded read permissions require administrator review.

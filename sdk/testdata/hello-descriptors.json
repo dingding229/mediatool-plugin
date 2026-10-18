@@ -30,6 +30,28 @@
       "kwargs": {}
     },
     {
+      "kind": "action",
+      "id": "f3-read-check",
+      "handler": "action.d255be49701532960fda6764",
+      "requiredScopes": [
+        "actions.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "downloads.read",
+        "library.read",
+        "mediaserver.read",
+        "cache.read",
+        "integrations.read",
+        "jobs.read",
+        "maintenance.read",
+        "notifications.read",
+        "settings.read",
+        "system.read"
+      ],
+      "name": "F3 只读验收",
+      "kwargs": {}
+    },
+    {
       "kind": "api",
       "id": "apikey",
       "handler": "api.03eeb296fd63f732d069ecb0",

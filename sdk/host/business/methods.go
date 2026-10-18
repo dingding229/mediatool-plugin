@@ -140,6 +140,27 @@ func Methods() []Method {
 		{"mediaprobe.stills.gc", "mediaprobe.retry", "D", true},
 		{"metadata.nativeDetails", "metadata.read", "R", true},
 		{"metadata.refreshDetails", "metadata.refresh", "W", true},
+		{"integrations.list", "integrations.read", "R", true},
+		{"integrations.status", "integrations.read", "R", true},
+		{"integrations.test", "integrations.read", "W", true},
+		{"settings.get", "settings.read", "R", true},
+		{"settings.patch", "settings.write", "D", true},
+		{"cache.status", "cache.read", "R", true},
+		{"cache.list", "cache.read", "R", true},
+		{"cache.invalidate", "cache.invalidate", "W", true},
+		{"jobs.list", "jobs.read", "R", true},
+		{"jobs.get", "jobs.read", "R", true},
+		{"jobs.cancel", "jobs.cancel", "D", true},
+		{"system.info", "system.read", "R", true},
+		{"system.health", "system.read", "R", true},
+		{"system.modules", "system.read", "R", true},
+		{"maintenance.health", "maintenance.read", "R", true},
+		{"maintenance.alerts", "maintenance.read", "R", true},
+		{"notifications.publish", "notifications.send", "W", true},
+		{"notifications.deliveries", "notifications.read", "R", true},
+		{"notifications.retry", "notifications.retry", "D", true},
+		{"networkproxy.status", "integrations.read", "R", true},
+		{"network.http", "network.proxy.use", "D", true},
 	}
 }
 func Lookup(name string) (Method, bool) {
@@ -149,4 +170,12 @@ func Lookup(name string) (Method, bool) {
 		}
 	}
 	return Method{}, false
+}
+
+// RequiredScopes adds a live authorization intersection, never an alternative.
+func RequiredScopes(method string) []string {
+	if method == "network.http" {
+		return []string{"network"}
+	}
+	return nil
 }

@@ -56,7 +56,7 @@ func (p *Plugin) GetCommand(context.Context) ([]sdk.Command, error) {
 	}}}, nil
 }
 func (p *Plugin) GetActions(context.Context) ([]sdk.Action, error) {
-	return []sdk.Action{{ID: "hello", Name: "示例动作", Kwargs: json.RawMessage(`{}`), Handler: func(ctx context.Context, q sdk.ActionContext) (sdk.ActionContext, bool, error) {
+	return []sdk.Action{{ID: "f3-read-check", Name: "F3 只读验收", RequiredScopes: []string{"plugin.data.read", "plugin.data.write", "downloads.read", "library.read", "mediaserver.read", "cache.read", "integrations.read", "jobs.read", "maintenance.read", "notifications.read", "settings.read", "system.read"}, Kwargs: json.RawMessage(`{}`), Handler: p.f3ReadCheck}, {ID: "hello", Name: "示例动作", Kwargs: json.RawMessage(`{}`), Handler: func(ctx context.Context, q sdk.ActionContext) (sdk.ActionContext, bool, error) {
 		q.Data["hello"] = json.RawMessage(`true`)
 		return q, true, p.increment(ctx, "actions")
 	}}}, nil

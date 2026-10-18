@@ -53,7 +53,7 @@ func TestEveryBusinessRPCScopeSuccessAndRevocation(t *testing.T) {
 			if _, e := b.Call[b.Receipt](ctx, client, m.Name, struct{}{}, op); !errors.As(e, &rpc) || rpc.Code != contracts.PermissionDenied || calls != 0 {
 				t.Fatal("scope denial", e)
 			}
-			mock = plugintest.NewHost([]string{m.Scope})
+			mock = plugintest.NewHost(append([]string{m.Scope}, b.RequiredScopes(m.Name)...))
 			client = host.New(caller{mock})
 			_ = mock.OnBusiness(m.Name, func(context.Context, json.RawMessage) (any, *contracts.Error) {
 				calls++
