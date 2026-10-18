@@ -3,6 +3,33 @@
   "descriptors": [
     {
       "kind": "chain",
+      "id": "transfer.intercept",
+      "handler": "chain.007adc61b6b3747729e43b68",
+      "requiredScopes": [
+        "events.chain.transfer.intercept"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "transfer.rename.build",
+      "handler": "chain.2f6769924f9d2ec03c7b2261",
+      "requiredScopes": [
+        "events.chain.transfer.rename.build"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "transfer.overwrite.check",
+      "handler": "chain.531166e845423cd9ed3a83be",
+      "requiredScopes": [
+        "events.chain.transfer.overwrite.check"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
       "id": "name.recognize",
       "handler": "chain.77bffc20aebe71b2662717a7",
       "requiredScopes": [
@@ -25,6 +52,24 @@
       "handler": "chain.9f33c48c06f32e8c91ecab2e",
       "requiredScopes": [
         "events.chain.resource.download"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "transfer.rename",
+      "handler": "chain.aa241d753fadcc2f94f0487a",
+      "requiredScopes": [
+        "events.chain.transfer.rename"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "storage.operation",
+      "handler": "chain.b810118e276124fee1affbaf",
+      "requiredScopes": [
+        "events.chain.storage.operation"
       ],
       "priority": 20
     },
@@ -150,6 +195,38 @@
     },
     {
       "kind": "event",
+      "id": "library.subtitles.failed",
+      "handler": "event.0401bfc8d75afdccade4c631",
+      "requiredScopes": [
+        "events.subscribe.library.subtitles.failed"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "library.organize.failed",
+      "handler": "event.244540f64bedcd6a7c97b3f0",
+      "requiredScopes": [
+        "events.subscribe.library.organize.failed"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "download.task.deleted",
+      "handler": "event.2af98eb2057c2db385a832c9",
+      "requiredScopes": [
+        "events.subscribe.download.task.deleted"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "download.files.deleted",
+      "handler": "event.2fc77d8c7f675005a6fc455a",
+      "requiredScopes": [
+        "events.subscribe.download.files.deleted"
+      ]
+    },
+    {
+      "kind": "event",
       "id": "site.account.updated",
       "handler": "event.3261f374a54afbfcccc825ff",
       "requiredScopes": [
@@ -182,6 +259,14 @@
     },
     {
       "kind": "event",
+      "id": "library.subtitles.copied",
+      "handler": "event.bb9c12c01bd4d7c6eafb264e",
+      "requiredScopes": [
+        "events.subscribe.library.subtitles.copied"
+      ]
+    },
+    {
+      "kind": "event",
       "id": "site.account.deleted",
       "handler": "event.d1d1d9e9a4bc7930d585c450",
       "requiredScopes": [
@@ -194,6 +279,14 @@
       "handler": "event.d3472c9b818414e90af370ba",
       "requiredScopes": [
         "events.subscribe.subscription.deleted"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "library.history.hidden",
+      "handler": "event.dbf25d05fbca1636c8bbf7f1",
+      "requiredScopes": [
+        "events.subscribe.library.history.hidden"
       ]
     },
     {

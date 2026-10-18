@@ -79,7 +79,7 @@
     "name": "TransferFailed",
     "wire": "transfer.failed",
     "type": "library.organize.failed",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`acquisition/transfers.go:Engine.Transfer`、`library/journal.go:Journal.Apply`终态",
     "phase": "F4-B；不把可恢复中间态误当永久失败"
   },
@@ -88,7 +88,7 @@
     "name": "SubtitleTransferComplete",
     "wire": "transfer.subtitle.complete",
     "type": "library.subtitles.copied",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/artifacts.go:CopySubtitlesOutputsVerified`成功结果由上层commit发出",
     "phase": "F4-B；仅实际发生字幕复制时，不宣称cloud_files已索引外挂字幕"
   },
@@ -97,7 +97,7 @@
     "name": "SubtitleTransferFailed",
     "wire": "transfer.subtitle.failed",
     "type": "library.subtitles.failed",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/artifacts.go:CopySubtitlesOutputsVerified`错误经上层操作终态提交",
     "phase": "F4-B；不在纯helper内发RPC"
   },
@@ -133,7 +133,7 @@
     "name": "HistoryDeleted",
     "wire": "history.deleted",
     "type": "library.history.hidden",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/history_manage.go:Engine.HideHistory`",
     "phase": "F4-B；本程序隐藏历史，不宣称物理删除媒体"
   },
@@ -142,7 +142,7 @@
     "name": "DownloadFileDeleted",
     "wire": "downloadfile.deleted",
     "type": "download.files.deleted",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`acquisition/cleanup.go:Engine.Cleanup`经读回确认",
     "phase": "F4-B；deleteFiles=false不发此事件"
   },
@@ -151,7 +151,7 @@
     "name": "DownloadDeleted",
     "wire": "download.deleted",
     "type": "download.task.deleted",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`acquisition/control.go:Engine.Control`、`cleanup.go:Engine.Cleanup`成功确认",
     "phase": "F4-B；已请求/结果未知不是已删除"
   },
@@ -334,7 +334,7 @@
     "name": "TransferRename",
     "wire": "transfer.rename",
     "type": "transfer.rename",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/confirm.go:Engine.Confirm`、`acquisition/transfers.go:Engine.ImportFile`的prepare阶段",
     "phase": "F4-B；逐段root/冲突/owner验证，不能在事务中等RPC"
   },
@@ -343,7 +343,7 @@
     "name": "TransferRenameBuild",
     "wire": "transfer.rename.build",
     "type": "transfer.rename.build",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/template_outputs.go:ApplyOutputTemplates`上层的拟新增prepare service",
     "phase": "F4-B；现helper接tx，不在其内部调用worker"
   },
@@ -352,7 +352,7 @@
     "name": "TransferIntercept",
     "wire": "transfer.intercept",
     "type": "transfer.intercept",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/confirm.go:Engine.Confirm`、`filemanager/batch.go:Engine.ApproveBatch`进入写事务前",
     "phase": "F4-B；不能放行核心不允许的操作"
   },
@@ -361,7 +361,7 @@
     "name": "TransferOverwriteCheck",
     "wire": "transfer.overwrite.check",
     "type": "transfer.overwrite.check",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/output_layout_guard.go:CheckOutputLayout`上层prepare",
     "phase": "F4-B；宿主最后保护检查永远保留"
   },
@@ -426,7 +426,7 @@
     "name": "StorageOperSelection",
     "wire": "storage.operation",
     "type": "storage.operation",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`filemanager/engine.go:Engine.Preview`、`library/scan.go:Engine.Start`上层prepare",
     "phase": "F4-B；不能返回凭据或任意根路径"
   },

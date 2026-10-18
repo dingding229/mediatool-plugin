@@ -1,0 +1,55 @@
+{
+  "download.files.deleted": {
+    "taskId": "00000000-0000-0000-0000-000000000001",
+    "filesDeleted": true
+  },
+  "download.task.deleted": {
+    "taskId": "00000000-0000-0000-0000-000000000001",
+    "filesDeleted": false
+  },
+  "library.history.hidden": {
+    "recordId": "00000000-0000-0000-0000-000000000001",
+    "kind": "file",
+    "filesystemDeleted": false
+  },
+  "library.organize.failed": {
+    "operationId": "00000000-0000-0000-0000-000000000001",
+    "kind": "transfer",
+    "reasonCode": "attempts_exhausted"
+  },
+  "library.subtitles.copied": {
+    "operationId": "00000000-0000-0000-0000-000000000001",
+    "assetId": "00000000-0000-0000-0000-000000000002",
+    "count": 1,
+    "state": "copied"
+  },
+  "library.subtitles.failed": {
+    "operationId": "00000000-0000-0000-0000-000000000001",
+    "assetId": "00000000-0000-0000-0000-000000000002",
+    "count": 1,
+    "state": "failed"
+  },
+  "storage.choice": {
+    "handle": "00000000-0000-0000-0000-000000000001"
+  },
+  "storage.request": {
+    "handles": [
+      "00000000-0000-0000-0000-000000000001"
+    ],
+    "selected": "00000000-0000-0000-0000-000000000001"
+  },
+  "transfer.decision": {
+    "decision": "pass"
+  },
+  "transfer.paths": {
+    "paths": [
+      "Movies/demo.strm"
+    ]
+  },
+  "transfer.request": {
+    "operationId": "00000000-0000-0000-0000-000000000001",
+    "paths": [
+      "Movies/demo.strm"
+    ]
+  }
+}

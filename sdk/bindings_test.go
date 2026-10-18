@@ -6,6 +6,7 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"github.com/dingding229/mediatool-plugin/sdk/events"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -40,6 +41,13 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 			}
 			if v.ID == "resource.download" {
 				args = events.ChainEnvelope{Type: contracts.ChainResourceDownload, SchemaVersion: 1, Payload: json.RawMessage(`{"kind":"manual","resourceId":"00000000-0000-0000-0000-000000000001","downloaderId":"00000000-0000-0000-0000-000000000001","cleanupAfterImport":false}`)}
+			}
+
+			if strings.HasPrefix(v.ID, "transfer.") {
+				args = events.ChainEnvelope{Type: contracts.ChainEventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"operationId":"00000000-0000-0000-0000-000000000001","paths":["Movies/a.strm"]}`)}
+			}
+			if v.ID == "storage.operation" {
+				args = events.ChainEnvelope{Type: contracts.ChainStorageOperSelection, SchemaVersion: 1, Payload: json.RawMessage(`{"handles":["00000000-0000-0000-0000-000000000001"],"selected":"00000000-0000-0000-0000-000000000001"}`)}
 			}
 		case "module":
 			args = json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)

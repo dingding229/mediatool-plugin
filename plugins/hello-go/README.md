@@ -19,3 +19,11 @@ original options unchanged. Optional `resourceReverse`, `resourceReject` and
 `resourceNoCleanup` demonstrate narrowing only. `resourceDelay` exercises bounded
 host timeout/fallback. No hook invokes a downloader or fetches media. Installing
 this version expands scopes and requires renewed administrator confirmation.
+
+### F4-B organizing policies (1.5.0)
+
+Subscribes to six terminal/verified organizing facts using the same idempotent
+KV receipts. Five typed transfer/storage policies return original paths/handle
+and `pass` by default. `organizeFolder`, `organizeReject`, `organizeDelay` are
+optional test/demo settings: the host revalidates every result. These handlers
+cannot access STRM bodies, resolver URLs, credentials or absolute roots.
