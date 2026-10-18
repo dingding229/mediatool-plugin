@@ -151,7 +151,16 @@ func (r *Runtime) handle(ctx context.Context, method string, b json.RawMessage) 
 	if method == "plugin.describe" {
 		return r.descriptors(""), nil
 	}
-	for methodName, kind := range map[string]string{"plugin.get_api": "api", "plugin.get_service": "service", "plugin.get_command": "command", "plugin.get_module": "module", "plugin.get_actions": "action", "plugin.get_auth_providers": "chain"} {
+	if method == "plugin.get_auth_providers" {
+		out := []contracts.Descriptor{}
+		for _, d := range r.descriptors("chain").Descriptors {
+			if d.ID == "auth.verification" {
+				out = append(out, d)
+			}
+		}
+		return out, nil
+	}
+	for methodName, kind := range map[string]string{"plugin.get_api": "api", "plugin.get_service": "service", "plugin.get_command": "command", "plugin.get_module": "module", "plugin.get_actions": "action"} {
 		if method == methodName {
 			return r.descriptors(kind).Descriptors, nil
 		}

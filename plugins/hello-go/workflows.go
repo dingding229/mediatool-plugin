@@ -30,14 +30,14 @@ func (p *Plugin) GetAuthProviders(context.Context) ([]sdk.AuthProvider, error) {
 	}}}, nil
 }
 func (p *Plugin) f4Check(ctx context.Context, q sdk.ActionContext) (sdk.ActionContext, bool, error) {
-	_, e := p.host.SaveData(ctx, "f4-check", map[string]bool{"passed": true, "workflow": true, "authBrokerFramework": true}, 0)
+	_, e := p.host.SaveData(ctx, "f4-check", map[string]bool{"passed": true, "noOpAction": true, "authSessionIssued": false}, 0)
 	if e != nil {
 		var old map[string]bool
 		rev, read := p.host.GetData(ctx, "f4-check", &old)
 		if read != nil {
 			return q, false, read
 		}
-		_, e = p.host.SaveData(ctx, "f4-check", map[string]bool{"passed": true, "workflow": true, "authBrokerFramework": true}, rev)
+		_, e = p.host.SaveData(ctx, "f4-check", map[string]bool{"passed": true, "noOpAction": true, "authSessionIssued": false}, rev)
 	}
 	return q, true, e
 }
