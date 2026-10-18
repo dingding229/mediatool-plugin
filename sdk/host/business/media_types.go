@@ -154,6 +154,7 @@ type Approval struct {
 	Digest string `json:"digest"`
 }
 type FilePlan struct {
+	Targets        []string    `json:"targets"`
 	ID             string      `json:"id"`
 	RootID         string      `json:"rootId"`
 	Revision       int64       `json:"revision"`
