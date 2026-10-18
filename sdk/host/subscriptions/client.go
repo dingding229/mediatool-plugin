@@ -3,6 +3,7 @@ package subscriptions
 
 import (
 	"context"
+	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"github.com/dingding229/mediatool-plugin/sdk/host"
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
 )
@@ -37,6 +38,6 @@ func (c *Client) EvaluateRules(ctx context.Context, in b.Evaluation) (b.Evaluate
 func (c *Client) Coverage(ctx context.Context, in b.CoverageInput) (b.Coverage, error) {
 	return b.Call[b.Coverage](ctx, c.Host, "subscriptions.coverage", in, b.Operation{})
 }
-func (c *Client) Completion(ctx context.Context, in b.ID) (b.Coverage, error) {
-	return b.Call[b.Coverage](ctx, c.Host, "subscriptions.completion", in, b.Operation{})
+func (c *Client) Completion(ctx context.Context, in b.ID) (contracts.CoverageObservation, error) {
+	return b.Call[contracts.CoverageObservation](ctx, c.Host, "subscriptions.completion", in, b.Operation{})
 }

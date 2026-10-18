@@ -21,6 +21,15 @@
     },
     {
       "kind": "chain",
+      "id": "subscribe.completion.check",
+      "handler": "chain.4afddb122f33dd80085f2aaf",
+      "requiredScopes": [
+        "events.chain.subscribe.completion.check"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
       "id": "transfer.overwrite.check",
       "handler": "chain.531166e845423cd9ed3a83be",
       "requiredScopes": [
@@ -34,6 +43,15 @@
       "handler": "chain.77bffc20aebe71b2662717a7",
       "requiredScopes": [
         "events.chain.name.recognize"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "subscribe.episodes.refresh",
+      "handler": "chain.8fc8734ea37f981b357eef5e",
+      "requiredScopes": [
+        "events.chain.subscribe.episodes.refresh"
       ],
       "priority": 20
     },
@@ -70,6 +88,33 @@
       "handler": "chain.b810118e276124fee1affbaf",
       "requiredScopes": [
         "events.chain.storage.operation"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "discover.source",
+      "handler": "chain.bb9c970a027e0729c9e9f35b",
+      "requiredScopes": [
+        "events.chain.discover.source"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "recommend.source",
+      "handler": "chain.df2e280355c6590a762273cb",
+      "requiredScopes": [
+        "events.chain.recommend.source"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "media.recognize.convert",
+      "handler": "chain.efb24ee7e6566cd5d7e1de0f",
+      "requiredScopes": [
+        "events.chain.media.recognize.convert"
       ],
       "priority": 20
     },
@@ -231,6 +276,22 @@
       "handler": "event.3261f374a54afbfcccc825ff",
       "requiredScopes": [
         "events.subscribe.site.account.updated"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "metadata.scraped",
+      "handler": "event.51318e252b604df575837607",
+      "requiredScopes": [
+        "events.subscribe.metadata.scraped"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "subscription.coverage.completed",
+      "handler": "event.65574abd8320f637882aaf5b",
+      "requiredScopes": [
+        "events.subscribe.subscription.coverage.completed"
       ]
     },
     {

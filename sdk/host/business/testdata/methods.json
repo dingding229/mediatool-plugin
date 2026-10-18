@@ -273,7 +273,7 @@
     "name": "subscriptions.completion",
     "scope": "subscriptions.read",
     "level": "R",
-    "supported": false
+    "supported": true
   },
   {
     "name": "library.assets",

@@ -2,7 +2,7 @@
   "contractVersion": 2,
   "id": "hello-go",
   "name": "Hello Go",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "author": "Example Author",
   "description": "实例隔离与持久计数示例",
   "level": 1,
@@ -15,7 +15,8 @@
     "1.2.0": "Chain/module hooks, DownloadAdded, JSON forms, multi dashboards and bundled ESM",
     "1.3.0": "Manual F3 read-only host acceptance and denied-scope check",
     "1.4.0": "Typed acquisition facts and no-op resource policy chains (F4-A)",
-    "1.5.0": "Typed organizing facts and no-op safe transfer/storage policies (F4-B)"
+    "1.5.0": "Typed organizing facts and no-op safe transfer/storage policies (F4-B)",
+    "1.6.0": "Typed metadata/coverage and cached source no-op policies (F4-C)"
   },
   "permissions": [
     {
@@ -155,6 +156,27 @@
     },
     {
       "scope": "events.chain.storage.operation"
+    },
+    {
+      "scope": "events.subscribe.metadata.scraped"
+    },
+    {
+      "scope": "events.subscribe.subscription.coverage.completed"
+    },
+    {
+      "scope": "events.chain.media.recognize.convert"
+    },
+    {
+      "scope": "events.chain.subscribe.episodes.refresh"
+    },
+    {
+      "scope": "events.chain.subscribe.completion.check"
+    },
+    {
+      "scope": "events.chain.discover.source"
+    },
+    {
+      "scope": "events.chain.recommend.source"
     }
   ],
   "extensions": {
@@ -238,7 +260,9 @@
       "library.subtitles.failed",
       "library.history.hidden",
       "download.files.deleted",
-      "download.task.deleted"
+      "download.task.deleted",
+      "metadata.scraped",
+      "subscription.coverage.completed"
     ],
     "chains": [
       "name.recognize",
@@ -248,7 +272,12 @@
       "transfer.rename.build",
       "transfer.intercept",
       "transfer.overwrite.check",
-      "storage.operation"
+      "storage.operation",
+      "media.recognize.convert",
+      "subscribe.episodes.refresh",
+      "subscribe.completion.check",
+      "discover.source",
+      "recommend.source"
     ],
     "modules": [
       "metadata.name_recognize"

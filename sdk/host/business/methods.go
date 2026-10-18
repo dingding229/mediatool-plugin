@@ -55,7 +55,7 @@ func Methods() []Method {
 		{"subscriptions.evaluateRules", "subscriptions.rules", "R", true},
 		{"subscriptions.coverage", "subscriptions.rules", "R", true},
 		{"downloads.recheck", "downloads.control", "W", false},
-		{"subscriptions.completion", "subscriptions.read", "R", false},
+		{"subscriptions.completion", "subscriptions.read", "R", true},
 		{"library.assets", "library.read", "R", true},
 		{"library.candidates", "library.read", "R", true},
 		{"library.history", "library.read", "R", true},

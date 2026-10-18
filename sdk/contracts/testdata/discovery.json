@@ -1,0 +1,73 @@
+{
+  "discover.source": {
+    "items": [
+      {
+        "tmdbId": 1,
+        "mediaType": "series",
+        "title": "Demo",
+        "year": 2026
+      }
+    ],
+    "hasMore": false
+  },
+  "media.recognize.convert": {
+    "candidates": [
+      {
+        "tmdbId": 1,
+        "mediaType": "series"
+      }
+    ],
+    "selected": {
+      "tmdbId": 1,
+      "mediaType": "series"
+    }
+  },
+  "metadata.scraped": {
+    "objectId": "00000000-0000-0000-0000-000000000001",
+    "kind": "asset",
+    "tmdbId": 1,
+    "mediaType": "series",
+    "revision": "v1"
+  },
+  "subscribe.completion.check": {
+    "subscriptionId": "00000000-0000-0000-0000-000000000001",
+    "revision": 1,
+    "tmdbId": 1,
+    "season": 1,
+    "expected": [
+      1,
+      2
+    ],
+    "owned": [
+      1
+    ],
+    "complete": false
+  },
+  "subscribe.episodes.refresh": {
+    "subscriptionId": "00000000-0000-0000-0000-000000000001",
+    "revision": 1,
+    "tmdbId": 1,
+    "season": 1,
+    "expected": [
+      1,
+      2
+    ]
+  },
+  "subscription.coverage.completed": {
+    "subscriptionId": "00000000-0000-0000-0000-000000000001",
+    "revision": 1,
+    "tmdbId": 1,
+    "season": 1,
+    "expected": [
+      1,
+      2
+    ],
+    "owned": [
+      1
+    ],
+    "complete": false,
+    "state": "partial",
+    "evidence": "exposable_assets",
+    "observedAt": "2026-10-18T00:00:00Z"
+  }
+}

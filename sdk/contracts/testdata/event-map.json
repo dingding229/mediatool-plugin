@@ -217,7 +217,7 @@
     "name": "SubscribeComplete",
     "wire": "subscribe.complete",
     "type": "subscription.coverage.completed",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "拟新增 `subscriptions/completion.go:CoverageObserver.Observe`；读TMDB清单+可暴露资产",
     "phase": "F4-C；不是completeCollection，unknown不发完成，观测存插件专属表"
   },
@@ -235,7 +235,7 @@
     "name": "MetadataScrape",
     "wire": "metadata.scrape",
     "type": "metadata.scraped",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/scraping.go:Engine.EnrichScraping` + `PersistScrapeReport`提交；`nativetmdb/engine.go:Engine.Process`成功",
     "phase": "F4-C；不在浏览热路径现场刮削"
   },
@@ -390,7 +390,7 @@
     "name": "DiscoverSource",
     "wire": "discover.source",
     "type": "discover.source",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`catalog/home.go:Engine.Home`上层拟新增SourceRegistry、`metadata`搜索门面",
     "phase": "F4-C；后台缓存/分页，不在客户端首页同步等待所有worker"
   },
@@ -399,7 +399,7 @@
     "name": "MediaRecognizeConvert",
     "wire": "media.recognize.convert",
     "type": "media.recognize.convert",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`library/recognition.go:Engine.Recognize`、`confirm.go:Engine.Suggest`",
     "phase": "F4-C；TMDB类型/id组合校验"
   },
@@ -408,7 +408,7 @@
     "name": "RecommendSource",
     "wire": "recommend.source",
     "type": "recommend.source",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`catalog/home.go:Engine.Home`上层SourceRegistry",
     "phase": "F4-C；当前只有媒体库首页，需新adapter，不假装已有推荐引擎"
   },
@@ -444,7 +444,7 @@
     "name": "SubscribeEpisodesRefresh",
     "wire": "subscribe.episodes.refresh",
     "type": "subscribe.episodes.refresh",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "拟新增 `subscriptions/completion.go:CoverageObserver.ExpectedEpisodes`，复用TMDB Episodes",
     "phase": "F4-C；不能标记不存在文件为已拥有"
   },
@@ -453,7 +453,7 @@
     "name": "SubscribeCompletionCheck",
     "wire": "subscribe.completion.check",
     "type": "subscribe.completion.check",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "拟新增 `subscriptions/completion.go:CoverageObserver.Check`",
     "phase": "F4-C；必须再有宿主文件证据，不能凭插件布尔值禁用订阅"
   }

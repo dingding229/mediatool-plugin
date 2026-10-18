@@ -49,6 +49,18 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 			if v.ID == "storage.operation" {
 				args = events.ChainEnvelope{Type: contracts.ChainStorageOperSelection, SchemaVersion: 1, Payload: json.RawMessage(`{"handles":["00000000-0000-0000-0000-000000000001"],"selected":"00000000-0000-0000-0000-000000000001"}`)}
 			}
+			if v.ID == "media.recognize.convert" {
+				args = events.ChainEnvelope{Type: contracts.ChainEventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"candidates":[],"selected":null}`)}
+			}
+			if v.ID == "subscribe.episodes.refresh" || v.ID == "subscribe.completion.check" {
+				args = events.ChainEnvelope{Type: contracts.ChainEventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"subscriptionId":"00000000-0000-0000-0000-000000000001","revision":1,"tmdbId":1,"season":1,"expected":[1],"owned":[],"complete":false}`)}
+				if v.ID == "subscribe.episodes.refresh" {
+					args = events.ChainEnvelope{Type: contracts.ChainEventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"subscriptionId":"00000000-0000-0000-0000-000000000001","revision":1,"tmdbId":1,"season":1,"expected":[1]}`)}
+				}
+			}
+			if v.ID == "discover.source" || v.ID == "recommend.source" {
+				args = events.ChainEnvelope{Type: contracts.ChainEventType(v.ID), SchemaVersion: 1, Payload: json.RawMessage(`{"page":1,"size":200}`)}
+			}
 		case "module":
 			args = json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)
 		case "event":
