@@ -1,0 +1,72 @@
+{
+  "resource.download.request": {
+    "kind": "managed",
+    "resourceId": "00000000-0000-0000-0000-000000000001",
+    "downloaderId": "00000000-0000-0000-0000-000000000002",
+    "cleanupAfterImport": false
+  },
+  "resource.download.result": {
+    "allow": true,
+    "cleanupAfterImport": false
+  },
+  "resource.selection.request": {
+    "runId": "00000000-0000-0000-0000-000000000001",
+    "candidates": [
+      {
+        "id": "00000000-0000-0000-0000-000000000001",
+        "accountId": "00000000-0000-0000-0000-000000000002",
+        "size": 100,
+        "seeders": 3
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000002",
+        "accountId": "00000000-0000-0000-0000-000000000002",
+        "size": 0,
+        "seeders": 0
+      }
+    ]
+  },
+  "resource.selection.result": {
+    "ids": [
+      "00000000-0000-0000-0000-000000000002",
+      "00000000-0000-0000-0000-000000000001"
+    ]
+  },
+  "site.account.deleted": {
+    "accountId": "00000000-0000-0000-0000-000000000001",
+    "revision": 2,
+    "enabled": false
+  },
+  "site.account.updated": {
+    "accountId": "00000000-0000-0000-0000-000000000001",
+    "revision": 2,
+    "enabled": true
+  },
+  "site.metrics.refreshed": {
+    "accountId": "00000000-0000-0000-0000-000000000001",
+    "accountRevision": 2,
+    "state": "succeeded",
+    "attemptedAt": "2026-10-18T00:00:00Z"
+  },
+  "subscription.created": {
+    "subscriptionId": "00000000-0000-0000-0000-000000000002",
+    "revision": 1,
+    "enabled": true,
+    "mediaType": "movie",
+    "tmdbId": 1
+  },
+  "subscription.deleted": {
+    "subscriptionId": "00000000-0000-0000-0000-000000000002",
+    "revision": 3,
+    "enabled": false,
+    "mediaType": "movie",
+    "tmdbId": 1
+  },
+  "subscription.updated": {
+    "subscriptionId": "00000000-0000-0000-0000-000000000002",
+    "revision": 2,
+    "enabled": false,
+    "mediaType": "movie",
+    "tmdbId": 1
+  }
+}

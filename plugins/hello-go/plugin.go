@@ -52,6 +52,9 @@ func (p *Plugin) InitPlugin(ctx context.Context, c sdk.Config) error {
 	if e = p.events.OnChainPriority(events.ChainEventType("name.recognize"), 20, p.recognize); e != nil {
 		return e
 	}
+	if e = p.acquisitionEvents(); e != nil {
+		return e
+	}
 	p.running = true
 	return nil
 }

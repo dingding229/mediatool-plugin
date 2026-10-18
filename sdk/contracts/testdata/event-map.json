@@ -40,27 +40,30 @@
     "name": "SiteDeleted",
     "wire": "site.deleted",
     "type": "site.account.deleted",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`integrations/repository.go:Repository.Delete`，kind=ptsite提交后",
-    "phase": "F4-A；模板定义删除不冒充账号删除"
+    "phase": "F4-A；模板定义删除不冒充账号删除",
+    "stage": "F4-A"
   },
   {
     "kind": "event",
     "name": "SiteUpdated",
     "wire": "site.updated",
     "type": "site.account.updated",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`integrations/repository.go:Repository.Save`，ptsite安全字段diff",
-    "phase": "F4-A；无Cookie/passkey"
+    "phase": "F4-A；无Cookie/passkey",
+    "stage": "F4-A"
   },
   {
     "kind": "event",
     "name": "SiteRefreshed",
     "wire": "site.refreshed",
     "type": "site.metrics.refreshed",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`sitemetrics/collector.go:Engine.Collect` + `storage.go:Engine.Save`",
-    "phase": "F4-A；指标成功持久后"
+    "phase": "F4-A；指标成功持久后",
+    "stage": "F4-A"
   },
   {
     "kind": "event",
@@ -184,27 +187,30 @@
     "name": "SubscribeAdded",
     "wire": "subscribe.added",
     "type": "subscription.created",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`subscriptions/repository.go:Engine.Save`，新建成功提交",
-    "phase": "F4-A"
+    "phase": "F4-A",
+    "stage": "F4-A"
   },
   {
     "kind": "event",
     "name": "SubscribeModified",
     "wire": "subscribe.modified",
     "type": "subscription.updated",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`subscriptions/repository.go:Engine.Save`，已有revision变化提交",
-    "phase": "F4-A"
+    "phase": "F4-A",
+    "stage": "F4-A"
   },
   {
     "kind": "event",
     "name": "SubscribeDeleted",
     "wire": "subscribe.deleted",
     "type": "subscription.deleted",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`subscriptions/repository.go:Engine.Delete`提交",
-    "phase": "F4-A"
+    "phase": "F4-A",
+    "stage": "F4-A"
   },
   {
     "kind": "event",
@@ -364,18 +370,20 @@
     "name": "ResourceSelection",
     "wire": "resource.selection",
     "type": "resource.selection",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`subscriptions/evaluate.go:Engine.Run`、`search/filters.go:Engine.GetFiltered`上层",
-    "phase": "F4-A；只可选原始合法候选，不能构造未知下载源"
+    "phase": "F4-A；只可选原始合法候选，不能构造未知下载源",
+    "stage": "F4-A"
   },
   {
     "kind": "chain",
     "name": "ResourceDownload",
     "wire": "resource.download",
     "type": "resource.download",
-    "state": "deferred",
+    "state": "implemented",
     "producer": "`acquisition/downloads.go:Engine.StartExpectedFromRun`、`manualdownloads/tasks.go:Engine.Create`准备阶段",
-    "phase": "F4-A；HR/来源快照/所有权仍由内置服务强制"
+    "phase": "F4-A；HR/来源快照/所有权仍由内置服务强制",
+    "stage": "F4-A"
   },
   {
     "kind": "chain",

@@ -11,6 +11,24 @@
       "priority": 20
     },
     {
+      "kind": "chain",
+      "id": "resource.selection",
+      "handler": "chain.98441b2b9060ff2fe7e3c952",
+      "requiredScopes": [
+        "events.chain.resource.selection"
+      ],
+      "priority": 20
+    },
+    {
+      "kind": "chain",
+      "id": "resource.download",
+      "handler": "chain.9f33c48c06f32e8c91ecab2e",
+      "requiredScopes": [
+        "events.chain.resource.download"
+      ],
+      "priority": 20
+    },
+    {
       "kind": "module",
       "id": "metadata.name_recognize",
       "handler": "module.4674db29aceec54b3bb3f00c",
@@ -132,10 +150,58 @@
     },
     {
       "kind": "event",
+      "id": "site.account.updated",
+      "handler": "event.3261f374a54afbfcccc825ff",
+      "requiredScopes": [
+        "events.subscribe.site.account.updated"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "subscription.updated",
+      "handler": "event.91191d74febe20897d4099b2",
+      "requiredScopes": [
+        "events.subscribe.subscription.updated"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "site.metrics.refreshed",
+      "handler": "event.9bbaefb5ea43e3521ef092a7",
+      "requiredScopes": [
+        "events.subscribe.site.metrics.refreshed"
+      ]
+    },
+    {
+      "kind": "event",
       "id": "download.added",
       "handler": "event.a80f1b4a886ff1499eb8380f",
       "requiredScopes": [
         "events.subscribe.download.added"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "site.account.deleted",
+      "handler": "event.d1d1d9e9a4bc7930d585c450",
+      "requiredScopes": [
+        "events.subscribe.site.account.deleted"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "subscription.deleted",
+      "handler": "event.d3472c9b818414e90af370ba",
+      "requiredScopes": [
+        "events.subscribe.subscription.deleted"
+      ]
+    },
+    {
+      "kind": "event",
+      "id": "subscription.created",
+      "handler": "event.de6b5737fdfce0c525abb961",
+      "requiredScopes": [
+        "events.subscribe.subscription.created"
       ]
     },
     {

@@ -35,6 +35,12 @@ func TestBoundDescriptorsStableAndInvokeGolden(t *testing.T) {
 			args = contracts.ActionContext{Data: map[string]json.RawMessage{}}
 		case "chain":
 			args = events.ChainEnvelope{Type: contracts.ChainNameRecognize, SchemaVersion: 1, Payload: json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)}
+			if v.ID == "resource.selection" {
+				args = events.ChainEnvelope{Type: contracts.ChainResourceSelection, SchemaVersion: 1, Payload: json.RawMessage(`{"runId":"00000000-0000-0000-0000-000000000001","candidates":[]}`)}
+			}
+			if v.ID == "resource.download" {
+				args = events.ChainEnvelope{Type: contracts.ChainResourceDownload, SchemaVersion: 1, Payload: json.RawMessage(`{"kind":"manual","resourceId":"00000000-0000-0000-0000-000000000001","downloaderId":"00000000-0000-0000-0000-000000000001","cleanupAfterImport":false}`)}
+			}
 		case "module":
 			args = json.RawMessage(`{"name":"Demo.2025.mkv","hint":{"title":"Demo","year":"2025","mediaType":"movie","season":0,"episodes":[]},"continue":true}`)
 		case "event":
