@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
+	"github.com/dingding229/mediatool-plugin/sdk/host/business"
 	"sync"
 	"time"
 )
@@ -19,6 +20,7 @@ type Host struct {
 	calls    []string
 	messages []contracts.Message
 	failures map[string]failure
+	business map[string]func(context.Context, json.RawMessage) (any, *contracts.Error)
 }
 type failure struct {
 	code  contracts.Code
@@ -94,11 +96,25 @@ func (h *Host) Handle(ctx context.Context, b json.RawMessage) (any, *contracts.E
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	scope := methodScope(call.Method)
+	spec, isBusiness := business.Lookup(call.Method)
+	if isBusiness {
+		scope = spec.Scope
+	}
 	if scope == "" {
 		return nil, contracts.NewError(contracts.MethodNotFound)
 	}
 	if !h.scopes[scope] {
 		return nil, contracts.NewError(contracts.PermissionDenied)
+	}
+	if isBusiness {
+		if !spec.Supported {
+			return nil, contracts.NewError(contracts.Unsupported)
+		}
+		fn := h.business[call.Method]
+		if fn == nil {
+			return nil, contracts.NewError(contracts.Unsupported)
+		}
+		return fn(ctx, call.Args)
 	}
 	var key struct {
 		Key string `json:"key"`
@@ -162,4 +178,19 @@ func (h *Host) Handle(ctx context.Context, b json.RawMessage) (any, *contracts.E
 		return struct{}{}, nil
 	}
 	return nil, contracts.NewError(contracts.MethodNotFound)
+}
+
+// OnBusiness registers deterministic fixture behavior, not a fabricated business implementation.
+// The mock still checks the shared per-method scope before invoking it.
+func (h *Host) OnBusiness(method string, fn func(context.Context, json.RawMessage) (any, *contracts.Error)) error {
+	if _, ok := business.Lookup(method); !ok || fn == nil {
+		return contracts.NewError(contracts.InvalidParams)
+	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	if h.business == nil {
+		h.business = map[string]func(context.Context, json.RawMessage) (any, *contracts.Error){}
+	}
+	h.business[method] = fn
+	return nil
 }

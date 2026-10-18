@@ -96,3 +96,18 @@ func (c *Client) PostMessage(ctx context.Context, m contracts.Message) error {
 	}
 	return c.call(ctx, "notifications.send", m, nil, nil)
 }
+
+// Invoke is used by typed module clients; it grants no authority and exposes no host objects.
+func (c *Client) Invoke(ctx context.Context, method string, args any, key string, rev *int64, out any) error {
+	if c == nil || c.rpc == nil || ctx == nil || rev != nil && *rev < 0 {
+		return contracts.NewError(contracts.InvalidParams)
+	}
+	raw, e := json.Marshal(args)
+	if e != nil || len(raw) > 128<<10 {
+		return contracts.NewError(contracts.InvalidParams)
+	}
+	if e = contracts.ValidateJSON(raw); e != nil {
+		return e
+	}
+	return c.rpc.Call(ctx, "host.call", contracts.HostCall{Method: method, Args: raw, OperationKey: key, ExpectedRevision: rev}, out)
+}

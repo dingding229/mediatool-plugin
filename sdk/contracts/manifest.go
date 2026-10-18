@@ -115,7 +115,7 @@ func ParseManifest(raw []byte) (Manifest, error) {
 		seen[p.Scope] = true
 		for k, ids := range p.Resources {
 			switch k {
-			case "libraryIds", "storageIds", "siteIds", "rootIds", "hosts", "eventTypes", "settingKeys", "workflowIds":
+			case "libraryIds", "storageIds", "siteIds", "downloaderIds", "rootIds", "hosts", "eventTypes", "settingKeys", "workflowIds":
 			default:
 				return m, NewError(InvalidParams)
 			}

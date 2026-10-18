@@ -26,6 +26,7 @@ const (
 	ResultUnknown          Code = -32011
 	PayloadTooLarge        Code = -32012
 	InvalidExtensionResult Code = -32013
+	Unsupported            Code = -32014
 )
 
 type ErrorData struct {
@@ -40,6 +41,8 @@ type Error struct {
 
 func Reason(c Code) string {
 	switch c {
+	case Unsupported:
+		return "unsupported"
 	case ParseError:
 		return "parse_error"
 	case InvalidRequest:

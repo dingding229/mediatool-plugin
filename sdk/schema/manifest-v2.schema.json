@@ -87,6 +87,9 @@
               "storageIds": {
                 "$ref": "#/$defs/ids"
               },
+              "downloaderIds": {
+                "$ref": "#/$defs/ids"
+              },
               "siteIds": {
                 "$ref": "#/$defs/ids"
               },

@@ -87,3 +87,23 @@ two dashboard keys and an ESM entry importing `@mediatool/plugin-ui`. The host
 bundles this facade and plugin sources in **one** Vite graph; no runtime download,
 string rewriting, eval or duplicate Vue runtime is permitted. Same-page ESM is
 trusted administrator-approved code, not a security sandbox.
+
+
+## F3-A typed acquisition Host clients
+
+`host/downloads`, `host/search`, `host/sites`, `host/subscriptions` share the
+credential-free DTOs and exact method/scope/level table in `host/business`.
+Pass `sdk.Host`'s `*host.Client` to `New`. Mutations require an explicit stable
+`business.Operation{Key: "caller-request-id", Confirm: true}`; update/delete also
+require the target revision where specified by the host. Retry an uncertain call
+with the same key to inspect its recorded outcome, never invent a new key to
+blindly repeat a side effect. Host checks declarations and live grants, not SDK
+claims. `siteIds`, `hosts` and `downloaderIds` may narrow approved resources.
+
+No credentials, tracker passkeys, download hints or arbitrary settings are DTOs.
+`SiteRequest` yields status/matched/needs_action, not authentication headers or
+raw HTML (Raw is explicitly unsupported). `downloads.recheck` and
+`subscriptions.completion` return `unsupported`; coverage only parses filenames,
+not evidence that a TV subscription completed. `plugintest.Host.OnBusiness`
+installs deterministic test behaviors and remains deny-by-default, rather than
+pretending to be a real downloader/site.
