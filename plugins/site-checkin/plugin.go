@@ -81,7 +81,7 @@ func (p *Plugin) StopService(context.Context) error {
 	return nil
 }
 func (p *Plugin) GetService(context.Context) ([]sdk.Service, error) {
-	return []sdk.Service{{ID: "checkin", Name: "受控站点签到（UTC）", Trigger: "cron", Cron: p.config.Cron, ScheduleSetting: "active", RequiredScopes: []string{"plugin.data.read", "plugin.data.write", "sites.request", "notifications.send"}, Handler: p.checkin}}, nil
+	return []sdk.Service{{ID: "checkin", Name: "受控站点签到（宿主时区）", Trigger: "cron", Cron: p.config.Cron, ScheduleSetting: "active", RequiredScopes: []string{"plugin.data.read", "plugin.data.write", "sites.request", "notifications.send"}, Handler: p.checkin}}, nil
 }
 func (p *Plugin) checkin(ctx context.Context, _ json.RawMessage) error {
 	p.mu.Lock()
@@ -137,7 +137,7 @@ func (p *Plugin) checkin(ctx context.Context, _ json.RawMessage) error {
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
 	return sdk.Form{Content: []contracts.Component{
-		acceptance.Field("VSwitch", "active", "启用定时签到（须先配置）"), acceptance.Field("VTextField", "accountId", "已配置站点账号 ID"), acceptance.Field("VTextField", "origin", "精确 Origin（非凭据）"), acceptance.Field("VTextField", "path", "签到相对路径"), acceptance.Field("VTextField", "precheckPath", "可选只读签到状态路径"), acceptance.Field("VTextField", "method", "GET 或 POST"), acceptance.Field("VTextField", "body", "可选 POST 表单（禁止填凭据）"), acceptance.Field("VTextField", "successMarker", "成功标记（字面量，≤200 字节）"), acceptance.Field("VTextField", "cron", "UTC cron")}, Defaults: json.RawMessage(`{"active":false,"path":"/attendance.php","method":"GET","cron":"0 8 * * *"}`)}, nil
+		acceptance.Field("VSwitch", "active", "启用定时签到（须先配置）"), acceptance.Field("VTextField", "accountId", "已配置站点账号 ID"), acceptance.Field("VTextField", "origin", "精确 Origin（非凭据）"), acceptance.Field("VTextField", "path", "签到相对路径"), acceptance.Field("VTextField", "precheckPath", "可选只读签到状态路径"), acceptance.Field("VTextField", "method", "GET 或 POST"), acceptance.Field("VTextField", "body", "可选 POST 表单（禁止填凭据）"), acceptance.Field("VTextField", "successMarker", "成功标记（字面量，≤200 字节）"), acceptance.Field("VTextField", "cron", "cron（Asia/Shanghai）")}, Defaults: json.RawMessage(`{"active":false,"path":"/attendance.php","method":"GET","cron":"0 8 * * *"}`)}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	v, _, e := acceptance.Load[Result](ctx, p.host, "last-checkin")

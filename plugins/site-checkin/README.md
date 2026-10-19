@@ -1,7 +1,7 @@
 # 站点自动签到（site-checkin 1.0.0）
 
 默认 `active=false`，初始化不请求站点。每实例绑定一个宿主已配置的账号；多个账号用分身。
-配置 `accountId`、精确 `origin`、相对 `path`、`GET/POST`、`successMarker`、UTC 五段 cron。
+配置 `accountId`、精确 `origin`、相对 `path`、`GET/POST`、`successMarker`、宿主 Asia/Shanghai 五段 cron。
 可选 `precheckPath` 先只读检查当日状态：匹配后不再签到；验证码、非 2xx 或不可判定失败需人工处理。
 Cookie、passkey、认证 header 只能配置在宿主站点账号内，不要放进插件配置的 path/body。
 
@@ -21,3 +21,5 @@ Host 收据现有保留期 7 日，本实例当日 checkpoint 在跨进程重启
 
 权限：自身 config/KV、ui.json、services.register、危险 sites.request、notifications.send。
 测试只用 mock Host 和合成 HTTP 上游，不接真实站点。`testdata/` 固定 manifest/descriptor golden。
+
+cron 时区沿用宿主 scheduling.Timezone（Asia/Shanghai），不是 worker 环境中的 TZ=UTC；每日幂等周期明确按 UTC 日，不能据此推断任意站点的日界。

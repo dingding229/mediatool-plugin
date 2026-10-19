@@ -12,7 +12,7 @@
         "sites.request",
         "notifications.send"
       ],
-      "name": "受控站点签到（UTC）",
+      "name": "受控站点签到（宿主时区）",
       "trigger": "cron",
       "cron": "0 8 * * *",
       "scheduleSetting": "active"
