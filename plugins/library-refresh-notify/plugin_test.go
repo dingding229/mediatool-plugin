@@ -126,3 +126,23 @@ func TestUnknownRevocationCapacityAndInactive(t *testing.T) {
 		t.Fatal("unbounded ledger")
 	}
 }
+
+func TestUnknownNotificationReceiptNeverBecomesNotified(t *testing.T) {
+	p, h, _, _ := setup(t, true)
+	n := 0
+	if e := h.OnBusiness("notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) {
+		n++
+		return b.Receipt{State: "unknown"}, nil
+	}); e != nil {
+		t.Fatal(e)
+	}
+	for range 2 {
+		if e := p.onTransfer(context.Background(), event(1, asset)); e == nil {
+			t.Fatal("unknown receipt claimed success")
+		}
+	}
+	var s State
+	if _, e := h.Client().GetData(context.Background(), "refresh-state", &s); e != nil || s.Events[0].Notified || n != 2 {
+		t.Fatal(e, s, n)
+	}
+}

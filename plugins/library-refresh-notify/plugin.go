@@ -125,9 +125,12 @@ func (p *Plugin) onTransfer(ctx context.Context, e events.Envelope) error {
 	if s.Events[index].Notified {
 		return nil
 	}
-	_, err = notifications.New(p.host).Send(ctx, b.Notice{Title: "媒体入库已确认", Text: "资产 " + fact.AssetID + " 已加入插件待刷新队列；不代表媒体服务器刷新完成。"}, b.Operation{Key: "import-notice:" + e.ID, Confirm: true})
+	notice, err := notifications.New(p.host).Send(ctx, b.Notice{Title: "媒体入库已确认", Text: "资产 " + fact.AssetID + " 已加入插件待刷新队列；不代表媒体服务器刷新完成。"}, b.Operation{Key: "import-notice:" + e.ID, Confirm: true})
 	if err != nil {
 		return err
+	}
+	if notice.State != "queued" {
+		return acceptance.RequireAction(ctx, p.host, "import-attention:"+e.ID, "notification_unconfirmed")
 	}
 	s.Events[index].Notified = true
 	_, err = p.host.SaveData(ctx, "refresh-state", s, rev)
