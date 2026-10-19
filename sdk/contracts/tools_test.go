@@ -23,3 +23,14 @@ func TestToolSchemaBoundsAndRejectsUnknownKeywords(t *testing.T) {
 		}
 	}
 }
+func TestToolNumbersDoNotRoundFractionalIntegersOrEnumerations(t *testing.T) {
+	if ValidateToolInput([]byte(`{"type":"integer"}`), []byte(`9007199254740992.1`)) == nil {
+		t.Fatal("fraction rounded into integer")
+	}
+	if ValidateToolInput([]byte(`{"type":"number","enum":[1]}`), []byte(`1.0`)) != nil {
+		t.Fatal("numeric enum not semantic")
+	}
+	if ValidateToolInput([]byte(`{"type":"number"}`), []byte(`1e-999999999`)) == nil {
+		t.Fatal("unbounded exponent")
+	}
+}

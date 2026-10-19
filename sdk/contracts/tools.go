@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"math"
+	"math/big"
 	"reflect"
 	"regexp"
+	"strconv"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -111,7 +114,7 @@ func ValidateToolInput(schema, input json.RawMessage) error {
 				var other any
 				d := json.NewDecoder(bytes.NewReader(b))
 				d.UseNumber()
-				if d.Decode(&other) == nil && reflect.DeepEqual(v, other) {
+				if d.Decode(&other) == nil && toolEqual(v, other) {
 					found = true
 				}
 			}
@@ -163,7 +166,8 @@ func ValidateToolInput(schema, input json.RawMessage) error {
 				return false
 			}
 			f, e := n.Float64()
-			if e != nil || math.IsInf(f, 0) || math.IsNaN(f) || x.Type == "integer" && math.Trunc(f) != f || x.Minimum != nil && f < *x.Minimum || x.Maximum != nil && f > *x.Maximum {
+			rat, valid := toolNumber(n)
+			if e != nil || !valid || math.IsInf(f, 0) || math.IsNaN(f) || x.Type == "integer" && !rat.IsInt() || x.Minimum != nil && f < *x.Minimum || x.Maximum != nil && f > *x.Maximum {
 				return false
 			}
 		case "boolean":
@@ -192,4 +196,56 @@ func ValidTool(d Descriptor) bool {
 	}
 	_, e := ParseToolSchema(d.InputSchema)
 	return e == nil
+}
+
+// Bound exponent/lexeme work before exact integer and enum comparisons.
+func toolNumber(n json.Number) (*big.Rat, bool) {
+	s := n.String()
+	if len(s) > 128 {
+		return nil, false
+	}
+	if i := strings.IndexAny(s, "eE"); i >= 0 {
+		e, err := strconv.Atoi(s[i+1:])
+		if err != nil || e < -308 || e > 308 {
+			return nil, false
+		}
+	}
+	r, ok := new(big.Rat).SetString(s)
+	return r, ok
+}
+func toolEqual(a, b any) bool {
+	switch x := a.(type) {
+	case json.Number:
+		y, ok := b.(json.Number)
+		if !ok {
+			return false
+		}
+		p, ok := toolNumber(x)
+		q, valid := toolNumber(y)
+		return ok && valid && p.Cmp(q) == 0
+	case []any:
+		y, ok := b.([]any)
+		if !ok || len(x) != len(y) {
+			return false
+		}
+		for i, v := range x {
+			if !toolEqual(v, y[i]) {
+				return false
+			}
+		}
+		return true
+	case map[string]any:
+		y, ok := b.(map[string]any)
+		if !ok || len(x) != len(y) {
+			return false
+		}
+		for k, v := range x {
+			other, ok := y[k]
+			if !ok || !toolEqual(v, other) {
+				return false
+			}
+		}
+		return true
+	}
+	return reflect.DeepEqual(a, b)
 }
