@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
+	"github.com/dingding229/mediatool-plugin/sdk/host"
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
 	"github.com/dingding229/mediatool-plugin/sdk/plugintest"
 	"strings"
@@ -39,7 +40,7 @@ func fixture(t *testing.T) (*Plugin, *plugintest.Host, *b.MediaFile, *int) {
 		if contracts.Decode(raw, &in) != nil || in.Operation != "organize" || in.Name != "" || in.ExpectedModified == nil || *in.ExpectedModified != f.Modified || in.ExpectedFileID != f.ID || in.ExpectedSize == nil {
 			t.Error(string(raw))
 		}
-		return b.FilePlan{ID: "plan", State: "preview", Digest: strings.Repeat("a", 64)}, nil
+		return b.FilePlan{ID: "plan", Revision: 3, State: "preview", Digest: strings.Repeat("a", 64)}, nil
 	})
 	h.OnBusiness("fs.media.apply", func(context.Context, json.RawMessage) (any, *contracts.Error) {
 		*n++
@@ -48,10 +49,11 @@ func fixture(t *testing.T) (*Plugin, *plugintest.Host, *b.MediaFile, *int) {
 	h.OnBusiness("fs.media.get", func(context.Context, json.RawMessage) (any, *contracts.Error) {
 		return b.FilePlan{ID: "plan", State: "succeeded"}, nil
 	})
+	p.host = host.New(revisionCaller{h: h})
 	return p, h, f, n
 }
 func TestQuietCoalesceRestartAndDuplicate(t *testing.T) {
-	p, h, f, n := fixture(t)
+	p, _, f, n := fixture(t)
 	ctx := context.Background()
 	if e := p.run(ctx, nil); e != nil || *n != 0 {
 		t.Fatal(e, *n)
@@ -67,7 +69,7 @@ func TestQuietCoalesceRestartAndDuplicate(t *testing.T) {
 		t.Fatal(e, *n)
 	}
 	// A fresh worker uses the persisted quiet observation, rather than losing its queue.
-	restarted := New(sdk.Services{Host: h.Client()}).(*Plugin)
+	restarted := New(sdk.Services{Host: p.host}).(*Plugin)
 	restarted.config = p.config
 	restarted.running = true
 	restarted.now = func() time.Time { return time.Unix(1000050, 0) }
@@ -154,4 +156,31 @@ func TestMissingMtimeIsExplicitUnsupportedNotInventedStability(t *testing.T) {
 	if !errors.As(err, &rpc) || rpc.Code != contracts.Unsupported || *n != 0 {
 		t.Fatal(err, *n)
 	}
+}
+
+// The core apply contract requires the preview root revision as well as digest.
+// Keep the mock honest so a nil revision cannot appear successful again.
+type revisionCaller struct{ h *plugintest.Host }
+
+func (c revisionCaller) Call(ctx context.Context, method string, in, out any) error {
+	q, ok := in.(contracts.HostCall)
+	if !ok {
+		return contracts.NewError(contracts.InvalidParams)
+	}
+	if q.Method == "fs.media.apply" && (q.ExpectedRevision == nil || *q.ExpectedRevision != 3) {
+		return contracts.NewError(contracts.Conflict)
+	}
+	raw, e := json.Marshal(in)
+	if e != nil {
+		return e
+	}
+	v, rpc := c.h.Handle(ctx, raw)
+	if rpc != nil {
+		return rpc
+	}
+	raw, e = json.Marshal(v)
+	if e != nil {
+		return e
+	}
+	return json.Unmarshal(raw, out)
 }

@@ -181,7 +181,7 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 		if e = save(); e != nil {
 			return e
 		}
-		r, err := client.Apply(ctx, b.Approval{ID: v.Plan.ID, Digest: v.Plan.Digest}, b.Operation{Key: v.Key + ":apply", Confirm: true})
+		r, err := client.Apply(ctx, b.Approval{ID: v.Plan.ID, Digest: v.Plan.Digest}, b.Operation{Key: v.Key + ":apply", Revision: &v.Plan.Revision, Confirm: true})
 		if err != nil || r.State != "succeeded" {
 			return acceptance.RequireAction(ctx, p.host, "watch-apply", "watch_outcome_unknown")
 		}
