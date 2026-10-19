@@ -129,8 +129,11 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 	}
 	next := []Observation{}
 	for _, f := range page.Items {
-		if f.Unsupported || f.Directory || f.ID == "" || f.Modified <= 0 || !media(f.Name) {
+		if f.Unsupported || f.Directory || f.ID == "" || !media(f.Name) {
 			continue
+		}
+		if f.Modified <= 0 {
+			return contracts.NewError(contracts.Unsupported)
 		}
 		if !relative(f.Path) || path.Dir(f.Path) != p.config.Directory {
 			return contracts.NewError(contracts.InvalidExtensionResult)

@@ -3,6 +3,7 @@ package watch
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
@@ -142,5 +143,15 @@ func TestPathsAndInactive(t *testing.T) {
 	p.config.Active = false
 	if e := p.run(context.Background(), nil); e != nil || len(h.Calls()) != 0 {
 		t.Fatal(e)
+	}
+}
+
+func TestMissingMtimeIsExplicitUnsupportedNotInventedStability(t *testing.T) {
+	p, _, f, n := fixture(t)
+	f.Modified = 0
+	err := p.run(context.Background(), nil)
+	var rpc *contracts.Error
+	if !errors.As(err, &rpc) || rpc.Code != contracts.Unsupported || *n != 0 {
+		t.Fatal(err, *n)
 	}
 }
