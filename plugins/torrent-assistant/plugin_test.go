@@ -113,3 +113,21 @@ func TestInactiveNoConnections(t *testing.T) {
 		t.Fatal(e)
 	}
 }
+
+func TestStatusUIIsBounded(t *testing.T) {
+	p, h, _, _, _ := setup(t, false, false)
+	s := State{}
+	for range 200 {
+		s.Items = append(s.Items, Sample{ID: "id", Hash: "hash", State: "preview"})
+	}
+	h.Client().SaveData(context.Background(), "assistant-state", s, 0)
+	page, e := p.GetPage(context.Background(), sdk.PageRequest{})
+	if e != nil || len(page.Content) != 21 {
+		t.Fatal(e, len(page.Content))
+	}
+	for _, v := range page.Content {
+		if len(v.Props["text"]) > 8192 {
+			t.Fatal("unrenderable status")
+		}
+	}
+}

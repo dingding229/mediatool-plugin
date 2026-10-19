@@ -151,3 +151,21 @@ func TestLimitsAndUnknownAreNotSuccess(t *testing.T) {
 		}
 	}
 }
+
+func TestPendingUIStaysBounded(t *testing.T) {
+	p, h, _, _ := setup(t, false)
+	s := State{}
+	for i := range 200 {
+		s.Pending = append(s.Pending, Pending{Entry: b.WishlistEntry{SourceID: strconv.Itoa(i), Title: "Synthetic"}, Candidates: []b.Media{{ID: 1, MediaType: "movie", Title: "Synthetic"}}})
+	}
+	h.Client().SaveData(context.Background(), "wishlist-state", s, 0)
+	page, e := p.GetPage(context.Background(), sdk.PageRequest{})
+	if e != nil || len(page.Content) > 12 {
+		t.Fatal(e, len(page.Content))
+	}
+	for _, v := range page.Content {
+		if len(v.Props["text"]) > 8192 {
+			t.Fatal("unrenderable pending page")
+		}
+	}
+}

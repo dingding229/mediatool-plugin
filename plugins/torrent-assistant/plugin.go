@@ -261,8 +261,15 @@ func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "assistant-state")
-	raw, _ := json.Marshal(s)
-	return sdk.Page{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(string(raw))}}}}, e
+	nodes := []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(fmt.Sprintf("状态 %s；任务 %d；显示前20项", s.Status, len(s.Items)))}}}
+	for i, v := range s.Items {
+		if i >= 20 {
+			break
+		}
+		raw, _ := json.Marshal(v)
+		nodes = append(nodes, contracts.Component{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(string(raw))}})
+	}
+	return sdk.Page{Content: nodes}, e
 }
 
 func (p *Plugin) GetDashboard(ctx context.Context, q sdk.DashboardRequest) (sdk.Dashboard, error) {

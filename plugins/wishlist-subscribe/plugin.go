@@ -134,7 +134,11 @@ func (p *Plugin) matches(ctx context.Context, e b.WishlistEntry) ([]b.Media, err
 		}
 		for _, m := range r {
 			if sameTitle(m.Title, e.Title) && (e.Year == "" || m.Year == e.Year) {
-				out = append(out, m)
+				name := []rune(m.Title)
+				if len(name) > 64 {
+					name = name[:64]
+				}
+				out = append(out, b.Media{ID: m.ID, MediaType: m.MediaType, Title: string(name), Year: m.Year})
 				if len(out) > 20 {
 					return nil, contracts.NewError(contracts.PayloadTooLarge)
 				}
@@ -207,7 +211,12 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 				if len(s.Pending) >= 200 {
 					return p.backoff(ctx, s, rev, "pending_full")
 				}
-				s.Pending = append(s.Pending, Pending{Entry: entry, Candidates: candidates})
+				next := append(append([]Pending{}, s.Pending...), Pending{Entry: entry, Candidates: candidates})
+				raw, _ := json.Marshal(next)
+				if len(raw) > 64<<10 {
+					return p.backoff(ctx, s, rev, "pending_full")
+				}
+				s.Pending = next
 			}
 		}
 		s.Offset++
@@ -265,6 +274,15 @@ func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "wishlist-state")
-	raw, _ := json.Marshal(s)
-	return sdk.Page{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(string(raw))}}}}, e
+	nodes := []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(fmt.Sprintf("状态 %s；待确认 %d；确保次数 %d；仅显示前5条，处理后刷新", s.Status, len(s.Pending), s.Ensured))}}}
+	for i, v := range s.Pending {
+		if i >= 5 {
+			break
+		}
+		nodes = append(nodes, contracts.Component{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(v.Entry.SourceID + " / " + v.Entry.Title + " / " + v.Entry.Year)}})
+		for _, m := range v.Candidates {
+			nodes = append(nodes, contracts.Component{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(fmt.Sprintf("候选 tmdbId=%d mediaType=%s title=%s year=%s", m.ID, m.MediaType, m.Title, m.Year))}})
+		}
+	}
+	return sdk.Page{Content: nodes}, e
 }
