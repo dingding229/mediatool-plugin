@@ -56,7 +56,10 @@ type Plugin struct {
 	now     func() time.Time
 }
 
-func New(s sdk.Services) sdk.Plugin { return &Plugin{host: s.Host, now: time.Now} }
+func New(s sdk.Services) sdk.Plugin {
+	var _ sdk.ActionProvider = (*Plugin)(nil)
+	return &Plugin{host: s.Host, now: time.Now}
+}
 func accounts(s string) []string {
 	out := []string{}
 	for _, v := range strings.Split(s, ",") {

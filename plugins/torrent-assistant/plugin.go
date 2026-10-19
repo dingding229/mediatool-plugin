@@ -60,7 +60,10 @@ type Plugin struct {
 	now     func() time.Time
 }
 
-func New(s sdk.Services) sdk.Plugin { return &Plugin{host: s.Host, now: time.Now} }
+func New(s sdk.Services) sdk.Plugin {
+	var _ sdk.ActionProvider = (*Plugin)(nil)
+	return &Plugin{host: s.Host, now: time.Now}
+}
 func (p *Plugin) InitPlugin(_ context.Context, c sdk.Config) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
