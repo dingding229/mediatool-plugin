@@ -1,0 +1,93 @@
+{
+  "contractVersion": 2,
+  "id": "torrent-assistant",
+  "name": "下载器助手",
+  "version": "1.0.0",
+  "author": "Media Tool Contributors",
+  "description": "默认只提示；所有标签/分类/限制/校验经宿主所有权、HR、fence 和收据保护。",
+  "level": 2,
+  "icon": "icon.svg",
+  "history": {
+    "1.0.0": "F6-γ：默认停用，合成来源验收，有界输入/队列，危险写操作需管理员确认"
+  },
+  "permissions": [
+    {
+      "scope": "plugin.config.read"
+    },
+    {
+      "scope": "plugin.data.read"
+    },
+    {
+      "scope": "plugin.data.write"
+    },
+    {
+      "scope": "ui.json"
+    },
+    {
+      "scope": "services.register"
+    },
+    {
+      "scope": "notifications.send"
+    },
+    {
+      "scope": "downloads.read"
+    },
+    {
+      "scope": "downloads.control"
+    },
+    {
+      "scope": "actions.register"
+    },
+    {
+      "scope": "commands.register"
+    },
+    {
+      "scope": "api.register"
+    }
+  ],
+  "extensions": {
+    "forms": true,
+    "pages": [
+      "status"
+    ],
+    "services": [
+      "assist"
+    ],
+    "actions": [
+      "assist"
+    ],
+    "commands": [
+      "downloader-status"
+    ],
+    "dashboards": [
+      "overview"
+    ],
+    "api": [
+      {
+        "id": "status",
+        "path": "/status",
+        "methods": [
+          "GET"
+        ],
+        "auth": "admin",
+        "executionScopes": [
+          "plugin.data.read"
+        ]
+      }
+    ]
+  },
+  "ui": {
+    "mode": "json"
+  },
+  "resources": {
+    "addressSpaceMiB": 8192,
+    "rssMiB": 256,
+    "cpuQuotaPercent": 100,
+    "processes": 64,
+    "openFiles": 256,
+    "dataMiB": 256,
+    "tmpMiB": 64
+  },
+  "configSchemaVersion": 1,
+  "dataSchemaVersion": 1
+}

@@ -59,6 +59,11 @@ type Resource struct {
 	DownloadFactor *float64 `json:"downloadFactor,omitempty"`
 }
 type Task struct {
+	DownloadLimit   *int64     `json:"downloadLimit,omitempty"`
+	UploadLimit     *int64     `json:"uploadLimit,omitempty"`
+	RatioLimit      *float64   `json:"ratioLimit,omitempty"`
+	SeedingMinutes  *int64     `json:"seedingMinutes,omitempty"`
+	AutoManaged     *bool      `json:"autoManaged,omitempty"`
 	SeedingState    string     `json:"seedingState,omitempty"`
 	SiteID          string     `json:"siteId,omitempty"`
 	Category        string     `json:"category,omitempty"`

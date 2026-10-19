@@ -46,3 +46,7 @@ func (c *Client) NativeDetails(ctx context.Context, in b.NativeTarget) (b.Native
 func (c *Client) RefreshDetails(ctx context.Context, in b.NativeTarget, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "metadata.refreshDetails", in, op)
 }
+
+func (c *Client) Wishlist(ctx context.Context, in b.WishlistRequest) (b.WishlistPage, error) {
+	return b.Call[b.WishlistPage](ctx, c.Host, "metadata.wishlist", in, b.Operation{})
+}

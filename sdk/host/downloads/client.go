@@ -74,3 +74,7 @@ func (c *Client) ParseTorrent(ctx context.Context, in b.TorrentInput) (b.Torrent
 func (c *Client) UploadControl(ctx context.Context, in b.UploadControl, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "downloads.uploadControl", in, op)
 }
+
+func (c *Client) Configure(ctx context.Context, in b.DownloaderConfig, op b.Operation) (b.Receipt, error) {
+	return b.Call[b.Receipt](ctx, c.Host, "downloads.downloader.configure", in, op)
+}

@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "descriptors": [
+    {
+      "kind": "service",
+      "id": "sync",
+      "handler": "service.4608a74672b00d5dc4fda3b4",
+      "requiredScopes": [
+        "services.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "metadata.read",
+        "subscriptions.read",
+        "subscriptions.write",
+        "library.read"
+      ],
+      "name": "拉取公开想看并创建订阅",
+      "trigger": "interval",
+      "intervalMs": 1800000,
+      "scheduleSetting": "active"
+    },
+    {
+      "kind": "ui",
+      "id": "form",
+      "handler": "ui.437f72de2c4c718727be8489",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "page.status",
+      "handler": "ui.ffe19f3c029bb245b79ea212",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    }
+  ]
+}

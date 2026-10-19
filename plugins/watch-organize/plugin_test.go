@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"github.com/dingding229/mediatool-plugin/sdk/host"
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
+	"github.com/dingding229/mediatool-plugin/sdk/host/files"
 	"github.com/dingding229/mediatool-plugin/sdk/plugintest"
 	"strings"
 	"testing"
@@ -183,4 +185,67 @@ func (c revisionCaller) Call(ctx context.Context, method string, in, out any) er
 		return e
 	}
 	return json.Unmarshal(raw, out)
+}
+
+func TestBoundedRecursiveLeafQuietDepthAndLinkRefusal(t *testing.T) {
+	p, h, _, n := fixture(t)
+	calls := []string{}
+	h.OnBusiness("fs.media.list", func(_ context.Context, raw json.RawMessage) (any, *contracts.Error) {
+		var q b.FileQuery
+		json.Unmarshal(raw, &q)
+		calls = append(calls, q.Path)
+		items := []b.MediaFile{}
+		switch q.Path {
+		case "incoming":
+			items = []b.MediaFile{{ID: "show", Name: "Show", Path: "incoming/Show", Directory: true}, {ID: "link", Name: "escape", Path: "incoming/escape", Directory: true, Unsupported: true}}
+		case "incoming/Show":
+			items = []b.MediaFile{{ID: "season", Name: "Season 01", Path: "incoming/Show/Season 01", Directory: true}}
+		case "incoming/Show/Season 01":
+			items = []b.MediaFile{{ID: "episode", Name: "Show.S01E01.mkv", Path: "incoming/Show/Season 01/Show.S01E01.mkv", Size: 4, Modified: 1}, {ID: "deep", Name: "deep", Path: "incoming/Show/Season 01/deep", Directory: true}}
+		default:
+			t.Error("escaped or exceeded depth", q.Path)
+		}
+		return b.FilePage{Page: b.Page[b.MediaFile]{Items: items}}, nil
+	})
+	h.OnBusiness("fs.media.preview", func(_ context.Context, raw json.RawMessage) (any, *contracts.Error) {
+		var in b.FileInput
+		json.Unmarshal(raw, &in)
+		if in.Source != "incoming/Show/Season 01/Show.S01E01.mkv" || in.ExpectedModified == nil {
+			t.Error(in)
+		}
+		return b.FilePlan{ID: "plan", Revision: 3, State: "preview", Digest: strings.Repeat("a", 64)}, nil
+	})
+	if e := p.run(context.Background(), nil); e != nil || *n != 0 {
+		t.Fatal(e, *n)
+	}
+	p.now = func() time.Time { return time.Unix(1000031, 0) }
+	if e := p.run(context.Background(), nil); e != nil || *n != 1 {
+		t.Fatal(e, *n)
+	}
+	if len(calls) != 6 {
+		t.Fatal(calls)
+	}
+	p.config.Depth = 1
+	leaf, e := p.collect(context.Background(), files.New(p.host))
+	if e != nil || len(leaf) != 0 {
+		t.Fatal(leaf, e)
+	}
+}
+func TestRecursiveTotalAndAliasBound(t *testing.T) {
+	p, h, _, _ := fixture(t)
+	h.OnBusiness("fs.media.list", func(_ context.Context, raw json.RawMessage) (any, *contracts.Error) {
+		items := []b.MediaFile{}
+		for i := range 201 {
+			items = append(items, b.MediaFile{ID: fmt.Sprint(i), Path: "incoming/file"})
+		}
+		return b.FilePage{Page: b.Page[b.MediaFile]{Items: items}}, nil
+	})
+	if e := p.run(context.Background(), nil); e == nil {
+		t.Fatal("unbounded recursive scan")
+	}
+	for _, v := range []string{`{"depth":0}`, `{"depth":6}`, `{"depth":2.5}`} {
+		if e := p.InitPlugin(context.Background(), sdk.Config{Value: json.RawMessage(v)}); e == nil {
+			t.Fatal(v)
+		}
+	}
 }

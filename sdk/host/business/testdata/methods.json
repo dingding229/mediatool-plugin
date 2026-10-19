@@ -132,6 +132,24 @@
     "supported": true
   },
   {
+    "name": "downloads.downloader.configure",
+    "scope": "downloads.control",
+    "level": "D",
+    "supported": true
+  },
+  {
+    "name": "metadata.wishlist",
+    "scope": "metadata.read",
+    "level": "R",
+    "supported": true
+  },
+  {
+    "name": "subscriptions.ensure",
+    "scope": "subscriptions.write",
+    "level": "D",
+    "supported": true
+  },
+  {
     "name": "metadata.torrent.parse",
     "scope": "metadata.read",
     "level": "R",
@@ -284,8 +302,8 @@
   {
     "name": "downloads.recheck",
     "scope": "downloads.control",
-    "level": "W",
-    "supported": false
+    "level": "D",
+    "supported": true
   },
   {
     "name": "subscriptions.completion",

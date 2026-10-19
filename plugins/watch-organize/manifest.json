@@ -2,13 +2,14 @@
   "contractVersion": 2,
   "id": "watch-organize",
   "name": "目录监控实时整理",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Media Tool Contributors",
-  "description": "定时补扫有界目录，静默后由宿主预览及确认文件计划；不自行移动文件或改变 STRM。",
+  "description": "已授权根内有界递归；叶文件静默后由宿主预览/确认整理，不改写 STRM。",
   "level": 2,
   "icon": "icon.svg",
   "history": {
-    "1.0.0": "F6-β：默认停用；有界队列、持久收据、宿主实时授权与危险操作确认"
+    "1.0.0": "F6-β：默认停用；有界队列、持久收据、宿主实时授权与危险操作确认",
+    "1.1.0": "F6-γ：默认 3 / 最大 5 层、有界递归、叶文件静默和宿主链接证据保护"
   },
   "permissions": [
     {

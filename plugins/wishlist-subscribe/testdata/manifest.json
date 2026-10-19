@@ -1,0 +1,74 @@
+{
+  "contractVersion": 2,
+  "id": "wishlist-subscribe",
+  "name": "TMDB/豆瓣想看订阅",
+  "version": "1.0.0",
+  "author": "Media Tool Contributors",
+  "description": "公开想看来源；唯一身份才创建停用订阅，模糊候选人工确认，不借用登录态。",
+  "level": 2,
+  "icon": "icon.svg",
+  "history": {
+    "1.0.0": "F6-γ：默认停用，合成来源验收，有界输入/队列，危险写操作需管理员确认"
+  },
+  "permissions": [
+    {
+      "scope": "plugin.config.read"
+    },
+    {
+      "scope": "plugin.data.read"
+    },
+    {
+      "scope": "plugin.data.write"
+    },
+    {
+      "scope": "ui.json"
+    },
+    {
+      "scope": "services.register"
+    },
+    {
+      "scope": "notifications.send"
+    },
+    {
+      "scope": "metadata.read"
+    },
+    {
+      "scope": "subscriptions.read"
+    },
+    {
+      "scope": "subscriptions.write"
+    },
+    {
+      "scope": "library.read"
+    },
+    {
+      "scope": "actions.register"
+    }
+  ],
+  "extensions": {
+    "forms": true,
+    "pages": [
+      "status"
+    ],
+    "services": [
+      "sync"
+    ],
+    "actions": [
+      "resolve"
+    ]
+  },
+  "ui": {
+    "mode": "json"
+  },
+  "resources": {
+    "addressSpaceMiB": 8192,
+    "rssMiB": 256,
+    "cpuQuotaPercent": 100,
+    "processes": 64,
+    "openFiles": 256,
+    "dataMiB": 256,
+    "tmpMiB": 64
+  },
+  "configSchemaVersion": 1,
+  "dataSchemaVersion": 1
+}

@@ -6,7 +6,9 @@ import (
 	refresh "github.com/dingding229/mediatool-plugin/plugins/library-refresh-notify"
 	seeding "github.com/dingding229/mediatool-plugin/plugins/seeding-cleanup"
 	checkin "github.com/dingding229/mediatool-plugin/plugins/site-checkin"
+	assistant "github.com/dingding229/mediatool-plugin/plugins/torrent-assistant"
 	watch "github.com/dingding229/mediatool-plugin/plugins/watch-organize"
+	wishlist "github.com/dingding229/mediatool-plugin/plugins/wishlist-subscribe"
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 )
@@ -22,7 +24,7 @@ func All() ([]Definition, error) {
 		id       string
 		metadata []byte
 		factory  sdk.Factory
-	}{{"hello-go", hello.ManifestJSON(), hello.New}, {"library-refresh-notify", refresh.ManifestJSON(), refresh.New}, {"seeding-cleanup", seeding.ManifestJSON(), seeding.New}, {"site-checkin", checkin.ManifestJSON(), checkin.New}, {"watch-organize", watch.ManifestJSON(), watch.New}}
+	}{{"hello-go", hello.ManifestJSON(), hello.New}, {"library-refresh-notify", refresh.ManifestJSON(), refresh.New}, {"seeding-cleanup", seeding.ManifestJSON(), seeding.New}, {"site-checkin", checkin.ManifestJSON(), checkin.New}, {"torrent-assistant", assistant.ManifestJSON(), assistant.New}, {"watch-organize", watch.ManifestJSON(), watch.New}, {"wishlist-subscribe", wishlist.ManifestJSON(), wishlist.New}}
 	out := make([]Definition, 0, len(raw))
 	seen := map[string]bool{}
 	for _, entry := range raw {

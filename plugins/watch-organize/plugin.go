@@ -1,5 +1,5 @@
 // Package watch polls an explicit root-relative directory and submits core file plans.
-// No worker filesystem access, recursive unbounded scans, moves or renames occur here.
+// No worker filesystem access, unbounded scans, moves or renames occur here.
 package watch
 
 import (
@@ -27,6 +27,7 @@ var manifest string
 func ManifestJSON() []byte { return []byte(manifest) }
 
 type Config struct {
+	Depth        acceptance.Numeric `json:"depth"`
 	Active       bool               `json:"active"`
 	RootID       string             `json:"rootId"`
 	Directory    string             `json:"directory"`
@@ -59,8 +60,8 @@ func relative(s string) bool {
 func (p *Plugin) InitPlugin(_ context.Context, c sdk.Config) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	v := Config{QuietSeconds: 60}
-	if contracts.Decode(c.Value, &v) != nil || v.QuietSeconds < 30 || v.QuietSeconds > 3600 || math.Trunc(float64(v.QuietSeconds)) != float64(v.QuietSeconds) || v.Active && (!contracts.OpaqueID(v.RootID) || !relative(v.Directory) || !relative(v.Destination) || v.Directory == v.Destination || strings.HasPrefix(v.Destination, v.Directory+"/")) {
+	v := Config{QuietSeconds: 60, Depth: 3}
+	if contracts.Decode(c.Value, &v) != nil || v.Depth < 1 || v.Depth > 5 || math.Trunc(float64(v.Depth)) != float64(v.Depth) || v.QuietSeconds < 30 || v.QuietSeconds > 3600 || math.Trunc(float64(v.QuietSeconds)) != float64(v.QuietSeconds) || v.Active && (!contracts.OpaqueID(v.RootID) || !relative(v.Directory) || !relative(v.Destination) || v.Directory == v.Destination || strings.HasPrefix(v.Destination, v.Directory+"/")) {
 		return contracts.NewError(contracts.InvalidParams)
 	}
 	p.config = v
@@ -99,14 +100,11 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 		return e
 	}
 	client := files.New(p.host)
-	// One bounded directory (not a recursive tree). Overflow is visible, never silently dropped.
-	page, e := client.List(ctx, b.FileQuery{RootID: p.config.RootID, Path: p.config.Directory, PageRequest: b.PageRequest{Page: 1, Size: 200}})
+	leaf, e := p.collect(ctx, client)
 	if e != nil {
 		return e
 	}
-	if page.HasMore || len(page.Items) > 200 {
-		return acceptance.RequireAction(ctx, p.host, "watch-capacity", "watch_queue_full")
-	}
+
 	for i := range s.Items {
 		v := &s.Items[i]
 		if !v.Applying {
@@ -128,14 +126,14 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 		old[v.File.Path] = v
 	}
 	next := []Observation{}
-	for _, f := range page.Items {
+	for _, f := range leaf {
 		if f.Unsupported || f.Directory || f.ID == "" || !media(f.Name) {
 			continue
 		}
 		if f.Modified <= 0 {
 			return contracts.NewError(contracts.Unsupported)
 		}
-		if !relative(f.Path) || path.Dir(f.Path) != p.config.Directory {
+		if !p.inside(f.Path) {
 			return contracts.NewError(contracts.InvalidExtensionResult)
 		}
 		key := fmt.Sprintf("watch:%x", sha256.Sum256([]byte(fmt.Sprintf("%s:%s:%s:%s:%d:%d", p.config.RootID, p.config.Destination, f.Path, f.ID, f.Size, f.Modified))))
@@ -195,9 +193,58 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 	return nil
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"directory":"incoming","destination":"organized","quietSeconds":"60"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "危险：启用宿主预览/确认整理"), acceptance.Field("VTextField", "rootId", "已授权可写媒体根 ID"), acceptance.Field("VTextField", "directory", "监控相对目录（仅本层，最多 200 项）"), acceptance.Field("VTextField", "destination", "同一根内目标相对目录"), acceptance.Field("VTextField", "quietSeconds", "大小与 mtime 静默期（30–3600 秒）")}}, nil
+	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"directory":"incoming","destination":"organized","quietSeconds":"60","depth":"3"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "危险：启用宿主预览/确认整理"), acceptance.Field("VTextField", "rootId", "已授权可写媒体根 ID"), acceptance.Field("VTextField", "directory", "监控相对目录（递归总计最多 200 项）"), acceptance.Field("VTextField", "destination", "同一根内目标相对目录"), acceptance.Field("VTextField", "depth", "递归深度（默认 3，上限 5）"), acceptance.Field("VTextField", "quietSeconds", "大小与 mtime 静默期（30–3600 秒）")}}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "watch-state")
 	return sdk.Page{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(fmt.Sprintf("待观测 %d；已由宿主确认 %d", len(s.Items), s.Submitted))}}}}, e
+}
+
+func (p *Plugin) inside(f string) bool {
+	return relative(f) && (p.config.Directory == "." || strings.HasPrefix(f, p.config.Directory+"/"))
+}
+func (p *Plugin) collect(ctx context.Context, c *files.Client) ([]b.MediaFile, error) {
+	type dir struct {
+		path  string
+		depth int
+	}
+	todo := []dir{{p.config.Directory, 1}}
+	out := []b.MediaFile{}
+	seen := map[string]bool{}
+	total := 0
+	for len(todo) > 0 {
+		d := todo[0]
+		todo = todo[1:]
+		page, e := c.List(ctx, b.FileQuery{RootID: p.config.RootID, Path: d.path, PageRequest: b.PageRequest{Page: 1, Size: 200}})
+		if e != nil {
+			return nil, e
+		}
+		total += len(page.Items)
+		if page.HasMore || total > 200 {
+			return nil, acceptance.RequireAction(ctx, p.host, "watch-capacity", "watch_queue_full")
+		}
+		for _, f := range page.Items {
+			if !p.inside(f.Path) || path.Dir(f.Path) != d.path {
+				return nil, contracts.NewError(contracts.InvalidExtensionResult)
+			}
+			if f.Unsupported {
+				continue
+			} // host marks symlinks, hardlinks and special files
+			if f.ID == "" {
+				return nil, contracts.NewError(contracts.Unsupported)
+			}
+			if seen[f.ID] {
+				return nil, contracts.NewError(contracts.InvalidExtensionResult)
+			}
+			seen[f.ID] = true
+			if f.Directory {
+				if d.depth < int(p.config.Depth) {
+					todo = append(todo, dir{f.Path, d.depth + 1})
+				}
+				continue
+			}
+			out = append(out, f)
+		}
+	}
+	return out, nil
 }

@@ -1,0 +1,81 @@
+{
+  "version": 2,
+  "descriptors": [
+    {
+      "kind": "api",
+      "id": "status",
+      "handler": "api.1f2bad6a4f4f759d3528855d",
+      "requiredScopes": [
+        "api.register",
+        "plugin.data.read"
+      ],
+      "path": "/status",
+      "methods": [
+        "GET"
+      ],
+      "auth": "admin",
+      "summary": "只读下载器助手状态"
+    },
+    {
+      "kind": "command",
+      "id": "downloader-status",
+      "handler": "command.b8162670389166f8f0a64589",
+      "requiredScopes": [
+        "commands.register",
+        "plugin.data.read"
+      ],
+      "description": "只读下载器助手状态",
+      "cmd": "downloader-status",
+      "category": "下载器"
+    },
+    {
+      "kind": "service",
+      "id": "assist",
+      "handler": "service.f53324171aa26824463c3704",
+      "requiredScopes": [
+        "services.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "downloads.read",
+        "downloads.control",
+        "notifications.send"
+      ],
+      "name": "预览或执行下载辅助规则",
+      "trigger": "interval",
+      "intervalMs": 300000,
+      "scheduleSetting": "active"
+    },
+    {
+      "kind": "ui",
+      "id": "dashboard.overview",
+      "handler": "ui.2eea1b28ac54ef80bc83ad4b",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "form",
+      "handler": "ui.437f72de2c4c718727be8489",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "meta",
+      "handler": "ui.d19ca4aa72516e157d58565c",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "page.status",
+      "handler": "ui.ffe19f3c029bb245b79ea212",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    }
+  ]
+}

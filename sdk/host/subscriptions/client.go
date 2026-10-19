@@ -41,3 +41,7 @@ func (c *Client) Coverage(ctx context.Context, in b.CoverageInput) (b.Coverage, 
 func (c *Client) Completion(ctx context.Context, in b.ID) (contracts.CoverageObservation, error) {
 	return b.Call[contracts.CoverageObservation](ctx, c.Host, "subscriptions.completion", in, b.Operation{})
 }
+
+func (c *Client) Ensure(ctx context.Context, in b.SubscriptionInput, op b.Operation) (b.Receipt, error) {
+	return b.Call[b.Receipt](ctx, c.Host, "subscriptions.ensure", in, op)
+}

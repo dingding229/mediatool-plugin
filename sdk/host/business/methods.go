@@ -32,6 +32,9 @@ func Methods() []Method {
 		{"downloads.downloader.setPaused", "downloads.control", "W", true},
 		{"downloads.cleanup.approve", "downloads.delete", "D", true},
 		{"downloads.downloader.deleteOwned", "downloads.delete", "D", true},
+		{"downloads.downloader.configure", "downloads.control", "D", true},
+		{"metadata.wishlist", "metadata.read", "R", true},
+		{"subscriptions.ensure", "subscriptions.write", "D", true},
 		{"metadata.torrent.parse", "metadata.read", "R", true},
 		{"search.list", "search.read", "R", true},
 		{"search.get", "search.read", "R", true},
@@ -57,7 +60,7 @@ func Methods() []Method {
 		{"subscriptions.delete", "subscriptions.write", "D", true},
 		{"subscriptions.evaluateRules", "subscriptions.rules", "R", true},
 		{"subscriptions.coverage", "subscriptions.rules", "R", true},
-		{"downloads.recheck", "downloads.control", "W", false},
+		{"downloads.recheck", "downloads.control", "D", true},
 		{"subscriptions.completion", "subscriptions.read", "R", true},
 		{"library.assets", "library.read", "R", true},
 		{"library.candidates", "library.read", "R", true},
@@ -177,6 +180,9 @@ func Lookup(name string) (Method, bool) {
 
 // RequiredScopes adds a live authorization intersection, never an alternative.
 func RequiredScopes(method string) []string {
+	if method == "subscriptions.ensure" {
+		return []string{"subscriptions.read", "library.read"}
+	}
 	if method == "network.http" {
 		return []string{"network"}
 	}
