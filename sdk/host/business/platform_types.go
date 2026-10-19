@@ -128,3 +128,6 @@ type HTTPResult struct {
 	ContentType string `json:"contentType"`
 	BytesRead   int64  `json:"bytesRead"`
 }
+
+// NotificationPending proves the host notification outbox has accepted the notice; it is not delivery evidence.
+const NotificationPending = "pending"

@@ -197,3 +197,5 @@ backed-up deployment. Runtime compilation/download/upload is never supported.
 参见各插件 README 的 scope、unknown/needs_action、限额和合成测试说明。
 `plugintest.Host.Client()` 可直接连接 typed clients；Start 仍用于真实 stdio 协议测试。
 mock 非只读业务操作也保存幂等收据：相同 key/参数不重放，参数冲突拒绝，撤权即时拒绝。
+
+通知 Send 的入队证据是 business.NotificationPending（pending），不是已送达；验收插件严格匹配该常量，unknown 不算成功。

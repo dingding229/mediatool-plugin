@@ -33,7 +33,7 @@ func setup(t *testing.T, active bool) (*Plugin, *plugintest.Host, *int, *int) {
 	n, r := new(int), new(int)
 	if e = h.OnBusiness("notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) {
 		*n++
-		return b.Receipt{State: "queued"}, nil
+		return b.Receipt{State: b.NotificationPending}, nil
 	}); e != nil {
 		t.Fatal(e)
 	}

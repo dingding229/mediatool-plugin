@@ -129,7 +129,7 @@ func (p *Plugin) onTransfer(ctx context.Context, e events.Envelope) error {
 	if err != nil {
 		return err
 	}
-	if notice.State != "queued" {
+	if notice.State != b.NotificationPending {
 		return acceptance.RequireAction(ctx, p.host, "import-attention:"+e.ID, "notification_unconfirmed")
 	}
 	s.Events[index].Notified = true

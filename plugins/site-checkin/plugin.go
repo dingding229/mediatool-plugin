@@ -130,7 +130,7 @@ func (p *Plugin) checkin(ctx context.Context, _ json.RawMessage) error {
 		return acceptance.RequireAction(ctx, p.host, key+":attention", code)
 	}
 	notice, e := notifications.New(p.host).Send(ctx, b.Notice{Title: "站点签到已确认", Text: "宿主已匹配管理员声明的成功标记；不包含站点正文或凭据。"}, b.Operation{Key: key + ":notice", Confirm: true})
-	if e != nil || notice.State != "queued" {
+	if e != nil || notice.State != b.NotificationPending {
 		return acceptance.RequireAction(ctx, p.host, key+":notice-attention", "notification_unconfirmed")
 	}
 	return nil

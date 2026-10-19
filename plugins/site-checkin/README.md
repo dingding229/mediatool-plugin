@@ -16,7 +16,7 @@ Cookie、passkey、认证 header 只能配置在宿主站点账号内，不要�
 同账号同 UTC 日的操作 key 稳定；宿主收据不重放 unknown，本实例也持久保留当日结果。
 失败/验证码先保存 `status=needs_action` 并向现有通知 outbox 排队，随后返回 SDK `NeedsAction`。
 宿主在完成服务/事件收据后将实例停用并保留 needs_action，必须管理员显式重新启用。
-通知 queued 不代表已送达。正常日最多一条成功通知；同日失败不会自动再签到。
+通知 pending（已持久入队）不代表已送达。正常日最多一条已入队通知；同日失败不会自动再签到。
 Host 收据现有保留期 7 日，本实例当日 checkpoint 在跨进程重启时仍有效。
 
 权限：自身 config/KV、ui.json、services.register、危险 sites.request、notifications.send。

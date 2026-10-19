@@ -55,7 +55,7 @@ func TestCheckinEvidenceChallengeUnknownAndRestart(t *testing.T) {
 			})
 			register(t, h, "notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) {
 				notices++
-				return b.Receipt{State: "queued"}, nil
+				return b.Receipt{State: b.NotificationPending}, nil
 			})
 			err := p.checkin(context.Background(), nil)
 			var rpc *contracts.Error
@@ -97,7 +97,9 @@ func TestInactiveZeroIOPrecheckAndRevokedScope(t *testing.T) {
 		n++
 		return b.SiteResponse{Status: 200, State: "matched", Matched: true}, nil
 	})
-	register(t, h, "notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) { return b.Receipt{State: "queued"}, nil })
+	register(t, h, "notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) {
+		return b.Receipt{State: b.NotificationPending}, nil
+	})
 	if e := p.checkin(context.Background(), nil); e != nil || n != 1 {
 		t.Fatal(e, n)
 	}
@@ -105,7 +107,9 @@ func TestInactiveZeroIOPrecheckAndRevokedScope(t *testing.T) {
 	h.Revoke("sites.request")
 	n = 0
 	register(t, h, "sites.checkin", func(context.Context, json.RawMessage) (any, *contracts.Error) { n++; return b.SiteResponse{}, nil })
-	register(t, h, "notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) { return b.Receipt{State: "queued"}, nil })
+	register(t, h, "notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) {
+		return b.Receipt{State: b.NotificationPending}, nil
+	})
 	if e := p.checkin(context.Background(), nil); e == nil || n != 0 {
 		t.Fatal(e, n)
 	}
