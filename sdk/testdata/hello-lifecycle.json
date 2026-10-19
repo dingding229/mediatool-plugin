@@ -22,6 +22,7 @@
       "plugin.get_module",
       "plugin.get_auth_providers",
       "plugin.get_actions",
+      "plugin.get_agent_tools",
       "plugin.stop_service",
       "plugin.close"
     ]

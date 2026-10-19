@@ -165,3 +165,27 @@ Hello Go 1.3 adds a manually invoked `f3-read-check` action. It performs safe re
 across F3-A/B/C/D and records only booleans in its own `f3-read-check` KV. It also
 asserts that an ungranted settings write is denied. It never runs automatically
 or modifies business data. Expanded read permissions require administrator review.
+
+### Manual tools (contractVersion 2)
+
+Implement `sdk.ToolProvider.GetAgentTools` returning `sdk.Tool{Name, Description,
+InputSchema, RequiredScopes, EffectKind, Handler}`. Declare names in
+`manifest.extensions.agentTools` and `agent.tools` in permissions. Tool calls are
+manual administrator operations, not an Agent/LLM loop. The host installs the
+per-tool execution-scope ceiling and rechecks live grants on every Host call.
+`effectKind` is `read`, `write`, or `dangerous`; it may only overstate, never
+understate the shared Host method/scope effect table. Mutations require explicit
+administrator confirmation. OS-level code is trusted as described by the host;
+a descriptor is not a malicious-code sandbox.
+
+Input is <=16KiB, output <=32KiB, schema <=8KiB (depth8/nodes128). Supported JSON
+Schema keywords: type, title/description, properties/required/additionalProperties,
+items, enum, minimum/maximum, min/maxLength and min/maxItems. No coercion,
+remote `$ref`, regex, executable defaults, or ignored unknown keywords. The SDK
+and host both validate input. Runtime invocation keeps stable handler IDs and
+bounded stdio transport. `hello.echo` is pure; `hello.remember` writes only own KV.
+
+Development order: change this repository, run vet/test/race/golden, push and wait
+for its Actions; then bump the exact pin in mediatool, regenerate the resource
+inventory, test and publish through main Actions -> immutable Docker Hub digest ->
+backed-up deployment. Runtime compilation/download/upload is never supported.

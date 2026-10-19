@@ -84,6 +84,12 @@ func ValidateSnapshot(m Manifest, granted []string, s Snapshot) error {
 				return NewError(Conflict)
 			}
 			commands[d.Cmd] = true
+		case "tool":
+			required = "agent.tools"
+			allowed = m.Extensions.AgentTools
+			if !ValidTool(d) {
+				return NewError(InvalidExtensionResult)
+			}
 		case "action":
 			required = "actions.register"
 			allowed = m.Extensions.Actions

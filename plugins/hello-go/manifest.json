@@ -2,7 +2,7 @@
   "contractVersion": 2,
   "id": "hello-go",
   "name": "Hello Go",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "author": "Example Author",
   "description": "实例隔离与持久计数示例",
   "level": 1,
@@ -20,7 +20,8 @@
     "1.7.0": "F4-D typed system/notification/settings/Telegram facts; pre-effect module declines and /hello ingress example",
     "1.7.1": "Two-phase pure offer/execute module protocol; only pre-execute declines can fall back",
     "1.8.0": "F4 bounded workflow and opt-in fake auth broker contracts; no real login provider",
-    "1.8.1": "Declare hello action Host scopes; opt-in no-secret action ceiling probe"
+    "1.8.1": "Declare hello action Host scopes; opt-in no-secret action ceiling probe",
+    "1.9.0": "Bounded manual agent tools (no autonomous loop), readonly echo and own-KV write examples"
   },
   "permissions": [
     {
@@ -220,6 +221,9 @@
     },
     {
       "scope": "events.chain.auth.verification"
+    },
+    {
+      "scope": "agent.tools"
     }
   ],
   "extensions": {
@@ -344,6 +348,10 @@
     ],
     "authProviders": [
       "fake"
+    ],
+    "agentTools": [
+      "hello.echo",
+      "hello.remember"
     ]
   },
   "ui": {

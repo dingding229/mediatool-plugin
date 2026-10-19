@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"github.com/dingding229/mediatool-plugin/sdk/events"
+	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
 	"slices"
 	"sort"
 	"time"
@@ -38,6 +39,15 @@ type Action struct {
 	Kwargs         json.RawMessage
 	RequiredScopes []string
 	Handler        func(context.Context, ActionContext) (ActionContext, bool, error)
+}
+type Tool struct {
+	Name, Description, EffectKind string
+	InputSchema                   json.RawMessage
+	RequiredScopes                []string
+	Handler                       func(context.Context, json.RawMessage) (json.RawMessage, error)
+}
+type ToolProvider interface {
+	GetAgentTools(context.Context) ([]Tool, error)
 }
 type Module struct {
 	ID             string
@@ -74,6 +84,36 @@ func (r *Runtime) bind(ctx context.Context) error {
 		}
 		r.bindings[d.Handler] = bound{d, h}
 		return nil
+	}
+	if p, ok := r.plugin.(ToolProvider); ok {
+		list, e := p.GetAgentTools(ctx)
+		if e != nil || len(list) > 32 {
+			return contracts.NewError(contracts.InvalidExtensionResult)
+		}
+		for _, v := range list {
+			if v.Handler == nil {
+				return contracts.NewError(contracts.InvalidExtensionResult)
+			}
+			d := contracts.Descriptor{Kind: "tool", ID: v.Name, Name: v.Name, Description: v.Description, InputSchema: v.InputSchema, EffectKind: v.EffectKind, RequiredScopes: append([]string{"agent.tools"}, v.RequiredScopes...)}
+			if !contracts.ValidTool(d) || !b.ValidToolEffect(d.EffectKind, d.RequiredScopes) {
+				return contracts.NewError(contracts.InvalidExtensionResult)
+			}
+			if e = add(d, func(ctx context.Context, b json.RawMessage) (any, error) {
+				if e := contracts.ValidateToolInput(v.InputSchema, b); e != nil {
+					return nil, e
+				}
+				out, e := v.Handler(ctx, b)
+				if e != nil {
+					return nil, e
+				}
+				if len(out) > contracts.ToolOutputLimit || contracts.ValidateJSON(out) != nil {
+					return nil, contracts.NewError(contracts.InvalidExtensionResult)
+				}
+				return out, nil
+			}); e != nil {
+				return e
+			}
+		}
 	}
 	if p, ok := r.plugin.(APIProvider); ok {
 		list, e := p.GetAPI(ctx)

@@ -6,6 +6,8 @@ import "encoding/json"
 const DescriptorVersion = 2
 
 type Descriptor struct {
+	InputSchema     json.RawMessage `json:"inputSchema,omitempty"`
+	EffectKind      string          `json:"effectKind,omitempty"`
 	ProviderID      string          `json:"providerId,omitempty"`
 	Issuer          string          `json:"issuer,omitempty"`
 	Audience        string          `json:"audience,omitempty"`

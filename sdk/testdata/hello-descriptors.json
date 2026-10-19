@@ -500,6 +500,56 @@
       "kwargs": {}
     },
     {
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "additionalProperties": false
+      },
+      "effectKind": "read",
+      "kind": "tool",
+      "id": "hello.echo",
+      "handler": "tool.49c03139f6f7ff21196e5c6b",
+      "requiredScopes": [
+        "agent.tools"
+      ],
+      "name": "hello.echo",
+      "description": "原样回显有界文本；无业务副作用"
+    },
+    {
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "additionalProperties": false
+      },
+      "effectKind": "write",
+      "kind": "tool",
+      "id": "hello.remember",
+      "handler": "tool.be7ce4c7051fae7bc808dd87",
+      "requiredScopes": [
+        "agent.tools",
+        "plugin.data.read",
+        "plugin.data.write"
+      ],
+      "name": "hello.remember",
+      "description": "只更新本实例 tool-message KV，不操作媒体或外部业务"
+    },
+    {
       "kind": "ui",
       "id": "dashboard.starts",
       "handler": "ui.424ca9e177715e439e772b4f",
