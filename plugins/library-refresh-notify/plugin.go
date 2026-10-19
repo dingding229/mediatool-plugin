@@ -14,6 +14,8 @@ import (
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
 	"github.com/dingding229/mediatool-plugin/sdk/host/mediaserver"
 	"github.com/dingding229/mediatool-plugin/sdk/host/notifications"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -24,9 +26,9 @@ var manifest string
 func ManifestJSON() []byte { return []byte(manifest) }
 
 type Config struct {
-	Active   bool   `json:"active"`
-	Provider string `json:"provider"`
-	Interval int64  `json:"intervalSeconds"`
+	Active   bool    `json:"active"`
+	Provider string  `json:"provider"`
+	Interval Seconds `json:"intervalSeconds"`
 }
 type Notice struct {
 	ID       string `json:"id"`
@@ -149,7 +151,7 @@ func (p *Plugin) flush(ctx context.Context, _ json.RawMessage) error {
 	if e != nil {
 		return e
 	}
-	if len(s.Pending) == 0 || p.now().Unix()-s.LastFlush < p.config.Interval {
+	if len(s.Pending) == 0 || p.now().Unix()-s.LastFlush < int64(p.config.Interval) {
 		return nil
 	}
 	first := s.Pending[0]
@@ -163,7 +165,7 @@ func (p *Plugin) flush(ctx context.Context, _ json.RawMessage) error {
 	return e
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	return sdk.Form{Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用入库通知及合并刷新"), acceptance.Field("VTextField", "provider", "builtin 或 emby"), intervalField()}, Defaults: json.RawMessage(`{"active":false,"provider":"builtin","intervalSeconds":60}`)}, nil
+	return sdk.Form{Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用入库通知及合并刷新"), acceptance.Field("VTextField", "provider", "builtin 或 emby"), intervalField()}, Defaults: json.RawMessage(`{"active":false,"provider":"builtin","intervalSeconds":"60"}`)}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "refresh-state")
@@ -176,6 +178,25 @@ func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, erro
 
 func intervalField() contracts.Component {
 	field := acceptance.Field("VSelect", "intervalSeconds", "刷新间隔（秒；其他数值可通过配置 JSON 设置）")
-	field.Props["items"] = acceptance.Prop([]map[string]any{{"title": "每分钟", "value": 60}, {"title": "每2分钟", "value": 120}, {"title": "每5分钟", "value": 300}, {"title": "每10分钟", "value": 600}, {"title": "每小时", "value": 3600}})
+	field.Props["items"] = acceptance.Prop([]string{"60", "120", "300", "600", "3600"})
 	return field
+}
+
+// The host whitelist renderer intentionally emits strings for VSelect/ElInput.
+// Accept decimal form seconds and raw JSON integers; Init enforces 60..3600.
+type Seconds int64
+
+func (v *Seconds) UnmarshalJSON(raw []byte) error {
+	text := strings.TrimSpace(string(raw))
+	if len(text) > 0 && text[0] == '"' {
+		if err := json.Unmarshal(raw, &text); err != nil {
+			return err
+		}
+	}
+	n, err := strconv.ParseInt(text, 10, 64)
+	if err != nil {
+		return err
+	}
+	*v = Seconds(n)
+	return nil
 }
