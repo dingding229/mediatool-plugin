@@ -222,7 +222,7 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 	s.NextAt = p.now().Add(time.Duration(p.config.IntervalMinutes) * time.Minute).Unix()
 	return p.save(ctx, s, rev)
 }
-func (p *Plugin) GetAction(context.Context) ([]sdk.Action, error) {
+func (p *Plugin) GetActions(context.Context) ([]sdk.Action, error) {
 	return []sdk.Action{{ID: "resolve", Name: "危险：确认候选并创建停用订阅", Kwargs: json.RawMessage(`{"sourceId":"","tmdbId":0,"mediaType":"movie"}`), RequiredScopes: scopes(), Handler: p.resolve}}, nil
 }
 func (p *Plugin) resolve(ctx context.Context, q sdk.ActionContext) (sdk.ActionContext, bool, error) {

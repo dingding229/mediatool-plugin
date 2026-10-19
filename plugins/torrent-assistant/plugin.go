@@ -230,7 +230,7 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 	s.Status = "ok"
 	return save()
 }
-func (p *Plugin) GetAction(context.Context) ([]sdk.Action, error) {
+func (p *Plugin) GetActions(context.Context) ([]sdk.Action, error) {
 	return []sdk.Action{{ID: "assist", Name: "危险：按已确认配置运行（默认仅预览）", RequiredScopes: scopes(), Handler: func(ctx context.Context, q sdk.ActionContext) (sdk.ActionContext, bool, error) {
 		e := p.run(ctx, nil)
 		return q, true, e

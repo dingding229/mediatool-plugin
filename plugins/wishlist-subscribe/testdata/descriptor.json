@@ -2,6 +2,26 @@
   "version": 2,
   "descriptors": [
     {
+      "kind": "action",
+      "id": "resolve",
+      "handler": "action.53ff1a1b7b4b666ac9dc5b7e",
+      "requiredScopes": [
+        "actions.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "metadata.read",
+        "subscriptions.read",
+        "subscriptions.write",
+        "library.read"
+      ],
+      "name": "危险：确认候选并创建停用订阅",
+      "kwargs": {
+        "sourceId": "",
+        "tmdbId": 0,
+        "mediaType": "movie"
+      }
+    },
+    {
       "kind": "service",
       "id": "sync",
       "handler": "service.4608a74672b00d5dc4fda3b4",

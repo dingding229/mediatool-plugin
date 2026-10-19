@@ -2,6 +2,20 @@
   "version": 2,
   "descriptors": [
     {
+      "kind": "action",
+      "id": "assist",
+      "handler": "action.326e8517d19d3f222a7099c3",
+      "requiredScopes": [
+        "actions.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "downloads.read",
+        "downloads.control",
+        "notifications.send"
+      ],
+      "name": "危险：按已确认配置运行（默认仅预览）"
+    },
+    {
       "kind": "api",
       "id": "status",
       "handler": "api.1f2bad6a4f4f759d3528855d",

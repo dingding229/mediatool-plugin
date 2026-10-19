@@ -42,6 +42,19 @@ func TestAcceptanceDescriptorsGoldenAndNoInitEffects(t *testing.T) {
 			if e = contracts.ValidateSnapshot(d.Manifest, scopes, snap); e != nil {
 				t.Fatal(e)
 			}
+			// Manifest declarations must have real bindings, not merely a golden
+			// that accidentally blesses an omitted optional Go interface.
+			found := map[string]bool{}
+			for _, x := range snap.Descriptors {
+				found[x.Kind+":"+x.ID] = true
+			}
+			for kind, ids := range map[string][]string{"action": d.Manifest.Extensions.Actions, "service": d.Manifest.Extensions.Services, "command": d.Manifest.Extensions.Commands} {
+				for _, id := range ids {
+					if !found[kind+":"+id] {
+						t.Fatal("missing declared binding", kind, id)
+					}
+				}
+			}
 			if len(mock.Calls()) != 0 {
 				t.Fatal("inactive instance executed Host calls", mock.Calls())
 			}
