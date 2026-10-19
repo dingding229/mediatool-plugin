@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "descriptors": [
+    {
+      "kind": "service",
+      "id": "checkin",
+      "handler": "service.e0f6a89dce94d469abb2e04a",
+      "requiredScopes": [
+        "services.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "sites.request",
+        "notifications.send"
+      ],
+      "name": "受控站点签到（UTC）",
+      "trigger": "cron",
+      "cron": "0 8 * * *",
+      "scheduleSetting": "active"
+    },
+    {
+      "kind": "ui",
+      "id": "form",
+      "handler": "ui.437f72de2c4c718727be8489",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "page.status",
+      "handler": "ui.ffe19f3c029bb245b79ea212",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    }
+  ]
+}

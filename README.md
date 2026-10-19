@@ -189,3 +189,11 @@ Development order: change this repository, run vet/test/race/golden, push and wa
 for its Actions; then bump the exact pin in mediatool, regenerate the resource
 inventory, test and publish through main Actions -> immutable Docker Hub digest ->
 backed-up deployment. Runtime compilation/download/upload is never supported.
+
+## F6-α 验收插件
+
+内置 `site-checkin`（宿主认证、布尔证据签到）和 `library-refresh-notify`（提交后事件、合并刷新及幂等通知）。
+均默认不执行业务，使用 JSON 配置/状态页，不需要单独的源码上传、工具链或二进制包。
+参见各插件 README 的 scope、unknown/needs_action、限额和合成测试说明。
+`plugintest.Host.Client()` 可直接连接 typed clients；Start 仍用于真实 stdio 协议测试。
+mock 非只读业务操作也保存幂等收据：相同 key/参数不重放，参数冲突拒绝，撤权即时拒绝。

@@ -108,3 +108,10 @@ func ValidateStorage(v StorageSelection, r StorageChoice) error {
 	}
 	return nil
 }
+
+// TransferCompleted is an allowlisted committed fact; legacy file-only facts may omit AssetID.
+type TransferCompleted struct {
+	OperationID string `json:"operationId"`
+	State       string `json:"state"`
+	AssetID     string `json:"assetId,omitempty"`
+}

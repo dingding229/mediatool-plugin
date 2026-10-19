@@ -1,0 +1,65 @@
+{
+  "contractVersion": 2,
+  "id": "library-refresh-notify",
+  "name": "媒体库刷新与入库通知",
+  "version": "1.0.0",
+  "author": "Media Tool Contributors",
+  "description": "提交后入库事件通知与合并刷新；不涉及播放 URL 或媒体内容。",
+  "level": 2,
+  "icon": "icon.svg",
+  "history": {
+    "1.0.0": "F6-α：有界、默认不执行业务、Host 实时授权与幂等收据"
+  },
+  "permissions": [
+    {
+      "scope": "plugin.config.read"
+    },
+    {
+      "scope": "plugin.data.read"
+    },
+    {
+      "scope": "plugin.data.write"
+    },
+    {
+      "scope": "ui.json"
+    },
+    {
+      "scope": "services.register"
+    },
+    {
+      "scope": "events.subscribe.library.organized"
+    },
+    {
+      "scope": "mediaserver.refresh"
+    },
+    {
+      "scope": "notifications.send"
+    }
+  ],
+  "extensions": {
+    "forms": true,
+    "pages": [
+      "status"
+    ],
+    "services": [
+      "flush"
+    ],
+    "events": [
+      "library.organized"
+    ]
+  },
+  "ui": {
+    "mode": "json"
+  },
+  "resources": {
+    "addressSpaceMiB": 8192,
+    "rssMiB": 256,
+    "cpuQuotaPercent": 100,
+    "processes": 64,
+    "openFiles": 256,
+    "dataMiB": 256,
+    "tmpMiB": 64
+  },
+  "configSchemaVersion": 1,
+  "dataSchemaVersion": 1
+}

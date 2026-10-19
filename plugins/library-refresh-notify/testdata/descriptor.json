@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "descriptors": [
+    {
+      "kind": "event",
+      "id": "library.organized",
+      "handler": "event.ea6f503ec4211bb31fb3a5c7",
+      "requiredScopes": [
+        "events.subscribe.library.organized"
+      ]
+    },
+    {
+      "kind": "service",
+      "id": "flush",
+      "handler": "service.e427ed7aefa0eecf18d0760c",
+      "requiredScopes": [
+        "services.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "mediaserver.refresh",
+        "notifications.send"
+      ],
+      "name": "合并媒体刷新队列",
+      "trigger": "interval",
+      "intervalMs": 60000,
+      "scheduleSetting": "active"
+    },
+    {
+      "kind": "ui",
+      "id": "form",
+      "handler": "ui.437f72de2c4c718727be8489",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "page.status",
+      "handler": "ui.ffe19f3c029bb245b79ea212",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    }
+  ]
+}

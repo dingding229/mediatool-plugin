@@ -20,7 +20,13 @@ type Host struct {
 	calls    []string
 	messages []contracts.Message
 	failures map[string]failure
+	receipts map[string]businessReceipt
 	business map[string]func(context.Context, json.RawMessage) (any, *contracts.Error)
+}
+type businessReceipt struct {
+	request string
+	result  json.RawMessage
+	code    contracts.Code
 }
 type failure struct {
 	code  contracts.Code
@@ -119,7 +125,40 @@ func (h *Host) Handle(ctx context.Context, b json.RawMessage) (any, *contracts.E
 		if fn == nil {
 			return nil, contracts.NewError(contracts.Unsupported)
 		}
-		return fn(ctx, call.Args)
+		if spec.Level == "R" {
+			return fn(ctx, call.Args)
+		}
+		if len(call.OperationKey) < 8 || len(call.OperationKey) > 100 {
+			return nil, contracts.NewError(contracts.InvalidParams)
+		}
+		if h.receipts == nil {
+			h.receipts = map[string]businessReceipt{}
+		}
+		key := call.Method + ":" + call.OperationKey
+		if old, ok := h.receipts[key]; ok {
+			if old.request != string(call.Args) {
+				return nil, contracts.NewError(contracts.Conflict)
+			}
+			if old.code != 0 {
+				return nil, contracts.NewError(old.code)
+			}
+			return append(json.RawMessage{}, old.result...), nil
+		}
+		if len(h.receipts) >= 1024 {
+			return nil, contracts.NewError(contracts.Busy)
+		}
+		h.receipts[key] = businessReceipt{request: string(call.Args), code: contracts.ResultUnknown}
+		v, rpc := fn(ctx, call.Args)
+		if rpc != nil {
+			h.receipts[key] = businessReceipt{request: string(call.Args), code: rpc.Code}
+			return nil, rpc
+		}
+		raw, e := json.Marshal(v)
+		if e != nil {
+			return nil, contracts.NewError(contracts.InternalError)
+		}
+		h.receipts[key] = businessReceipt{request: string(call.Args), result: raw}
+		return v, nil
 	}
 	var key struct {
 		Key string `json:"key"`

@@ -71,6 +71,8 @@ func TestEveryBusinessRPCScopeSuccessAndRevocation(t *testing.T) {
 				_ = mock.OnBusiness(m.Name, func(context.Context, json.RawMessage) (any, *contracts.Error) {
 					return nil, contracts.NewError(contracts.Unsupported)
 				})
+				// A new logical operation observes changed backend capability; the old receipt remains immutable.
+				op.Key = "fixture-unsupported-operation"
 				if _, e = b.Call[b.Receipt](ctx, client, m.Name, struct{}{}, op); !errors.As(e, &rpc) || rpc.Code != contracts.Unsupported {
 					t.Fatal("unsupported backend", e)
 				}

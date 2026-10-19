@@ -3,6 +3,8 @@ package registry
 
 import (
 	"github.com/dingding229/mediatool-plugin/plugins/hello-go"
+	refresh "github.com/dingding229/mediatool-plugin/plugins/library-refresh-notify"
+	checkin "github.com/dingding229/mediatool-plugin/plugins/site-checkin"
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 )
@@ -18,7 +20,7 @@ func All() ([]Definition, error) {
 		id       string
 		metadata []byte
 		factory  sdk.Factory
-	}{{"hello-go", hello.ManifestJSON(), hello.New}}
+	}{{"hello-go", hello.ManifestJSON(), hello.New}, {"library-refresh-notify", refresh.ManifestJSON(), refresh.New}, {"site-checkin", checkin.ManifestJSON(), checkin.New}}
 	out := make([]Definition, 0, len(raw))
 	seen := map[string]bool{}
 	for _, entry := range raw {

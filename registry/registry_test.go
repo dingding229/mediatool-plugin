@@ -9,7 +9,7 @@ import (
 
 func TestCatalogPureIndependentSnapshots(t *testing.T) {
 	a, e := All()
-	if e != nil || len(a) != 1 || a[0].Manifest.ID != "hello-go" {
+	if e != nil || len(a) != 3 || a[0].Manifest.ID != "hello-go" {
 		t.Fatal(e, a)
 	}
 	a[0].Manifest.Name = "changed"
