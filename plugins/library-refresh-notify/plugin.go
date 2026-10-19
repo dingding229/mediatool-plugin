@@ -163,7 +163,7 @@ func (p *Plugin) flush(ctx context.Context, _ json.RawMessage) error {
 	return e
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	return sdk.Form{Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用入库通知及合并刷新"), acceptance.Field("VTextField", "provider", "builtin 或 emby"), acceptance.Field("VTextField", "intervalSeconds", "刷新间隔（60–3600 秒）")}, Defaults: json.RawMessage(`{"active":false,"provider":"builtin","intervalSeconds":60}`)}, nil
+	return sdk.Form{Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用入库通知及合并刷新"), acceptance.Field("VTextField", "provider", "builtin 或 emby"), intervalField()}, Defaults: json.RawMessage(`{"active":false,"provider":"builtin","intervalSeconds":60}`)}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "refresh-state")
@@ -172,4 +172,10 @@ func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, erro
 	}
 	status, _, e := acceptance.Load[map[string]string](ctx, p.host, "status")
 	return sdk.Page{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(fmt.Sprintf("待刷新 %d；事件 %d；%s %s", len(s.Pending), len(s.Events), status["state"], status["code"]))}}}}, e
+}
+
+func intervalField() contracts.Component {
+	field := acceptance.Field("VSelect", "intervalSeconds", "刷新间隔（秒；其他数值可通过配置 JSON 设置）")
+	field.Props["items"] = acceptance.Prop([]map[string]any{{"title": "每分钟", "value": 60}, {"title": "每2分钟", "value": 120}, {"title": "每5分钟", "value": 300}, {"title": "每10分钟", "value": 600}, {"title": "每小时", "value": 3600}})
+	return field
 }

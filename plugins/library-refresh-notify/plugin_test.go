@@ -146,3 +146,19 @@ func TestUnknownNotificationReceiptNeverBecomesNotified(t *testing.T) {
 		t.Fatal(e, s, n)
 	}
 }
+
+func TestIntervalFormPreservesNumericConfig(t *testing.T) {
+	v := intervalField()
+	var items []struct {
+		Title string `json:"title"`
+		Value int64  `json:"value"`
+	}
+	if v.Component != "VSelect" || json.Unmarshal(v.Props["items"], &items) != nil || len(items) != 5 {
+		t.Fatal(v)
+	}
+	for _, x := range items {
+		if x.Value < 60 || x.Value > 3600 {
+			t.Fatal(x)
+		}
+	}
+}

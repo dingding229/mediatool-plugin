@@ -23,3 +23,5 @@ Host 收据现有保留期 7 日，本实例当日 checkpoint 在跨进程重启
 测试只用 mock Host 和合成 HTTP 上游，不接真实站点。`testdata/` 固定 manifest/descriptor golden。
 
 cron 时区沿用宿主 scheduling.Timezone（Asia/Shanghai），不是 worker 环境中的 TZ=UTC；每日幂等周期明确按 UTC 日，不能据此推断任意站点的日界。
+
+checkpoint 包含请求身份摘要，不会把同日旧账号的成功套到新账号；同账号请求参数变更仍由宿主原操作 key 的参数摘要冲突保护，不能借配置编辑重放不确定副作用。

@@ -3,8 +3,10 @@ package checkin
 
 import (
 	"context"
+	"crypto/sha256"
 	_ "embed"
 	"encoding/json"
+	"fmt"
 	"github.com/dingding229/mediatool-plugin/plugins/internal/acceptance"
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
@@ -35,8 +37,9 @@ type Config struct {
 	Cron          string `json:"cron"`
 }
 type Result struct {
-	Day   string `json:"day"`
-	State string `json:"state"`
+	Subject string `json:"subject"`
+	Day     string `json:"day"`
+	State   string `json:"state"`
 }
 type Plugin struct {
 	mu      sync.Mutex
@@ -95,7 +98,9 @@ func (p *Plugin) checkin(ctx context.Context, _ json.RawMessage) error {
 	if e != nil {
 		return e
 	}
-	if old.Day == day {
+	subjectRaw, _ := json.Marshal(requestIdentity(p.config))
+	subject := fmt.Sprintf("%x", sha256.Sum256(subjectRaw))
+	if old.Day == day && old.Subject == subject {
 		if old.State == "succeeded" {
 			return nil
 		}
@@ -119,7 +124,7 @@ func (p *Plugin) checkin(ctx context.Context, _ json.RawMessage) error {
 	if e != nil || !result.Matched || result.State != "matched" {
 		state = "needs_action"
 	}
-	if _, saveErr := p.host.SaveData(ctx, "last-checkin", Result{day, state}, rev); saveErr != nil {
+	if _, saveErr := p.host.SaveData(ctx, "last-checkin", Result{Subject: subject, Day: day, State: state}, rev); saveErr != nil {
 		return saveErr
 	}
 	if state == "needs_action" {
@@ -142,4 +147,10 @@ func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	v, _, e := acceptance.Load[Result](ctx, p.host, "last-checkin")
 	return sdk.Page{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(v.State + " " + v.Day)}}}}, e
+}
+
+// Schedule/active toggles do not change a request identity. Request edits cannot
+// inherit another account's success; the host still fences same-day key conflicts.
+func requestIdentity(c Config) b.SiteRequest {
+	return b.SiteRequest{AccountID: c.AccountID, Origin: c.Origin, Path: c.Path, Method: c.Method, Body: c.Body, SuccessMarker: c.SuccessMarker}
 }

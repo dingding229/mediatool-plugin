@@ -123,3 +123,22 @@ func TestConfigRejectsCredentialOriginsAndEscape(t *testing.T) {
 		}
 	}
 }
+
+func TestChangedAccountCannotInheritSameDaySuccess(t *testing.T) {
+	p, h := setup(t, true)
+	requests := 0
+	register(t, h, "sites.checkin", func(context.Context, json.RawMessage) (any, *contracts.Error) {
+		requests++
+		return b.SiteResponse{Status: 200, State: "matched", Matched: true}, nil
+	})
+	register(t, h, "notifications.publish", func(context.Context, json.RawMessage) (any, *contracts.Error) {
+		return b.Receipt{State: b.NotificationPending}, nil
+	})
+	if e := p.checkin(context.Background(), nil); e != nil {
+		t.Fatal(e)
+	}
+	p.config.AccountID = "00000000-0000-0000-0000-000000000002"
+	if e := p.checkin(context.Background(), nil); e != nil || requests != 2 {
+		t.Fatal("inherited another account's success", e, requests)
+	}
+}
