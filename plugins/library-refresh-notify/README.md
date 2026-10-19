@@ -1,4 +1,4 @@
-# 媒体库刷新与入库通知（library-refresh-notify 1.0.0）
+# 媒体库刷新与入库通知（library-refresh-notify 1.1.0）
 
 默认 `active=false`。配置 `active=true`、`provider=builtin|emby`、`intervalSeconds=60..3600`。
 不自己启动线程/定时器：宿主 event lane 和持久 service 调度，停用后没有后台任务。
@@ -13,7 +13,7 @@
 `mediaserver.refresh` 只排现有业务任务，结果 requested/queued 不冒充刷新成功。
 通知说明的是“入库已确认、进入插件待刷新队列”，不是“刷新已完成”。
 
-队列/去重账本最多 200 个事件身份，不自动淘汰身份，防止旧事件在 Host 7 日收据过期后变成新副作用。
+队列/去重账本最多 200 个事件身份；只按下述宿主重投窗口与完成证据滚动淘汰。
 达到上限或刷新结果未知：通知、needs_action、实例停用，需要管理员处理；不静默丢任务或自动重放。
 同库 SDK mock Host 有相同的 key/参数冲突和未知收据规则；测试覆盖重复、合并、节流、丢 checkpoint、撤权。
 

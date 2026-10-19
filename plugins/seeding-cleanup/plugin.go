@@ -110,7 +110,7 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 		if len(s.Items) >= int(p.config.BatchSize) {
 			break
 		}
-		if !candidate.Owned || candidate.Hash == "" || candidate.SeedingState == "removed" || candidate.CleanupState != "" {
+		if !candidate.Owned || candidate.Hash == "" || candidate.SeedingState == "removed" || candidate.CleanupState != "" && candidate.CleanupState != "disabled" {
 			continue
 		}
 		t, err := client.Inspect(ctx, b.ID{ID: candidate.Hash})

@@ -27,7 +27,7 @@ func fixture(t *testing.T, execute, files bool) (*Plugin, *plugintest.Host, *int
 		t.Fatal(e)
 	}
 	n := new(int)
-	task := b.Task{ID: "task", Hash: "hash", Owned: true, Complete: true, Seeding: true, CleanupEligible: true, Ratio: 3, SeedingSeconds: 7200}
+	task := b.Task{CleanupState: "disabled", ID: "task", Hash: "hash", Owned: true, Complete: true, Seeding: true, CleanupEligible: true, Ratio: 3, SeedingSeconds: 7200}
 	h.OnBusiness("downloads.list", func(context.Context, json.RawMessage) (any, *contracts.Error) {
 		return b.Page[b.Task]{Items: []b.Task{task, task, task}}, nil
 	})
