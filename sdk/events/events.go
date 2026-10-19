@@ -13,7 +13,7 @@ import (
 type EventType = contracts.EventType
 type ChainEventType = contracts.ChainEventType
 type Envelope struct {
-	OccurredAt    time.Time       `json:"occurredAt,omitempty"`
+	OccurredAt    time.Time       `json:"occurredAt,omitzero"`
 	ID            string          `json:"id"`
 	Type          EventType       `json:"type"`
 	SchemaVersion int             `json:"schemaVersion"`

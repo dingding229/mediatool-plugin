@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -73,5 +74,15 @@ func TestBoundedSubscriptionWindowIsPublishedAndValidated(t *testing.T) {
 	ds := r.Descriptors()
 	if len(ds) != 1 || ds[0].ReplayWindowSeconds != 604800 {
 		t.Fatal(ds)
+	}
+}
+
+func TestUnboundedEnvelopePreservesWireIdentity(t *testing.T) {
+	raw, e := json.Marshal(Envelope{ID: "event", Type: contracts.EventTransferComplete, SchemaVersion: 1, Payload: json.RawMessage(`{}`)})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if strings.Contains(string(raw), "occurredAt") {
+		t.Fatal("changed legacy invocation digest", string(raw))
 	}
 }
