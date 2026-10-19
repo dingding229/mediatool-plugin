@@ -8,6 +8,7 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk/host"
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
 	dl "github.com/dingding229/mediatool-plugin/sdk/host/downloads"
+	md "github.com/dingding229/mediatool-plugin/sdk/host/metadata"
 	sr "github.com/dingding229/mediatool-plugin/sdk/host/search"
 	st "github.com/dingding229/mediatool-plugin/sdk/host/sites"
 	ss "github.com/dingding229/mediatool-plugin/sdk/host/subscriptions"
@@ -119,6 +120,26 @@ func TestTypedModuleClients(t *testing.T) {
 		t.Fatal(e)
 	}
 	if _, e := ss.New(h).List(ctx, p); e != nil {
+		t.Fatal(e)
+	}
+}
+
+func TestGammaTypedClientsAndExtraScopes(t *testing.T) {
+	ctx := context.Background()
+	h := plugintest.NewHost([]string{"metadata.read", "subscriptions.write", "downloads.control"})
+	h.OnBusiness("metadata.wishlist", func(context.Context, json.RawMessage) (any, *contracts.Error) {
+		return b.WishlistPage{State: "ok"}, nil
+	})
+	if _, e := md.New(h.Client()).Wishlist(ctx, b.WishlistRequest{Source: "tmdb-list", ID: "1", Page: 1}); e != nil {
+		t.Fatal(e)
+	}
+	if _, e := ss.New(h.Client()).Ensure(ctx, b.SubscriptionInput{}, b.Operation{Key: "ensure-fixture", Confirm: true}); e == nil {
+		t.Fatal("missing intersection allowed")
+	}
+	h.OnBusiness("downloads.downloader.configure", func(context.Context, json.RawMessage) (any, *contracts.Error) {
+		return b.Receipt{State: "configured"}, nil
+	})
+	if _, e := dl.New(h.Client()).Configure(ctx, b.DownloaderConfig{ID: "id", Tag: "fixture"}, b.Operation{Key: "configure-fixture", Confirm: true}); e != nil {
 		t.Fatal(e)
 	}
 }

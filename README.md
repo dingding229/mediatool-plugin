@@ -211,3 +211,14 @@ mock 非只读业务操作也保存幂等收据：相同 key/参数不重放，�
   插件仅清除已完成超过 8 日（含 24h 安全余量）、原事实超过重投窗且无 pending 的条目。
   200 条在窗内仍满则 needs_action。未声明窗口的其他订阅仍保留原有历史 replay 语义。
   `events.Envelope.OccurredAt` 由宿主 outbox/journal 提供，不由插件或回放请求指定。
+
+## F6-γ 验收插件与窄 Host 契约
+
+新增 wishlist-subscribe / torrent-assistant：默认只读预览，前者只接受公开来源 ID，
+模糊匹配进入候选，唯一身份经 subscriptions.ensure 创建停用订阅；后者全部写操作经
+宿主 Configure/Recheck 的 owned、HR、路径模式、读回、fence 和收据保护。
+metadata.wishlist 不返回原始正文；私有 TMDB 收藏/OAuth 不支持，绝不借用登录态。
+watch-organize 1.1.0 支持 depth 默认 3 / 最大 5 的有界递归，总条目仍最多 200，
+只以叶文件 size/mtime 计算静默；链接/身份异常拒绝，不增加 worker 文件系统能力。
+新插件仍必须在本库测试推送、CI 通过后，由主仓精确 pin，走 Actions→Hub 镜像发布；
+任何插件均不支持上传、外部源码、运行时下载或编译。
