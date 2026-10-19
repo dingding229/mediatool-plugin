@@ -6,7 +6,7 @@ This is **not** a runtime marketplace, an executable download service or an uplo
 format. Media Tool pins a commit of this module and compiles its registry into the
 app image. Merely listing a definition never constructs a plugin. Only an
 administrator-selected and enabled instance is run by the application's
-`plugin-worker` subprocess (application supervisor integration is G2).
+`plugin-worker` subprocess (the host supervisor owns isolation and lifecycle).
 
 ## Layout
 
@@ -29,8 +29,8 @@ instance, scope/selectors, caller and current grant/generation revision.
    version and record history when changing behavior. No secrets in metadata/UI.
 2. Test with `sdk/plugintest`: deny-by-default mock Host, revision checks, error/delay
    injection, reverse calls, lifecycle golden. The hello example only updates its
-   own KV. JSON component schemas/extension dispatch and business clients are
-   extended in F2/F3; declared unimplemented behavior is not a successful no-op.
+   own KV. JSON UI, extension dispatch and typed business clients are implemented by the
+   pinned host; declared unimplemented behavior is not a successful no-op.
 3. Run, serially:
    ```sh
    go vet ./...
@@ -204,7 +204,7 @@ mock 非只读业务操作也保存幂等收据：相同 key/参数不重放，�
 
 - `seeding-cleanup`：默认试运行、分享率/时长/标签/分类/站点规则；执行与删数据独立开关；
   由 Host `downloads.downloader.deleteOwned` 保持原所有权、HR、入库和清理证据保护。
-- `watch-organize`：已授权根内单层有界补扫、持久静默队列；由 Host 预览/确认文件整理，
+- `watch-organize`：已授权根内有界递归补扫（默认 3 层、最多 5 层）、持久静默队列；由 Host 预览/确认文件整理，
   不在 worker 里移动文件。具体边界见各插件 README。
 - `library-refresh-notify` 1.1.0 的事件订阅使用 `Events.OnWindow(..., 7*24*time.Hour, handler)`：
   宿主投递、管理员 replay、排队执行都检查**原事实时间**。Host 副作用收据保留 7 日，
@@ -222,3 +222,38 @@ watch-organize 1.1.0 支持 depth 默认 3 / 最大 5 的有界递归，总条�
 只以叶文件 size/mtime 计算静默；链接/身份异常拒绝，不增加 worker 文件系统能力。
 新插件仍必须在本库测试推送、CI 通过后，由主仓精确 pin，走 Actions→Hub 镜像发布；
 任何插件均不支持上传、外部源码、运行时下载或编译。
+
+## R release contract freeze (2026-10-19)
+
+contractVersion stays **2**; this documentation-only revision changes no plugin
+behavior, permissions or manifest histories. Current registry versions:
+
+| ID | Version | History / safe boundary |
+|---|---|---|
+| hello-go | 1.9.0 | Manual echo/tool and framework checks, no automatic business acceptance |
+| site-checkin | 1.0.0 | active=false; host holds credentials, <=1MiB sanitized marker comparison, no body extraction |
+| library-refresh-notify | 1.1.0 | active=false; 7-day original-fact replay window / completed entries older than 8 days may roll out |
+| seeding-cleanup | 1.0.0 | active=false / execute=false / deleteFiles=false; unknown is not success |
+| watch-organize | 1.1.0 | active=false; depth defaults to 3, max 5, <=200 entries, <=10 submissions; leaf size/mtime quiet period |
+| wishlist-subscribe | 1.0.0 | active=false / create=false; public sources only, unique identity creates a disabled subscription |
+| torrent-assistant | 1.0.0 | active=false / write=false / recheck=false; active error monitoring can notify even without writes |
+
+The host release freezes the exact Host method/scope/effect inventory and typed
+broadcast/chain enums; `sdk/host/business.Methods()` is the contract source, not
+permission to infer broader repository access. See the pinned host's
+`docs/PLUGIN_SUPPORT_MATRIX.md` for the complete generated matrix, runtime guards,
+unsupported/N/A boundaries and refusal tests. OAuth/private TMDB favorites, LLM
+conversation/automatic agents, arbitrary body extraction and playback URLs are
+not added by R. AgentLLMProvider remains N/A; unavailable actor/adapter domains
+fail closed as unsupported.
+
+Disabled instances never execute a factory to render a form. Administrators can
+save JSON while disabled; dynamic forms/status pages require an explicitly enabled
+worker. Offline static form schemas would need a future versioned metadata design,
+not a hidden worker startup. Installing/accepting scopes does not enable anything.
+A successful UI-only safe-mode acceptance is not evidence of live account check-in,
+notification delivery, torrent deletion, subscription creation or media mutation.
+
+Development order remains **plugin tests + push + green Actions -> host exact pin
++ regenerated inventory + full tests + green Actions -> immutable Hub AMD64 image
+-> separately authorized backed-up deployment**. No runtime update channel exists.
