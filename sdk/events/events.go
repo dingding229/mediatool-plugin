@@ -7,11 +7,13 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"sort"
 	"sync"
+	"time"
 )
 
 type EventType = contracts.EventType
 type ChainEventType = contracts.ChainEventType
 type Envelope struct {
+	OccurredAt    time.Time       `json:"occurredAt,omitempty"`
 	ID            string          `json:"id"`
 	Type          EventType       `json:"type"`
 	SchemaVersion int             `json:"schemaVersion"`
@@ -25,22 +27,34 @@ type ChainEnvelope struct {
 type Handler func(context.Context, Envelope) error
 type ChainHandler func(context.Context, ChainEnvelope) (json.RawMessage, error)
 type Descriptor struct {
-	Type     string `json:"type"`
-	Kind     string `json:"kind"`
-	Priority int    `json:"priority,omitempty"`
+	ReplayWindowSeconds int64  `json:"replayWindowSeconds,omitempty"`
+	Type                string `json:"type"`
+	Kind                string `json:"kind"`
+	Priority            int    `json:"priority,omitempty"`
 }
 type Registry struct {
 	mu         sync.RWMutex
 	handlers   map[EventType]Handler
 	chains     map[ChainEventType]ChainHandler
 	priorities map[ChainEventType]int
+	windows    map[EventType]int64
 	frozen     bool
 }
 
 func New() *Registry {
-	return &Registry{handlers: map[EventType]Handler{}, chains: map[ChainEventType]ChainHandler{}, priorities: map[ChainEventType]int{}}
+	return &Registry{windows: map[EventType]int64{}, handlers: map[EventType]Handler{}, chains: map[ChainEventType]ChainHandler{}, priorities: map[ChainEventType]int{}}
 }
-func (r *Registry) On(t EventType, h Handler) error {
+
+// OnWindow opts into a host-enforced maximum original-event age (up to 7 days).
+// Deliver, replay, and queued execution all reject expired facts. Zero preserves legacy replay.
+func (r *Registry) OnWindow(t EventType, window time.Duration, h Handler) error {
+	if window < time.Second || window > 7*24*time.Hour || window%time.Second != 0 {
+		return contracts.NewError(contracts.InvalidParams)
+	}
+	return r.on(t, int64(window/time.Second), h)
+}
+func (r *Registry) On(t EventType, h Handler) error { return r.on(t, 0, h) }
+func (r *Registry) on(t EventType, window int64, h Handler) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if r.frozen || !contracts.KnownEventType(t) || h == nil || r.handlers[t] != nil {
@@ -50,6 +64,7 @@ func (r *Registry) On(t EventType, h Handler) error {
 		return contracts.NewError(contracts.Busy)
 	}
 	r.handlers[t] = h
+	r.windows[t] = window
 	return nil
 }
 func (r *Registry) OnChain(t ChainEventType, h ChainHandler) error { return r.OnChainPriority(t, 0, h) }
@@ -72,7 +87,7 @@ func (r *Registry) Descriptors() []Descriptor {
 	defer r.mu.RUnlock()
 	out := []Descriptor{}
 	for t := range r.handlers {
-		out = append(out, Descriptor{Type: string(t), Kind: "event"})
+		out = append(out, Descriptor{Type: string(t), Kind: "event", ReplayWindowSeconds: r.windows[t]})
 	}
 	for t := range r.chains {
 		out = append(out, Descriptor{Type: string(t), Kind: "chain", Priority: r.priorities[t]})

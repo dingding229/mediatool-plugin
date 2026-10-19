@@ -2,13 +2,14 @@
   "contractVersion": 2,
   "id": "library-refresh-notify",
   "name": "媒体库刷新与入库通知",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Media Tool Contributors",
   "description": "提交后入库事件通知与合并刷新；不涉及播放 URL 或媒体内容。",
   "level": 2,
   "icon": "icon.svg",
   "history": {
-    "1.0.0": "F6-α：有界、默认不执行业务、Host 实时授权与幂等收据"
+    "1.0.0": "F6-α：有界、默认不执行业务、Host 实时授权与幂等收据",
+    "1.1.0": "F6-β：宿主强制七日重投窗口；仅淘汰完成八日且已过重投窗口的记录"
   },
   "permissions": [
     {

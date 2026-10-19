@@ -11,7 +11,7 @@ import (
 )
 
 func TestAcceptanceDescriptorsGoldenAndNoInitEffects(t *testing.T) {
-	for _, name := range []string{"site-checkin", "library-refresh-notify"} {
+	for _, name := range []string{"site-checkin", "library-refresh-notify", "seeding-cleanup", "watch-organize"} {
 		t.Run(name, func(t *testing.T) {
 			d, e := registry.Get(name)
 			if e != nil {

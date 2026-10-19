@@ -1,0 +1,62 @@
+{
+  "contractVersion": 2,
+  "id": "seeding-cleanup",
+  "name": "自动做种清理",
+  "version": "1.0.0",
+  "author": "Media Tool Contributors",
+  "description": "默认只预览；仅已入库、所有权及 HR 证据完整的种子可请求清理。",
+  "level": 2,
+  "icon": "icon.svg",
+  "history": {
+    "1.0.0": "F6-β：默认停用；有界队列、持久收据、宿主实时授权与危险操作确认"
+  },
+  "permissions": [
+    {
+      "scope": "plugin.config.read"
+    },
+    {
+      "scope": "plugin.data.read"
+    },
+    {
+      "scope": "plugin.data.write"
+    },
+    {
+      "scope": "ui.json"
+    },
+    {
+      "scope": "services.register"
+    },
+    {
+      "scope": "notifications.send"
+    },
+    {
+      "scope": "downloads.read"
+    },
+    {
+      "scope": "downloads.delete"
+    }
+  ],
+  "extensions": {
+    "forms": true,
+    "pages": [
+      "status"
+    ],
+    "services": [
+      "cleanup"
+    ]
+  },
+  "ui": {
+    "mode": "json"
+  },
+  "resources": {
+    "addressSpaceMiB": 8192,
+    "rssMiB": 256,
+    "cpuQuotaPercent": 100,
+    "processes": 64,
+    "openFiles": 256,
+    "dataMiB": 256,
+    "tmpMiB": 64
+  },
+  "configSchemaVersion": 1,
+  "dataSchemaVersion": 1
+}

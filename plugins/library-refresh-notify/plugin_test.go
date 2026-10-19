@@ -47,7 +47,7 @@ func setup(t *testing.T, active bool) (*Plugin, *plugintest.Host, *int, *int) {
 }
 func event(n int, asset string) events.Envelope {
 	raw, _ := json.Marshal(contracts.TransferCompleted{AssetID: asset, State: "succeeded"})
-	return events.Envelope{ID: fmt.Sprintf("00000000-0000-0000-0000-%012d", n), Type: contracts.EventTransferComplete, SchemaVersion: 1, Payload: raw}
+	return events.Envelope{OccurredAt: time.Unix(2000000, 0), ID: fmt.Sprintf("00000000-0000-0000-0000-%012d", n), Type: contracts.EventTransferComplete, SchemaVersion: 1, Payload: raw}
 }
 
 const asset = "00000000-0000-0000-0000-000000000999"
@@ -164,6 +164,60 @@ func TestIntervalFormPreservesNumericConfig(t *testing.T) {
 		p := New(sdk.Services{Events: events.New()}).(*Plugin)
 		if e := p.InitPlugin(context.Background(), sdk.Config{Value: json.RawMessage(raw)}); e == nil {
 			t.Fatal(raw)
+		}
+	}
+}
+
+func TestCompletedLedgerRollsOnlyOutsideReplayAndReceiptWindow(t *testing.T) {
+	p, h, n, r := setup(t, true)
+	ctx := context.Background()
+	now := p.now()
+	old := now.Add(-ledgerRetention - time.Hour)
+	s := State{}
+	for i := range 200 {
+		s.Events = append(s.Events, Notice{ID: fmt.Sprint(i), AssetID: asset, Notified: true, OccurredAt: old, CompletedAt: old.Unix()})
+	}
+	if _, e := h.Client().SaveData(ctx, "refresh-state", s, 0); e != nil {
+		t.Fatal(e)
+	}
+	if e := p.onTransfer(ctx, event(201, asset)); e != nil {
+		t.Fatal(e)
+	}
+	if e := p.flush(ctx, nil); e != nil {
+		t.Fatal(e)
+	}
+	if e := p.onTransfer(ctx, event(201, asset)); e != nil || *n != 1 || *r != 1 {
+		t.Fatal(e, *n, *r)
+	}
+	// An expired original fact is ignored, not reincarnated as a new effect.
+	expired := event(202, asset)
+	expired.OccurredAt = old
+	if e := p.onTransfer(ctx, expired); e != nil || *n != 1 {
+		t.Fatal(e, *n)
+	}
+	var current State
+	if _, e := h.Client().GetData(ctx, "refresh-state", &current); e != nil || len(current.Events) != 1 {
+		t.Fatal(e, current)
+	}
+}
+func TestWithinWindowAndPendingLedgerNeverEvicted(t *testing.T) {
+	for _, pending := range []bool{false, true} {
+		p, h, _, _ := setup(t, true)
+		now := p.now()
+		s := State{}
+		stamp := now.Add(-time.Hour)
+		if pending {
+			stamp = now.Add(-10 * 24 * time.Hour)
+			s.Pending = []Pending{{AssetID: asset, Receipt: "pending"}}
+		}
+		for i := range 200 {
+			s.Events = append(s.Events, Notice{ID: fmt.Sprint(i), AssetID: asset, Notified: true, OccurredAt: stamp, CompletedAt: stamp.Unix()})
+		}
+		if _, e := h.Client().SaveData(context.Background(), "refresh-state", s, 0); e != nil {
+			t.Fatal(e)
+		}
+		if e := p.onTransfer(context.Background(), event(201, asset)); e == nil {
+			t.Fatal("unsafe eviction", pending)
 		}
 	}
 }

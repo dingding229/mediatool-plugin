@@ -2,6 +2,7 @@
   "version": 2,
   "descriptors": [
     {
+      "replayWindowSeconds": 604800,
       "kind": "event",
       "id": "library.organized",
       "handler": "event.ea6f503ec4211bb31fb3a5c7",

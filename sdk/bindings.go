@@ -260,7 +260,7 @@ func (r *Runtime) bind(ctx context.Context) error {
 			continue
 		}
 		typ := events.EventType(v.Type)
-		if e := add(contracts.Descriptor{Kind: "event", ID: v.Type, RequiredScopes: []string{"events.subscribe." + v.Type}}, func(ctx context.Context, b json.RawMessage) (any, error) {
+		if e := add(contracts.Descriptor{Kind: "event", ID: v.Type, ReplayWindowSeconds: v.ReplayWindowSeconds, RequiredScopes: []string{"events.subscribe." + v.Type}}, func(ctx context.Context, b json.RawMessage) (any, error) {
 			var q events.Envelope
 			if contracts.Decode(b, &q) != nil || q.Type != typ {
 				return nil, contracts.NewError(contracts.InvalidParams)

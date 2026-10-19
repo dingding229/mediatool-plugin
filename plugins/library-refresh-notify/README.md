@@ -19,3 +19,7 @@
 
 权限：自身 config/KV、ui.json、services.register、精确 events.subscribe.library.organized、
 mediaserver.refresh、notifications.send。没有播放、115、原文 STRM 或媒体文件写权限。
+
+1.1.0：取代旧“不淘汰”策略。该订阅由宿主强制七日原事实重投窗口，
+完成超过八日且无 pending 引用的条目才可淘汰；未完成、旧版无时间证据、
+或窗口内满载仍需处理。人工 replay 也不能越过该窗口，其他订阅不受影响。

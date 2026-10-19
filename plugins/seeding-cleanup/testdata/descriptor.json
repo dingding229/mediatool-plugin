@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "descriptors": [
+    {
+      "kind": "service",
+      "id": "cleanup",
+      "handler": "service.a24e6047d7d3f2040447982c",
+      "requiredScopes": [
+        "services.register",
+        "plugin.data.read",
+        "plugin.data.write",
+        "downloads.read",
+        "downloads.delete"
+      ],
+      "name": "预览或执行做种清理",
+      "trigger": "cron",
+      "cron": "*/10 * * * *",
+      "scheduleSetting": "active"
+    },
+    {
+      "kind": "ui",
+      "id": "form",
+      "handler": "ui.437f72de2c4c718727be8489",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    },
+    {
+      "kind": "ui",
+      "id": "page.status",
+      "handler": "ui.ffe19f3c029bb245b79ea212",
+      "requiredScopes": [
+        "ui.json"
+      ]
+    }
+  ]
+}

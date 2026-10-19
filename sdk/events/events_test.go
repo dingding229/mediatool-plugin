@@ -6,6 +6,7 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"sync/atomic"
 	"testing"
+	"time"
 )
 
 func TestTypedEventsFreezeAndKnownPairs(t *testing.T) {
@@ -55,5 +56,22 @@ func TestTypedEventsFreezeAndKnownPairs(t *testing.T) {
 	}
 	if _, e := r.DispatchChain(context.Background(), ChainEnvelope{Type: contracts.ChainNameRecognize, SchemaVersion: 1, Payload: json.RawMessage(`{}`)}); e != nil {
 		t.Fatal(e)
+	}
+}
+
+func TestBoundedSubscriptionWindowIsPublishedAndValidated(t *testing.T) {
+	r := New()
+	h := func(context.Context, Envelope) error { return nil }
+	for _, d := range []time.Duration{-1, 0, time.Second / 2, 8 * 24 * time.Hour} {
+		if e := r.OnWindow(contracts.EventTransferComplete, d, h); e == nil {
+			t.Fatal(d)
+		}
+	}
+	if e := r.OnWindow(contracts.EventTransferComplete, 7*24*time.Hour, h); e != nil {
+		t.Fatal(e)
+	}
+	ds := r.Descriptors()
+	if len(ds) != 1 || ds[0].ReplayWindowSeconds != 604800 {
+		t.Fatal(ds)
 	}
 }

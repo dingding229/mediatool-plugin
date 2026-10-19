@@ -59,18 +59,27 @@ type Resource struct {
 	DownloadFactor *float64 `json:"downloadFactor,omitempty"`
 }
 type Task struct {
-	Transfers     []Transfer `json:"transfers,omitempty"`
-	ID            string     `json:"id"`
-	Title         string     `json:"title"`
-	State         string     `json:"state"`
-	Hash          string     `json:"hash"`
-	Owned         bool       `json:"owned"`
-	Progress      *float64   `json:"progress,omitempty"`
-	DownloadSpeed int64      `json:"downloadSpeed"`
-	UploadSpeed   int64      `json:"uploadSpeed"`
-	Size          int64      `json:"size"`
-	Revision      int64      `json:"revision,omitempty"`
-	CleanupState  string     `json:"cleanupState,omitempty"`
+	SeedingState    string     `json:"seedingState,omitempty"`
+	SiteID          string     `json:"siteId,omitempty"`
+	Category        string     `json:"category,omitempty"`
+	Tags            []string   `json:"tags,omitempty"`
+	Ratio           float64    `json:"ratio"`
+	SeedingSeconds  int64      `json:"seedingSeconds"`
+	Complete        bool       `json:"complete"`
+	Seeding         bool       `json:"seeding"`
+	CleanupEligible bool       `json:"cleanupEligible"`
+	Transfers       []Transfer `json:"transfers,omitempty"`
+	ID              string     `json:"id"`
+	Title           string     `json:"title"`
+	State           string     `json:"state"`
+	Hash            string     `json:"hash"`
+	Owned           bool       `json:"owned"`
+	Progress        *float64   `json:"progress,omitempty"`
+	DownloadSpeed   int64      `json:"downloadSpeed"`
+	UploadSpeed     int64      `json:"uploadSpeed"`
+	Size            int64      `json:"size"`
+	Revision        int64      `json:"revision,omitempty"`
+	CleanupState    string     `json:"cleanupState,omitempty"`
 }
 type File struct {
 	Index    int     `json:"index"`

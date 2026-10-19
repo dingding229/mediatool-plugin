@@ -24,6 +24,9 @@ func ValidateSnapshot(m Manifest, granted []string, s Snapshot) error {
 			return NewError(InvalidExtensionResult)
 		}
 		ids[d.Kind+":"+d.ID] = true
+		if d.ReplayWindowSeconds < 0 || d.ReplayWindowSeconds > 7*86400 || d.Kind != "event" && d.ReplayWindowSeconds != 0 {
+			return NewError(InvalidParams)
+		}
 		required := ""
 		allowed := []string{}
 		switch d.Kind {

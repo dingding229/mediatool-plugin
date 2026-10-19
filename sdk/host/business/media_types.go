@@ -123,6 +123,7 @@ type FileQuery struct {
 	PageRequest
 }
 type MediaFile struct {
+	Modified    int64  `json:"modified,omitempty"`
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Path        string `json:"path"`
@@ -138,13 +139,14 @@ type FilePage struct {
 // FileInput contains only root-relative names. Preview returns an expiring evidence digest;
 // Apply requires that exact digest and an explicit confirmed Operation. No raw upload/copy.
 type FileInput struct {
-	RootID         string `json:"rootId"`
-	Operation      string `json:"operation"`
-	Source         string `json:"source"`
-	Destination    string `json:"destination"`
-	Name           string `json:"name"`
-	ExpectedFileID string `json:"expectedFileId"`
-	ExpectedSize   *int64 `json:"expectedSize,omitempty"`
+	ExpectedModified *int64 `json:"expectedModified,omitempty"`
+	RootID           string `json:"rootId"`
+	Operation        string `json:"operation"`
+	Source           string `json:"source"`
+	Destination      string `json:"destination"`
+	Name             string `json:"name"`
+	ExpectedFileID   string `json:"expectedFileId"`
+	ExpectedSize     *int64 `json:"expectedSize,omitempty"`
 }
 type FileInputs struct {
 	Items []FileInput `json:"items"`

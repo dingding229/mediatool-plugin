@@ -1,0 +1,62 @@
+{
+  "contractVersion": 2,
+  "id": "watch-organize",
+  "name": "目录监控实时整理",
+  "version": "1.0.0",
+  "author": "Media Tool Contributors",
+  "description": "定时补扫有界目录，静默后由宿主预览及确认文件计划；不自行移动文件或改变 STRM。",
+  "level": 2,
+  "icon": "icon.svg",
+  "history": {
+    "1.0.0": "F6-β：默认停用；有界队列、持久收据、宿主实时授权与危险操作确认"
+  },
+  "permissions": [
+    {
+      "scope": "plugin.config.read"
+    },
+    {
+      "scope": "plugin.data.read"
+    },
+    {
+      "scope": "plugin.data.write"
+    },
+    {
+      "scope": "ui.json"
+    },
+    {
+      "scope": "services.register"
+    },
+    {
+      "scope": "notifications.send"
+    },
+    {
+      "scope": "fs.media:read"
+    },
+    {
+      "scope": "fs.media:write"
+    }
+  ],
+  "extensions": {
+    "forms": true,
+    "pages": [
+      "status"
+    ],
+    "services": [
+      "scan"
+    ]
+  },
+  "ui": {
+    "mode": "json"
+  },
+  "resources": {
+    "addressSpaceMiB": 8192,
+    "rssMiB": 256,
+    "cpuQuotaPercent": 100,
+    "processes": 64,
+    "openFiles": 256,
+    "dataMiB": 256,
+    "tmpMiB": 64
+  },
+  "configSchemaVersion": 1,
+  "dataSchemaVersion": 1
+}

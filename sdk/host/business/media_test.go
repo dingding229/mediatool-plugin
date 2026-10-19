@@ -14,6 +14,7 @@ import (
 	storage "github.com/dingding229/mediatool-plugin/sdk/host/storage"
 	strm "github.com/dingding229/mediatool-plugin/sdk/host/strm"
 	"github.com/dingding229/mediatool-plugin/sdk/plugintest"
+	"strings"
 	"testing"
 )
 
@@ -1129,4 +1130,23 @@ func TestMediaDTOGolden(t *testing.T) {
 		Identity b.IdentityPlan `json:"identity"`
 		Approval b.Approval     `json:"approval"`
 	}{File: b.MediaFile{ID: "opaque-file", Name: "Owned.mkv", Path: "Movies/Owned.mkv", Size: 42}, Identity: b.IdentityPlan{ID: "opaque-asset", Revision: 3, PlanDigest: "digest", Operations: []b.IdentityOperation{{Path: "Movies/Owned.strm", Kind: "strm", Operation: "create"}}}, Approval: b.Approval{ID: "opaque-plan", Digest: "digest"}})
+}
+
+func TestMonitorObservationDTOIncludesOnlyBoundedIdentityEvidence(t *testing.T) {
+	m := b.MediaFile{ID: "inode", Path: "incoming/Example.2026.mkv", Name: "Example.2026.mkv", Size: 4, Modified: 1234}
+	raw, e := json.Marshal(m)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if !strings.Contains(string(raw), `"modified":1234`) {
+		t.Fatal(string(raw))
+	}
+	input := b.FileInput{RootID: "root", Operation: "organize", Source: m.Path, Destination: "organized", ExpectedFileID: m.ID, ExpectedSize: &m.Size, ExpectedModified: &m.Modified}
+	raw, e = json.Marshal(input)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if strings.Contains(string(raw), "token") || strings.Contains(string(raw), "http") {
+		t.Fatal(string(raw))
+	}
 }

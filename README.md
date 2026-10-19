@@ -199,3 +199,15 @@ backed-up deployment. Runtime compilation/download/upload is never supported.
 mock 非只读业务操作也保存幂等收据：相同 key/参数不重放，参数冲突拒绝，撤权即时拒绝。
 
 通知 Send 的入队证据是 business.NotificationPending（pending），不是已送达；验收插件严格匹配该常量，unknown 不算成功。
+
+## F6-β 验收插件
+
+- `seeding-cleanup`：默认试运行、分享率/时长/标签/分类/站点规则；执行与删数据独立开关；
+  由 Host `downloads.downloader.deleteOwned` 保持原所有权、HR、入库和清理证据保护。
+- `watch-organize`：已授权根内单层有界补扫、持久静默队列；由 Host 预览/确认文件整理，
+  不在 worker 里移动文件。具体边界见各插件 README。
+- `library-refresh-notify` 1.1.0 的事件订阅使用 `Events.OnWindow(..., 7*24*time.Hour, handler)`：
+  宿主投递、管理员 replay、排队执行都检查**原事实时间**。Host 副作用收据保留 7 日，
+  插件仅清除已完成超过 8 日（含 24h 安全余量）、原事实超过重投窗且无 pending 的条目。
+  200 条在窗内仍满则 needs_action。未声明窗口的其他订阅仍保留原有历史 replay 语义。
+  `events.Envelope.OccurredAt` 由宿主 outbox/journal 提供，不由插件或回放请求指定。

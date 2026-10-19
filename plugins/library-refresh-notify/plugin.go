@@ -30,10 +30,18 @@ type Config struct {
 	Provider string  `json:"provider"`
 	Interval Seconds `json:"intervalSeconds"`
 }
+
+const replayWindow = 7 * 24 * time.Hour
+
+// Receipts retain 7d. Completed effects retain 8d, including 24h clock/scheduling margin.
+const ledgerRetention = replayWindow + 24*time.Hour
+
 type Notice struct {
-	ID       string `json:"id"`
-	AssetID  string `json:"assetId"`
-	Notified bool   `json:"notified"`
+	OccurredAt  time.Time `json:"occurredAt,omitempty"`
+	CompletedAt int64     `json:"completedAt,omitempty"`
+	ID          string    `json:"id"`
+	AssetID     string    `json:"assetId"`
+	Notified    bool      `json:"notified"`
 }
 type Pending struct {
 	AssetID string `json:"assetId"`
@@ -63,7 +71,7 @@ func (p *Plugin) InitPlugin(_ context.Context, c sdk.Config) error {
 	}
 	p.config = v
 	p.running = true
-	return p.events.On(contracts.EventTransferComplete, p.onTransfer)
+	return p.events.OnWindow(contracts.EventTransferComplete, replayWindow, p.onTransfer)
 }
 func (p *Plugin) GetState(context.Context) (bool, error) {
 	p.mu.Lock()
@@ -93,10 +101,29 @@ func (p *Plugin) onTransfer(ctx context.Context, e events.Envelope) error {
 	if !contracts.OpaqueID(fact.AssetID) || fact.State != "succeeded" || fact.OperationID != "" && !contracts.OpaqueID(fact.OperationID) {
 		return contracts.NewError(contracts.InvalidParams)
 	}
+	if e.OccurredAt.IsZero() || e.OccurredAt.After(p.now().Add(time.Minute)) {
+		return contracts.NewError(contracts.InvalidParams)
+	}
+	if !e.OccurredAt.Add(replayWindow).After(p.now()) {
+		return nil
+	}
 	s, rev, err := acceptance.Load[State](ctx, p.host, "refresh-state")
 	if err != nil {
 		return err
 	}
+	kept := s.Events[:0]
+	for _, v := range s.Events {
+		pending := false
+		for _, q := range s.Pending {
+			pending = pending || q.AssetID == v.AssetID
+		}
+		expired := !v.OccurredAt.IsZero() && !v.OccurredAt.Add(replayWindow).After(p.now())
+		if !pending && v.Notified && v.CompletedAt > 0 && expired && p.now().Unix()-v.CompletedAt > int64(ledgerRetention/time.Second) {
+			continue
+		}
+		kept = append(kept, v)
+	}
+	s.Events = kept
 	index := -1
 	for n, v := range s.Events {
 		if v.ID == e.ID {
@@ -105,12 +132,12 @@ func (p *Plugin) onTransfer(ctx context.Context, e events.Envelope) error {
 		}
 	}
 	if index < 0 {
-		// No automatic eviction: old event identities must never become new effects.
+		// Only completed, expired facts are evicted; pending/legacy/unknown never are.
 		if len(s.Events) >= 200 {
 			return acceptance.RequireAction(ctx, p.host, "refresh-ledger-full", "refresh_ledger_full")
 		}
 		index = len(s.Events)
-		s.Events = append(s.Events, Notice{ID: e.ID, AssetID: fact.AssetID})
+		s.Events = append(s.Events, Notice{ID: e.ID, AssetID: fact.AssetID, OccurredAt: e.OccurredAt})
 		found := false
 		for _, v := range s.Pending {
 			found = found || v.AssetID == fact.AssetID
@@ -158,6 +185,11 @@ func (p *Plugin) flush(ctx context.Context, _ json.RawMessage) error {
 	receipt, e := mediaserver.New(p.host).Refresh(ctx, b.ServerRefresh{Provider: p.config.Provider, AssetID: first.AssetID}, b.Operation{Key: "refresh:" + first.Receipt, Confirm: true})
 	if e != nil || receipt.State != "requested" && receipt.State != "queued" {
 		return acceptance.RequireAction(ctx, p.host, "refresh-attention:"+first.Receipt, "refresh_unconfirmed")
+	}
+	for i := range s.Events {
+		if s.Events[i].AssetID == first.AssetID && s.Events[i].Notified {
+			s.Events[i].CompletedAt = p.now().Unix()
+		}
 	}
 	s.Pending = s.Pending[1:]
 	s.LastFlush = p.now().Unix()
