@@ -257,3 +257,14 @@ notification delivery, torrent deletion, subscription creation or media mutation
 Development order remains **plugin tests + push + green Actions -> host exact pin
 + regenerated inventory + full tests + green Actions -> immutable Hub AMD64 image
 -> separately authorized backed-up deployment**. No runtime update channel exists.
+
+### Controlled site responses
+
+`sites.request` / `sites.checkin` return `status`, `state`, `matched`, `body`,
+`headers`, `truncated`, and `encoding` (`utf-8` or `base64`). The default body
+limit is 256 KiB; `maxResponseBytes` may request a smaller positive limit.
+The host filters response headers, redacts account credentials from text, never
+follows redirects, and rejects binary bodies (rather than encoding credentials
+inside opaque bytes). No response is a permission to bypass a site challenge.
+Permission errors may include fixed Chinese operator guidance for disabled,
+read-only, or permission-review states; arbitrary upstream text is never relayed.

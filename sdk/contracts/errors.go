@@ -98,8 +98,28 @@ func SafeError(e *Error) *Error {
 		code = InternalError
 	}
 	safe := NewError(code)
+	if code == PermissionDenied {
+		safe = AccessError(e.Data.Reason)
+	}
 	if e.Data.RetryAfterMS > 0 && e.Data.RetryAfterMS <= 86400000 {
 		safe.Data.RetryAfterMS = e.Data.RetryAfterMS
 	}
 	return safe
+}
+
+// AccessError exposes only fixed operator guidance, never remote text.
+func AccessError(reason string) *Error {
+	e := NewError(PermissionDenied)
+	switch reason {
+	case "permission_review_required":
+		e.Message = "插件处于只读状态（权限待确认），请在插件页确认权限后重试"
+	case "disabled":
+		e.Message = "插件已停用，无法执行写操作，请在插件页启用后重试"
+	case "read_only":
+		e.Message = "插件处于只读状态，当前调用未获写权限，请在插件页核对授权后重试"
+	default:
+		return e
+	}
+	e.Data.Reason = reason
+	return e
 }

@@ -168,19 +168,23 @@ type Metrics struct {
 	SeedingBytes *int64   `json:"seedingBytes,omitempty"`
 }
 type SiteRequest struct {
-	AccountID     string `json:"accountId"`
-	Origin        string `json:"origin"`
-	Path          string `json:"path"`
-	Method        string `json:"method"`
-	Body          string `json:"body,omitempty"`
-	SuccessMarker string `json:"successMarker,omitempty"`
-	Raw           bool   `json:"raw"`
+	AccountID        string `json:"accountId"`
+	Origin           string `json:"origin"`
+	Path             string `json:"path"`
+	Method           string `json:"method"`
+	Body             string `json:"body,omitempty"`
+	SuccessMarker    string `json:"successMarker,omitempty"`
+	Raw              bool   `json:"raw"`
+	MaxResponseBytes int    `json:"maxResponseBytes,omitempty"`
 }
 type SiteResponse struct {
-	Status  int    `json:"status"`
-	State   string `json:"state"`
-	Matched bool   `json:"matched"`
-	Body    string `json:"body,omitempty"`
+	Status    int               `json:"status"`
+	State     string            `json:"state"`
+	Matched   bool              `json:"matched"`
+	Body      string            `json:"body,omitempty"`
+	Headers   map[string]string `json:"headers"`
+	Truncated bool              `json:"truncated"`
+	Encoding  string            `json:"encoding"`
 }
 type Template struct {
 	ID     string `json:"id"`
