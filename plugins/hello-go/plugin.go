@@ -70,11 +70,9 @@ func (p *Plugin) InitPlugin(ctx context.Context, c sdk.Config) error {
 	p.running = true
 	return nil
 }
-func (p *Plugin) GetState(context.Context) (bool, error) { return p.running, nil }
-func (p *Plugin) StopService(context.Context) error      { p.running = false; return nil }
-func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	return sdk.Form{Content: []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": json.RawMessage(`"Hello from the built-in Go library"`)}}, {Component: "VTextField", Model: "greeting", Props: map[string]json.RawMessage{"label": json.RawMessage(`"问候语"`)}}, {Component: "VSwitch", Model: "scheduled", Props: map[string]json.RawMessage{"label": json.RawMessage(`"启用定时服务"`)}}}, Defaults: json.RawMessage(`{"greeting":"Hello","scheduled":true}`)}, nil
-}
+func (p *Plugin) GetState(context.Context) (bool, error)    { return p.running, nil }
+func (p *Plugin) StopService(context.Context) error         { p.running = false; return nil }
+func (p *Plugin) GetForm(context.Context) (sdk.Form, error) { return configurationForm(), nil }
 func (p *Plugin) GetPage(context.Context, sdk.PageRequest) (sdk.Page, error) {
 	b, _ := json.Marshal(p.count)
 	return sdk.Page{Content: []contracts.Component{{Component: "Text", Key: "starts", Props: map[string]json.RawMessage{"count": b}}}}, nil

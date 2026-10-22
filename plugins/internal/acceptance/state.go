@@ -37,3 +37,13 @@ func Prop(v any) json.RawMessage { b, _ := json.Marshal(v); return b }
 func Field(component, model, label string) contracts.Component {
 	return contracts.Component{Component: component, Model: model, Props: map[string]json.RawMessage{"label": Prop(label)}}
 }
+
+// Number describes the entire accepted interval, not a list of presets.
+// Non-integral fields deliberately do not snap to step: valid fractional values
+// between the arrow increments must remain expressible.
+func Number(model, label string, min, max, step float64, integer bool) contracts.Component {
+	field := Field("VNumberInput", model, label)
+	field.Props["min"], field.Props["max"] = Prop(min), Prop(max)
+	field.Props["step"], field.Props["stepStrictly"] = Prop(step), Prop(integer)
+	return field
+}

@@ -270,7 +270,7 @@ func (p *Plugin) resolve(ctx context.Context, q sdk.ActionContext) (sdk.ActionCo
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
 	source := acceptance.Field("VSelect", "source", "公开来源（不含登录态收藏）")
 	source.Props["items"] = acceptance.Prop([]string{"tmdb-list", "douban-wish", "douban-subject"})
-	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"create":false,"source":"tmdb-list","intervalMinutes":"60","perRun":"10"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用定时拉取"), acceptance.Field("VSwitch", "create", "危险：唯一匹配时创建停用订阅（默认只列候选）"), source, acceptance.Field("VTextField", "id", "列表 ID、豆瓣公开用户 ID 或条目 ID"), acceptance.Field("VTextField", "accountIds", "已配置 PT 账户 ID，逗号分隔（不立即搜索/下载）"), acceptance.Field("VTextField", "intervalMinutes", "同步间隔分钟（30–1440）"), acceptance.Field("VTextField", "perRun", "每轮条目（1–20）")}}, nil
+	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"create":false,"source":"tmdb-list","intervalMinutes":"60","perRun":"10"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用定时拉取"), acceptance.Field("VSwitch", "create", "危险：唯一匹配时创建停用订阅（默认只列候选）"), source, acceptance.Field("VTextField", "id", "列表 ID、豆瓣公开用户 ID 或条目 ID"), acceptance.Field("VTextField", "accountIds", "已配置 PT 账户 ID，逗号分隔（不立即搜索/下载）"), acceptance.Number("intervalMinutes", "同步间隔分钟（30–1440）", 30, 1440, 1, true), acceptance.Number("perRun", "每轮条目（1–20）", 1, 20, 1, true)}}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "wishlist-state")

@@ -149,11 +149,10 @@ func TestUnknownNotificationReceiptNeverBecomesNotified(t *testing.T) {
 
 func TestIntervalFormPreservesNumericConfig(t *testing.T) {
 	v := intervalField()
-	var items []string
-	if v.Component != "VSelect" || json.Unmarshal(v.Props["items"], &items) != nil || len(items) != 5 {
+	if v.Component != "VNumberInput" || string(v.Props["min"]) != "60" || string(v.Props["max"]) != "3600" || string(v.Props["step"]) != "1" {
 		t.Fatal(v)
 	}
-	for _, x := range items {
+	for _, x := range []string{"60", "61", "3599", "3600"} {
 		p := New(sdk.Services{Events: events.New()}).(*Plugin)
 		raw := json.RawMessage(`{"active":false,"provider":"builtin","intervalSeconds":"` + x + `"}`)
 		if e := p.InitPlugin(context.Background(), sdk.Config{Value: raw}); e != nil {

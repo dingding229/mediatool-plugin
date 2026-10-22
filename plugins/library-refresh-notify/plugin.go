@@ -209,9 +209,7 @@ func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, erro
 }
 
 func intervalField() contracts.Component {
-	field := acceptance.Field("VSelect", "intervalSeconds", "刷新间隔（秒；其他数值可通过配置 JSON 设置）")
-	field.Props["items"] = acceptance.Prop([]string{"60", "120", "300", "600", "3600"})
-	return field
+	return acceptance.Number("intervalSeconds", "刷新间隔（秒）", 60, 3600, 1, true)
 }
 
 // The host whitelist renderer intentionally emits strings for VSelect/ElInput.

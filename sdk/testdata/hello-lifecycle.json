@@ -31,12 +31,6 @@
   "form": {
     "content": [
       {
-        "component": "Text",
-        "props": {
-          "text": "Hello from the built-in Go library"
-        }
-      },
-      {
         "component": "VTextField",
         "props": {
           "label": "问候语"
@@ -49,6 +43,112 @@
           "label": "启用定时服务"
         },
         "model": "scheduled"
+      },
+      {
+        "component": "VDetails",
+        "props": {
+          "label": "示例测试选项"
+        },
+        "children": [
+          {
+            "component": "VAlert",
+            "props": {
+              "title": "以下为示例插件测试选项，可能延迟或拒绝处理；生产使用请保持关闭。",
+              "type": "warning"
+            }
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "模拟识别延迟"
+            },
+            "model": "chainDelay"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "模拟识别错误"
+            },
+            "model": "chainError"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "模拟发现延迟"
+            },
+            "model": "discoveryDelay"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "拦截识别结果"
+            },
+            "model": "intercept"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "模拟整理延迟"
+            },
+            "model": "organizeDelay"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "拒绝整理"
+            },
+            "model": "organizeReject"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "模拟资源延迟"
+            },
+            "model": "resourceDelay"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "保留下载源文件"
+            },
+            "model": "resourceNoCleanup"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "拒绝资源下载"
+            },
+            "model": "resourceReject"
+          },
+          {
+            "component": "VSwitch",
+            "props": {
+              "label": "反转资源顺序"
+            },
+            "model": "resourceReverse"
+          },
+          {
+            "component": "VTextField",
+            "props": {
+              "label": "示例处理标题"
+            },
+            "model": "moduleTitle"
+          },
+          {
+            "component": "VTextField",
+            "props": {
+              "label": "示例整理目录"
+            },
+            "model": "organizeFolder"
+          },
+          {
+            "component": "VTextField",
+            "props": {
+              "label": "示例识别标题"
+            },
+            "model": "recognizeTitle"
+          }
+        ]
       }
     ],
     "defaults": {
