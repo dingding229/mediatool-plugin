@@ -34,15 +34,26 @@ func RequireAction(ctx context.Context, h *host.Client, key, code string) error 
 	return errors.Join(contracts.NewError(contracts.NeedsAction), notifyErr)
 }
 func Prop(v any) json.RawMessage { b, _ := json.Marshal(v); return b }
-func Field(component, model, label string) contracts.Component {
-	return contracts.Component{Component: component, Model: model, Props: map[string]json.RawMessage{"label": Prop(label)}}
+func Field(component, model, label string, description ...string) contracts.Component {
+	field := contracts.Component{Component: component, Model: model, Props: map[string]json.RawMessage{"label": Prop(label), "title": Prop(label)}}
+	if len(description) > 0 {
+		field.Props["hint"] = Prop(description[0])
+	}
+	return field
+}
+func Select(model, label string, values []string, labels map[string]string, description ...string) contracts.Component {
+	field := Field("VSelect", model, label, description...)
+	field.Props["items"] = Prop(values)
+	field.Props["enum"] = Prop(values)
+	field.Props["itemLabels"] = Prop(labels)
+	return field
 }
 
 // Number describes the entire accepted interval, not a list of presets.
 // Non-integral fields deliberately do not snap to step: valid fractional values
 // between the arrow increments must remain expressible.
-func Number(model, label string, min, max, step float64, integer bool) contracts.Component {
-	field := Field("VNumberInput", model, label)
+func Number(model, label string, min, max, step float64, integer bool, description ...string) contracts.Component {
+	field := Field("VNumberInput", model, label, description...)
 	field.Props["min"], field.Props["max"] = Prop(min), Prop(max)
 	field.Props["step"], field.Props["stepStrictly"] = Prop(step), Prop(integer)
 	return field

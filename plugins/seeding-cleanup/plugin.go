@@ -166,7 +166,7 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
 	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"execute":false,"deleteFiles":false,"minRatio":"2","minSeedingHours":"168","batchSize":"10"}`), Content: []contracts.Component{
-		acceptance.Field("VSwitch", "active", "启用定时预览"), acceptance.Field("VSwitch", "execute", "危险：实际删除任务（默认仅预览）"), acceptance.Field("VSwitch", "deleteFiles", "额外危险：请求删除数据文件"), acceptance.Number("minRatio", "最低分享率", 0, 10000, 0.1, false), acceptance.Number("minSeedingHours", "最低做种小时", 1, 87600, 0.1, false), acceptance.Number("batchSize", "每批上限（1–20）", 1, 20, 1, true), acceptance.Field("VTextField", "category", "分类（空表示不限）"), acceptance.Field("VTextField", "tag", "标签（空表示不限）"), acceptance.Field("VTextField", "siteId", "站点账户 ID（空表示不限）")}}, nil
+		acceptance.Field("VSwitch", "active", "启用定时预览"), acceptance.Field("VSwitch", "execute", "删除下载任务", "危险：实际删除任务（默认仅预览）"), acceptance.Field("VSwitch", "deleteFiles", "同时删除文件", "额外危险：请求删除数据文件"), acceptance.Number("minRatio", "最低分享率", 0, 10000, 0.1, false), acceptance.Number("minSeedingHours", "最低做种时长（小时）", 1, 87600, 0.1, false, "最低做种小时"), acceptance.Number("batchSize", "每批任务上限", 1, 20, 1, true, "每批上限（1–20）"), acceptance.Field("VTextField", "category", "任务分类", "分类（空表示不限）"), acceptance.Field("VTextField", "tag", "任务标签", "标签（空表示不限）"), acceptance.Field("VTextField", "siteId", "站点账号", "站点账户 ID（空表示不限）")}}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "cleanup-state")

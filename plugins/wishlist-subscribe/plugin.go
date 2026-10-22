@@ -268,9 +268,8 @@ func (p *Plugin) resolve(ctx context.Context, q sdk.ActionContext) (sdk.ActionCo
 	return q, false, contracts.NewError(contracts.InvalidParams)
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	source := acceptance.Field("VSelect", "source", "公开来源（不含登录态收藏）")
-	source.Props["items"] = acceptance.Prop([]string{"tmdb-list", "douban-wish", "douban-subject"})
-	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"create":false,"source":"tmdb-list","intervalMinutes":"60","perRun":"10"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用定时拉取"), acceptance.Field("VSwitch", "create", "危险：唯一匹配时创建停用订阅（默认只列候选）"), source, acceptance.Field("VTextField", "id", "列表 ID、豆瓣公开用户 ID 或条目 ID"), acceptance.Field("VTextField", "accountIds", "已配置 PT 账户 ID，逗号分隔（不立即搜索/下载）"), acceptance.Number("intervalMinutes", "同步间隔分钟（30–1440）", 30, 1440, 1, true), acceptance.Number("perRun", "每轮条目（1–20）", 1, 20, 1, true)}}, nil
+	source := acceptance.Select("source", "公开来源", []string{"tmdb-list", "douban-wish", "douban-subject"}, map[string]string{"tmdb-list": "TMDB 列表", "douban-wish": "豆瓣公开想看", "douban-subject": "豆瓣公开条目"}, "不读取登录态收藏")
+	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"create":false,"source":"tmdb-list","intervalMinutes":"60","perRun":"10"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用定时拉取"), acceptance.Field("VSwitch", "create", "创建订阅", "危险：唯一匹配时创建停用订阅（默认只列候选）"), source, acceptance.Field("VTextField", "id", "来源标识", "列表 ID、豆瓣公开用户 ID 或条目 ID"), acceptance.Field("VTextField", "accountIds", "站点账号", "已配置 PT 账户 ID，逗号分隔（不立即搜索/下载）"), acceptance.Number("intervalMinutes", "同步间隔（分钟）", 30, 1440, 1, true, "同步间隔分钟（30–1440）"), acceptance.Number("perRun", "每轮条目上限", 1, 20, 1, true, "每轮条目（1–20）")}}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "wishlist-state")

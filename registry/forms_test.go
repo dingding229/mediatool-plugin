@@ -187,3 +187,34 @@ func TestNumericFormBoundariesMatchAcceptedConfiguration(t *testing.T) {
 		}
 	}
 }
+
+func TestFormTitlesAndFiniteEnumsArePresentationOnly(t *testing.T) {
+	defs, e := registry.All()
+	if e != nil {
+		t.Fatal(e)
+	}
+	want := map[string][]string{"library-refresh-notify.provider": {"", "builtin", "emby"}, "site-checkin.method": {"", "GET", "POST"}, "wishlist-subscribe.source": {"tmdb-list", "douban-wish", "douban-subject"}}
+	seen := 0
+	for _, def := range defs {
+		form, e := def.Factory(sdk.Services{}).(sdk.FormProvider).GetForm(context.Background())
+		if e != nil {
+			t.Fatal(e)
+		}
+		for key, n := range controls(form.Content) {
+			var title, label string
+			if json.Unmarshal(n.Props["title"], &title) != nil || title == "" || json.Unmarshal(n.Props["label"], &label) != nil || title != label {
+				t.Fatal(def.Manifest.ID, key, "missing formal title")
+			}
+			if values, ok := want[def.Manifest.ID+"."+key]; ok {
+				var items, enum []string
+				if json.Unmarshal(n.Props["items"], &items) != nil || json.Unmarshal(n.Props["enum"], &enum) != nil || !reflect.DeepEqual(items, values) || !reflect.DeepEqual(enum, values) || n.Component != "VSelect" {
+					t.Fatal(def.Manifest.ID, key, "enum contract")
+				}
+				seen++
+			}
+		}
+	}
+	if seen != len(want) {
+		t.Fatal("missing enum fields", seen)
+	}
+}

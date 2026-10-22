@@ -193,7 +193,7 @@ func (p *Plugin) run(ctx context.Context, _ json.RawMessage) error {
 	return nil
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"directory":"incoming","destination":"organized","quietSeconds":"60","depth":"3"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "危险：启用宿主预览/确认整理"), acceptance.Field("VTextField", "rootId", "已授权可写媒体根 ID"), acceptance.Field("VTextField", "directory", "监控相对目录（递归总计最多 200 项）"), acceptance.Field("VTextField", "destination", "同一根内目标相对目录"), acceptance.Number("depth", "递归深度（默认 3，上限 5）", 1, 5, 1, true), acceptance.Number("quietSeconds", "大小与 mtime 静默期（30–3600 秒）", 30, 3600, 1, true)}}, nil
+	return sdk.Form{Defaults: json.RawMessage(`{"active":false,"directory":"incoming","destination":"organized","quietSeconds":"60","depth":"3"}`), Content: []contracts.Component{acceptance.Field("VSwitch", "active", "自动整理", "危险：启用宿主预览/确认整理"), acceptance.Field("VTextField", "rootId", "媒体根目录", "已授权可写媒体根 ID"), acceptance.Field("VTextField", "directory", "监控目录", "监控相对目录（递归总计最多 200 项）"), acceptance.Field("VTextField", "destination", "目标目录", "同一根内目标相对目录"), acceptance.Number("depth", "递归深度", 1, 5, 1, true, "递归深度（默认 3，上限 5）"), acceptance.Number("quietSeconds", "文件静默期（秒）", 30, 3600, 1, true, "大小与 mtime 静默期（30–3600 秒）")}}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "watch-state")

@@ -197,7 +197,7 @@ func (p *Plugin) flush(ctx context.Context, _ json.RawMessage) error {
 	return e
 }
 func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
-	return sdk.Form{Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用入库通知及合并刷新"), acceptance.Field("VTextField", "provider", "builtin 或 emby"), intervalField()}, Defaults: json.RawMessage(`{"active":false,"provider":"builtin","intervalSeconds":"60"}`)}, nil
+	return sdk.Form{Content: []contracts.Component{acceptance.Field("VSwitch", "active", "启用入库通知及合并刷新"), acceptance.Select("provider", "媒体服务器", []string{"", "builtin", "emby"}, map[string]string{"": "使用默认（内置媒体库）", "builtin": "内置媒体库", "emby": "Emby"}), intervalField()}, Defaults: json.RawMessage(`{"active":false,"provider":"builtin","intervalSeconds":"60"}`)}, nil
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "refresh-state")
