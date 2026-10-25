@@ -80,7 +80,7 @@ func TestEveryBuiltinConfigSchemaFieldIsEditableWithoutLifecycleOrHost(t *testin
 						t.Fatal(key, "boolean control missing")
 					}
 				case reflect.String:
-					if n.Component != "VTextField" && n.Component != "VTextarea" && n.Component != "VSelect" {
+					if n.Component != "VTextField" && n.Component != "VTextarea" && n.Component != "VSelect" && n.Component != "VCronInput" {
 						t.Fatal(key, "text control missing")
 					}
 				default:
@@ -207,7 +207,7 @@ func TestFormTitlesAndFiniteEnumsArePresentationOnly(t *testing.T) {
 			}
 			if values, ok := want[def.Manifest.ID+"."+key]; ok {
 				var items, enum []string
-				if json.Unmarshal(n.Props["items"], &items) != nil || json.Unmarshal(n.Props["enum"], &enum) != nil || !reflect.DeepEqual(items, values) || !reflect.DeepEqual(enum, values) || n.Component != "VSelect" {
+				if json.Unmarshal(n.Props["items"], &items) != nil || json.Unmarshal(n.Props["enum"], &enum) != nil || !reflect.DeepEqual(items, values) || !reflect.DeepEqual(enum, values) || n.Component != "VSelect" && n.Component != "VCronInput" {
 					t.Fatal(def.Manifest.ID, key, "enum contract")
 				}
 				seen++

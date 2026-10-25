@@ -61,7 +61,7 @@ func ValidateSnapshot(m Manifest, granted []string, s Snapshot) error {
 			allowed = m.Extensions.Services
 			switch d.Trigger {
 			case "cron":
-				if len(d.Cron) > 120 || len(strings.Fields(d.Cron)) != 5 {
+				if n := len(strings.Fields(d.Cron)); len(d.Cron) > 128 || n < 5 || n > 7 {
 					return NewError(InvalidParams)
 				}
 			case "interval":
