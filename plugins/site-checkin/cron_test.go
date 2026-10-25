@@ -37,7 +37,7 @@ func TestCronFormsAndSnapshotFieldCounts(t *testing.T) {
 			t.Fatal(e)
 		}
 		v := services[0]
-		d := contracts.Descriptor{Kind: "service", ID: v.ID, Handler: contracts.HandlerID("service", v.ID), Name: v.Name, Trigger: v.Trigger, Cron: v.Cron, ScheduleSetting: v.ScheduleSetting, RequiredScopes: v.RequiredScopes}
+		d := contracts.Descriptor{Kind: "service", ID: v.ID, Handler: contracts.HandlerID("service", v.ID), Name: v.Name, Trigger: v.Trigger, Cron: v.Cron, ScheduleSetting: v.ScheduleSetting, RequiredScopes: append([]string{"services.register"}, v.RequiredScopes...)}
 		s := contracts.Snapshot{Version: contracts.DescriptorVersion, Descriptors: []contracts.Descriptor{d}}
 		if e := contracts.ValidateSnapshot(m, scopes, s); e != nil {
 			t.Fatal(expr, e)
