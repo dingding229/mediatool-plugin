@@ -193,7 +193,7 @@ func TestFormTitlesAndFiniteEnumsArePresentationOnly(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	want := map[string][]string{"library-refresh-notify.provider": {"", "builtin", "emby"}, "site-checkin.method": {"", "GET", "POST"}, "wishlist-subscribe.source": {"tmdb-list", "douban-wish", "douban-subject"}}
+	want := map[string][]string{"library-refresh-notify.provider": {"", "builtin"}, "site-checkin.method": {"", "GET", "POST"}, "wishlist-subscribe.source": {"tmdb-list", "douban-wish", "douban-subject"}}
 	seen := 0
 	for _, def := range defs {
 		form, e := def.Factory(sdk.Services{}).(sdk.FormProvider).GetForm(context.Background())

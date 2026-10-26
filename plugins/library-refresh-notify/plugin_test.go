@@ -9,6 +9,7 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk/events"
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
 	"github.com/dingding229/mediatool-plugin/sdk/plugintest"
+	"strings"
 	"testing"
 	"time"
 )
@@ -218,5 +219,20 @@ func TestWithinWindowAndPendingLedgerNeverEvicted(t *testing.T) {
 		if e := p.onTransfer(context.Background(), event(201, asset)); e == nil {
 			t.Fatal("unsafe eviction", pending)
 		}
+	}
+}
+
+func TestT16ExternalProviderRemoved(t *testing.T) {
+	p := New(sdk.Services{Events: events.New()}).(*Plugin)
+	if e := p.InitPlugin(context.Background(), sdk.Config{Value: json.RawMessage(`{"provider":"emby","intervalSeconds":60}`)}); e == nil {
+		t.Fatal("external provider must be rejected, never silently converted")
+	}
+	form, e := p.GetForm(context.Background())
+	if e != nil {
+		t.Fatal(e)
+	}
+	raw, _ := json.Marshal(form)
+	if strings.Contains(string(raw), `"emby"`) {
+		t.Fatal("external provider still advertised")
 	}
 }
