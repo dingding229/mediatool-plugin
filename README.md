@@ -138,7 +138,7 @@ stream resolver, HTTP image client, session activation or media credential
 method exists. Catalog inputs deliberately have no userId/visibleLibraries.
 Host-issued PluginPrincipal grants administrative catalog access only; it is
 not a media user. Member Home/Discover/NextUp/UserData return unsupported until a
-real authorized member actor is available. Emby catalog uses its mediaserver
+real authorized member actor is available. External catalog integrations are not supplied by Media Tool; the native catalog uses its mediaserver
 adapter only; scoped item lookup or libraries without safe evidence fail closed.
 User patches preserve omitted fields; ClearExpiry/ClearParentalRating explicitly
 clear nullable values. They never accept passwords or create users. All writes
