@@ -585,3 +585,23 @@ func TestServerDTOBoundaryGolden(t *testing.T) {
 		}
 	}
 }
+
+func TestServerUserContractHasNoParentalLimit(t *testing.T) {
+	raw, err := json.Marshal(b.ServerUser{ID: "owned", MaxStreams: 2})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var value map[string]any
+	if err = json.Unmarshal(raw, &value); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := value["maxParentalRating"]; ok {
+		t.Fatal("retired field returned")
+	}
+	for _, field := range []string{`"maxParentalRating":null`, `"MaxParentalRating":65`, `"clearParentalRating":true`} {
+		var patch b.UserPatch
+		if err = contracts.Decode([]byte(`{"id":"owned","revision":1,`+field+`}`), &patch); err == nil {
+			t.Fatal("retired field accepted", field)
+		}
+	}
+}

@@ -47,30 +47,27 @@ type ServerGrant struct {
 	CanDownload bool   `json:"canDownload"`
 }
 type ServerUser struct {
-	ID                string        `json:"id"`
-	Username          string        `json:"username"`
-	DisplayName       string        `json:"displayName"`
-	Enabled           bool          `json:"enabled"`
-	Revision          int64         `json:"revision"`
-	MaxStreams        int           `json:"maxStreams"`
-	MaxParentalRating *int          `json:"maxParentalRating"`
-	ExpiresAt         *time.Time    `json:"expiresAt"`
-	Grants            []ServerGrant `json:"grants"`
+	ID          string        `json:"id"`
+	Username    string        `json:"username"`
+	DisplayName string        `json:"displayName"`
+	Enabled     bool          `json:"enabled"`
+	Revision    int64         `json:"revision"`
+	MaxStreams  int           `json:"maxStreams"`
+	ExpiresAt   *time.Time    `json:"expiresAt"`
+	Grants      []ServerGrant `json:"grants"`
 }
 
-// Omitted patch fields retain their current values; explicit Clear* flags clear
-// nullable limits. Passwords, authentication and new account creation are absent.
+// Omitted patch fields retain their current values; explicit ClearExpiry clears
+// expiration. Passwords, authentication and new account creation are absent.
 type UserPatch struct {
-	ID                  string         `json:"id"`
-	Revision            int64          `json:"revision"`
-	DisplayName         *string        `json:"displayName,omitempty"`
-	Enabled             *bool          `json:"enabled,omitempty"`
-	MaxStreams          *int           `json:"maxStreams,omitempty"`
-	MaxParentalRating   *int           `json:"maxParentalRating,omitempty"`
-	ExpiresAt           *time.Time     `json:"expiresAt,omitempty"`
-	ClearParentalRating bool           `json:"clearParentalRating,omitempty"`
-	ClearExpiry         bool           `json:"clearExpiry,omitempty"`
-	Grants              *[]ServerGrant `json:"grants,omitempty"`
+	ID          string         `json:"id"`
+	Revision    int64          `json:"revision"`
+	DisplayName *string        `json:"displayName,omitempty"`
+	Enabled     *bool          `json:"enabled,omitempty"`
+	MaxStreams  *int           `json:"maxStreams,omitempty"`
+	ExpiresAt   *time.Time     `json:"expiresAt,omitempty"`
+	ClearExpiry bool           `json:"clearExpiry,omitempty"`
+	Grants      *[]ServerGrant `json:"grants,omitempty"`
 }
 type ServerDevice struct {
 	ID         string    `json:"id"`

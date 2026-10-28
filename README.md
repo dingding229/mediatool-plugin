@@ -140,8 +140,8 @@ Host-issued PluginPrincipal grants administrative catalog access only; it is
 not a media user. Member Home/Discover/NextUp/UserData return unsupported until a
 real authorized member actor is available. External catalog integrations are not supplied by Media Tool; the native catalog uses its mediaserver
 adapter only; scoped item lookup or libraries without safe evidence fail closed.
-User patches preserve omitted fields; ClearExpiry/ClearParentalRating explicitly
-clear nullable values. They never accept passwords or create users. All writes
+User patches preserve omitted fields; ClearExpiry explicitly
+clears expiration. Age-rating limits are not part of the user contract. They never accept passwords or create users. All writes
 require a confirmed operation and native revisions when applicable. Playback and
 player-access methods are read-only summaries. Probe retries only enqueue native
 work; the SDK has no ffx/linksource dependency or execution interface.
