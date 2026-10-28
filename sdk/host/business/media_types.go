@@ -88,27 +88,6 @@ type HistorySelection struct {
 type HistorySelections struct {
 	Items []HistorySelection `json:"items"`
 }
-type Archive struct {
-	ID            string    `json:"id"`
-	AssetID       string    `json:"assetId"`
-	Kind          string    `json:"kind"`
-	State         string    `json:"state"`
-	EligibleAfter time.Time `json:"eligibleAfter"`
-}
-type ArchivePlan struct {
-	Items            []Archive `json:"items"`
-	PlanDigest       string    `json:"planDigest"`
-	PhysicalDeletion bool      `json:"physicalDeletion"`
-}
-type ArchiveApproval struct {
-	IDs        []string `json:"ids"`
-	PlanDigest string   `json:"planDigest"`
-}
-type CleanupResult struct {
-	ID        string `json:"id"`
-	ArchiveID string `json:"archiveId"`
-	State     string `json:"state"`
-}
 type Root struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`

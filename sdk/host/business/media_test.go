@@ -182,46 +182,6 @@ func TestTypedMediaClients(t *testing.T) {
 			t.Fatal(e)
 		}
 	})
-	t.Run("library.archive.list", func(t *testing.T) {
-		m := plugintest.NewHost(nil)
-		var in b.PageRequest
-		h := host.New(caller{m})
-		_, e := library.New(h).Archives(ctx, in)
-		var rpc *contracts.Error
-		if !errors.As(e, &rpc) || rpc.Code != contracts.PermissionDenied {
-			t.Fatal(e)
-		}
-		spec, _ := b.Lookup("library.archive.list")
-		m = plugintest.NewHost([]string{spec.Scope})
-		h = host.New(caller{m})
-		_ = m.OnBusiness("library.archive.list", func(context.Context, json.RawMessage) (any, *contracts.Error) {
-			return nil, contracts.NewError(contracts.Unsupported)
-		})
-		_, e = library.New(h).Archives(ctx, in)
-		if !errors.As(e, &rpc) || rpc.Code != contracts.Unsupported {
-			t.Fatal(e)
-		}
-	})
-	t.Run("library.archive.preview", func(t *testing.T) {
-		m := plugintest.NewHost(nil)
-		var in b.IDs
-		h := host.New(caller{m})
-		_, e := library.New(h).ArchivePreview(ctx, in)
-		var rpc *contracts.Error
-		if !errors.As(e, &rpc) || rpc.Code != contracts.PermissionDenied {
-			t.Fatal(e)
-		}
-		spec, _ := b.Lookup("library.archive.preview")
-		m = plugintest.NewHost([]string{spec.Scope})
-		h = host.New(caller{m})
-		_ = m.OnBusiness("library.archive.preview", func(context.Context, json.RawMessage) (any, *contracts.Error) {
-			return nil, contracts.NewError(contracts.Unsupported)
-		})
-		_, e = library.New(h).ArchivePreview(ctx, in)
-		if !errors.As(e, &rpc) || rpc.Code != contracts.Unsupported {
-			t.Fatal(e)
-		}
-	})
 	t.Run("library.scan.start", func(t *testing.T) {
 		m := plugintest.NewHost(nil)
 		var in b.ScanStart
@@ -338,26 +298,6 @@ func TestTypedMediaClients(t *testing.T) {
 			return nil, contracts.NewError(contracts.Unsupported)
 		})
 		_, e = library.New(h).HideHistory(ctx, in, op)
-		if !errors.As(e, &rpc) || rpc.Code != contracts.Unsupported {
-			t.Fatal(e)
-		}
-	})
-	t.Run("library.archive.confirmCleanup", func(t *testing.T) {
-		m := plugintest.NewHost(nil)
-		var in b.ArchiveApproval
-		h := host.New(caller{m})
-		_, e := library.New(h).ArchiveCleanup(ctx, in, op)
-		var rpc *contracts.Error
-		if !errors.As(e, &rpc) || rpc.Code != contracts.PermissionDenied {
-			t.Fatal(e)
-		}
-		spec, _ := b.Lookup("library.archive.confirmCleanup")
-		m = plugintest.NewHost([]string{spec.Scope})
-		h = host.New(caller{m})
-		_ = m.OnBusiness("library.archive.confirmCleanup", func(context.Context, json.RawMessage) (any, *contracts.Error) {
-			return nil, contracts.NewError(contracts.Unsupported)
-		})
-		_, e = library.New(h).ArchiveCleanup(ctx, in, op)
 		if !errors.As(e, &rpc) || rpc.Code != contracts.Unsupported {
 			t.Fatal(e)
 		}

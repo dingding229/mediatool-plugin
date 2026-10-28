@@ -34,12 +34,6 @@ func (c *Client) OrganizePreview(ctx context.Context, in b.ID, op b.Operation) (
 func (c *Client) CorrectPreview(ctx context.Context, in b.ConfirmIdentity, op b.Operation) (b.IdentityPlan, error) {
 	return b.Call[b.IdentityPlan](ctx, c.Host, "library.correct.preview", in, op)
 }
-func (c *Client) Archives(ctx context.Context, in b.PageRequest) (b.Page[b.Archive], error) {
-	return b.Call[b.Page[b.Archive]](ctx, c.Host, "library.archive.list", in, b.Operation{})
-}
-func (c *Client) ArchivePreview(ctx context.Context, in b.IDs) (b.ArchivePlan, error) {
-	return b.Call[b.ArchivePlan](ctx, c.Host, "library.archive.preview", in, b.Operation{})
-}
 func (c *Client) StartScan(ctx context.Context, in b.ScanStart, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "library.scan.start", in, op)
 }
@@ -57,7 +51,4 @@ func (c *Client) Refresh(ctx context.Context, in b.ID, op b.Operation) (b.Receip
 }
 func (c *Client) HideHistory(ctx context.Context, in b.HistorySelections, op b.Operation) (b.Receipt, error) {
 	return b.Call[b.Receipt](ctx, c.Host, "library.history.hide", in, op)
-}
-func (c *Client) ArchiveCleanup(ctx context.Context, in b.ArchiveApproval, op b.Operation) ([]b.CleanupResult, error) {
-	return b.Call[[]b.CleanupResult](ctx, c.Host, "library.archive.confirmCleanup", in, op)
 }

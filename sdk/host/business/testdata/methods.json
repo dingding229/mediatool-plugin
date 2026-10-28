@@ -360,18 +360,6 @@
     "supported": true
   },
   {
-    "name": "library.archive.list",
-    "scope": "library.archive.read",
-    "level": "R",
-    "supported": true
-  },
-  {
-    "name": "library.archive.preview",
-    "scope": "library.archive.read",
-    "level": "R",
-    "supported": true
-  },
-  {
     "name": "library.scan.start",
     "scope": "library.scan",
     "level": "W",
@@ -405,12 +393,6 @@
     "name": "library.history.hide",
     "scope": "library.history.write",
     "level": "W",
-    "supported": true
-  },
-  {
-    "name": "library.archive.confirmCleanup",
-    "scope": "library.archive.delete",
-    "level": "D",
     "supported": true
   },
   {
