@@ -261,7 +261,16 @@ func (p *Plugin) GetForm(context.Context) (sdk.Form, error) {
 }
 func (p *Plugin) GetPage(ctx context.Context, _ sdk.PageRequest) (sdk.Page, error) {
 	s, _, e := acceptance.Load[State](ctx, p.host, "assistant-state")
-	nodes := []contracts.Component{{Component: "Text", Props: map[string]json.RawMessage{"text": acceptance.Prop(fmt.Sprintf("状态 %s；任务 %d；显示前20项", s.Status, len(s.Items)))}}}
+	status := s.Status
+	if status == "" {
+		status = "尚未运行"
+	} else if status == "ok" {
+		status = "检查完成"
+	}
+	field := func(label string, value any) contracts.Component {
+		return contracts.Component{Component: "Text", Props: map[string]json.RawMessage{"label": acceptance.Prop(label), "text": acceptance.Prop(fmt.Sprint(value))}}
+	}
+	nodes := []contracts.Component{{Component: "VRow", Children: []contracts.Component{field("状态", status), field("任务", len(s.Items)), field("显示范围", "前20项")}}}
 	for i, v := range s.Items {
 		if i >= 20 {
 			break

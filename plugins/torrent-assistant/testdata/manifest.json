@@ -2,13 +2,14 @@
   "contractVersion": 2,
   "id": "torrent-assistant",
   "name": "下载器助手",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Media Tool Contributors",
   "description": "默认只提示；所有标签/分类/限制/校验经宿主所有权、HR、fence 和收据保护。",
   "level": 2,
   "icon": "icon.svg",
   "history": {
-    "1.0.0": "F6-γ：默认停用，合成来源验收，有界输入/队列，危险写操作需管理员确认"
+    "1.0.0": "F6-γ：默认停用，合成来源验收，有界输入/队列，危险写操作需管理员确认",
+    "1.0.1": "状态页区分尚未运行与检查完成，状态/任务/显示范围分项展示；不改变任务执行或数据。"
   },
   "permissions": [
     {

@@ -131,3 +131,27 @@ func TestStatusUIIsBounded(t *testing.T) {
 		}
 	}
 }
+
+func TestStatusPageBeforeFirstRunAndAfterCheck(t *testing.T) {
+	p, _, _, _, _ := setup(t, false, false)
+	for _, test := range []struct {
+		run  bool
+		want string
+	}{{false, "尚未运行"}, {true, "检查完成"}} {
+		if test.run {
+			if err := p.run(context.Background(), nil); err != nil {
+				t.Fatal(err)
+			}
+		}
+		page, err := p.GetPage(context.Background(), sdk.PageRequest{})
+		if err != nil || len(page.Content) < 1 || len(page.Content[0].Children) != 3 {
+			t.Fatal(page, err)
+		}
+		var label, value string
+		json.Unmarshal(page.Content[0].Children[0].Props["label"], &label)
+		json.Unmarshal(page.Content[0].Children[0].Props["text"], &value)
+		if label != "状态" || value != test.want {
+			t.Fatal(label, value)
+		}
+	}
+}
