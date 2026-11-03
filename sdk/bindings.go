@@ -71,6 +71,9 @@ func (r *Runtime) bind(ctx context.Context) error {
 	r.bindings = map[string]bound{}
 	add := func(d contracts.Descriptor, h func(context.Context, json.RawMessage) (any, error)) error {
 		d.Handler = contracts.HandlerID(d.Kind, d.ID)
+		if title := r.manifest.Extensions.Titles[d.Kind+":"+d.ID]; title != "" {
+			d.Name = title
+		}
 		if d.RequiredScopes == nil {
 			d.RequiredScopes = []string{}
 		}

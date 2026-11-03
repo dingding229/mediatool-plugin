@@ -38,6 +38,7 @@
         "commands.register",
         "plugin.data.read"
       ],
+      "name": "下载器状态",
       "description": "只读下载器助手状态",
       "cmd": "downloader-status",
       "category": "下载器"
@@ -54,7 +55,7 @@
         "downloads.control",
         "notifications.send"
       ],
-      "name": "预览或执行下载辅助规则",
+      "name": "下载辅助检查",
       "trigger": "interval",
       "intervalMs": 300000,
       "scheduleSetting": "active"

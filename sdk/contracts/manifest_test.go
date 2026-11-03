@@ -133,3 +133,28 @@ func TestJSONAndErrors(t *testing.T) {
 		t.Fatal(e)
 	}
 }
+
+func TestOperationTitlesAreBoundedAndDeclared(t *testing.T) {
+	for _, tc := range []struct {
+		titles map[string]string
+		valid  bool
+	}{
+		{map[string]string{"command:hello": "中文状态查询"}, true},
+		{map[string]string{"command:missing": "未声明命令"}, false},
+		{map[string]string{"command:hello": ""}, false},
+		{map[string]string{"command:hello": "带\n换行"}, false},
+		{map[string]string{"command:hello": strings.Repeat("名", 41)}, false},
+	} {
+		raw := example(t)
+		var ext map[string]json.RawMessage
+		if e := json.Unmarshal(raw["extensions"], &ext); e != nil {
+			t.Fatal(e)
+		}
+		ext["titles"] = marshal(t, tc.titles)
+		raw["extensions"] = marshal(t, ext)
+		_, e := contracts.ParseManifest(marshal(t, raw))
+		if (e == nil) != tc.valid {
+			t.Fatalf("%+v: %v", tc, e)
+		}
+	}
+}

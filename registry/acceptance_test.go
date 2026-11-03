@@ -7,6 +7,7 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk"
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	"github.com/dingding229/mediatool-plugin/sdk/plugintest"
+	"os"
 	"testing"
 )
 
@@ -61,5 +62,39 @@ func TestAcceptanceDescriptorsGoldenAndNoInitEffects(t *testing.T) {
 			plugintest.Golden(t, "../plugins/"+name+"/testdata/manifest.json", d.Manifest)
 			plugintest.Golden(t, "../plugins/"+name+"/testdata/descriptor.json", snap)
 		})
+	}
+}
+
+func TestManifestOperationTitlesReachRuntimeDescriptors(t *testing.T) {
+	d, e := registry.Get("torrent-assistant")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if d.Manifest.Extensions.Titles["command:downloader-status"] != "下载器状态" || d.Manifest.Extensions.Titles["service:assist"] != "下载辅助检查" {
+		t.Fatal(d.Manifest.Extensions.Titles)
+	}
+	// The reviewed descriptor golden above exercises actual SDK registration,
+	// including command providers that do not have their own Name member.
+	raw, e := os.ReadFile("../plugins/torrent-assistant/testdata/descriptor.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	var snap contracts.Snapshot
+	if e = json.Unmarshal(raw, &snap); e != nil {
+		t.Fatal(e)
+	}
+	for key, title := range d.Manifest.Extensions.Titles {
+		found := false
+		for _, v := range snap.Descriptors {
+			if v.Kind+":"+v.ID == key {
+				found = true
+				if v.Name != title {
+					t.Fatal(key, v.Name, title)
+				}
+			}
+		}
+		if !found {
+			t.Fatal(key)
+		}
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"path"
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 type APIRoute struct {
@@ -22,18 +23,19 @@ type Permission struct {
 	Resources map[string][]string `json:"resources,omitempty"`
 }
 type Extensions struct {
-	Forms         bool       `json:"forms,omitempty"`
-	Pages         []string   `json:"pages,omitempty"`
-	Dashboards    []string   `json:"dashboards,omitempty"`
-	API           []APIRoute `json:"api,omitempty"`
-	Services      []string   `json:"services,omitempty"`
-	Commands      []string   `json:"commands,omitempty"`
-	Events        []string   `json:"events,omitempty"`
-	Chains        []string   `json:"chains,omitempty"`
-	Modules       []string   `json:"modules,omitempty"`
-	Actions       []string   `json:"actions,omitempty"`
-	AuthProviders []string   `json:"authProviders,omitempty"`
-	AgentTools    []string   `json:"agentTools,omitempty"`
+	Titles        map[string]string `json:"titles,omitempty"`
+	Forms         bool              `json:"forms,omitempty"`
+	Pages         []string          `json:"pages,omitempty"`
+	Dashboards    []string          `json:"dashboards,omitempty"`
+	API           []APIRoute        `json:"api,omitempty"`
+	Services      []string          `json:"services,omitempty"`
+	Commands      []string          `json:"commands,omitempty"`
+	Events        []string          `json:"events,omitempty"`
+	Chains        []string          `json:"chains,omitempty"`
+	Modules       []string          `json:"modules,omitempty"`
+	Actions       []string          `json:"actions,omitempty"`
+	AuthProviders []string          `json:"authProviders,omitempty"`
+	AgentTools    []string          `json:"agentTools,omitempty"`
 }
 type Sidebar struct {
 	Page  string `json:"page"`
@@ -170,6 +172,20 @@ func ParseManifest(raw []byte) (Manifest, error) {
 	}
 	for _, ids := range [][]string{m.Extensions.Pages, m.Extensions.Dashboards, m.Extensions.Services, m.Extensions.Commands, m.Extensions.Events, m.Extensions.Chains, m.Extensions.Modules, m.Extensions.Actions, m.Extensions.AuthProviders, m.Extensions.AgentTools} {
 		if !validIDs(ids) {
+			return m, NewError(InvalidParams)
+		}
+	}
+	if len(m.Extensions.Titles) > 128 {
+		return m, NewError(InvalidParams)
+	}
+	declaredTitles := map[string]bool{}
+	for kind, ids := range map[string][]string{"service": m.Extensions.Services, "command": m.Extensions.Commands, "action": m.Extensions.Actions} {
+		for _, id := range ids {
+			declaredTitles[kind+":"+id] = true
+		}
+	}
+	for key, title := range m.Extensions.Titles {
+		if !declaredTitles[key] || strings.TrimSpace(title) == "" || strings.TrimSpace(title) != title || len(title) > 120 || strings.ContainsFunc(title, unicode.IsControl) {
 			return m, NewError(InvalidParams)
 		}
 	}
