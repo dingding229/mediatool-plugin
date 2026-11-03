@@ -7,6 +7,7 @@ import (
 	"github.com/dingding229/mediatool-plugin/sdk/contracts"
 	b "github.com/dingding229/mediatool-plugin/sdk/host/business"
 	"github.com/dingding229/mediatool-plugin/sdk/plugintest"
+	"strings"
 	"testing"
 	"time"
 )
@@ -153,5 +154,26 @@ func TestStatusPageBeforeFirstRunAndAfterCheck(t *testing.T) {
 		if label != "状态" || value != test.want {
 			t.Fatal(label, value)
 		}
+	}
+}
+
+func TestTagHintUsesReadableChineseWithoutChangingField(t *testing.T) {
+	form, err := (&Plugin{}).GetForm(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := json.Marshal(form)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fields []contracts.Component = form.Content
+	found := false
+	for _, field := range fields {
+		if field.Model == "tag" {
+			found = true
+		}
+	}
+	if !found || !strings.Contains(string(raw), "保留原有归属标签") || strings.Contains(string(raw), "owner 标签") {
+		t.Fatal(string(raw))
 	}
 }
